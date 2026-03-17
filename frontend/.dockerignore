@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+.env*
+.git
+.vscode
+.idea
+*.log
