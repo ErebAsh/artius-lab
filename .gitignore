@@ -1,0 +1,68 @@
+# Dependencies
+node_modules/
+**/node_modules/
+venv/
+.venv/
+env/
+**/venv/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Next.js
+.next/
+out/
+build/
+**/.next/
+**/out/
+**/build/
+
+# Environment files
+.env*
+!.env.example
+
+# IDEs and Editors
+.vscode/
+.idea/
+**/.vscode/
+**/.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+**/.DS_Store
+
+# Logs
+*.log
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing and Coverage
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+**/.pytest_cache/
+**/coverage/
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Misc
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+/artius-lab/
+
+# Docker
+docker-compose.override.yml
