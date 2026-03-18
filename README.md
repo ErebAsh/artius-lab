@@ -6,14 +6,7 @@
 
   **AI-Powered Resume Builder — Craft Resumes That Command Attention**
 
-  <br>
-
-  <a href="#-features"><img src="https://img.shields.io/badge/Features-6366f1?style=for-the-badge" alt="Features"></a>&nbsp;
-  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Tech_Stack-10b981?style=for-the-badge" alt="Tech Stack"></a>&nbsp;
-  <a href="#-getting-started"><img src="https://img.shields.io/badge/Get_Started-ec4899?style=for-the-badge" alt="Get Started"></a>&nbsp;
-  <a href="#-templates"><img src="https://img.shields.io/badge/Templates-b45309?style=for-the-badge" alt="Templates"></a>
-
-  <br><br>
+ <br>
 
   ![Next.js](https://img.shields.io/badge/Next.js_16-000?style=flat-square&logo=next.js)
   ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
