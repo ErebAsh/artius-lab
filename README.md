@@ -2,7 +2,7 @@
   <img src="./assets/logo.png" width="120" alt="Artius Lab Logo">
   <br><br>
 
-  # ✦ A R T I U S &nbsp; L A B
+  # ✦ A R T I U S &nbsp; L A B ✦
 
   **AI-Powered Resume Builder — Craft Resumes That Command Attention**
 
@@ -11,6 +11,7 @@
   ![Next.js](https://img.shields.io/badge/Next.js_16-000?style=flat-square&logo=next.js)
   ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
   ![Gemini AI](https://img.shields.io/badge/Gemini_AI-4285F4?style=flat-square&logo=google&logoColor=white)
+  <br>
   ![WeasyPrint](https://img.shields.io/badge/WeasyPrint-PDF-red?style=flat-square)
   ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
   ![Tailwind](https://img.shields.io/badge/Tailwind_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
@@ -58,6 +59,20 @@ WeasyPrint renders pixel-perfect HTML/CSS templates into beautiful, print-ready 
 
 </td>
 </tr>
+<tr>
+<td>
+
+### 📊 ATS Resume Checker
+Upload any PDF resume and get an instant AI-powered compatibility score, keyword analysis, and actionable improvements.
+
+</td>
+<td>
+
+### 👁️ Live Preview Editor
+Experience a real-time preview of your resume and make manual adjustments to the AI-enhanced content before finalizing.
+
+</td>
+</tr>
 </table>
 
 <br>
@@ -79,7 +94,7 @@ WeasyPrint renders pixel-perfect HTML/CSS templates into beautiful, print-ready 
 ```
 Frontend                          Backend
 ├── Next.js 16 (App Router)       ├── FastAPI
-├── TypeScript                    ├── Google Gemini 2.0 Flash
+├── TypeScript                    ├── Google Gemini 2.5 Flash
 ├── Tailwind CSS v4               ├── WeasyPrint (PDF)
 ├── React 19                      ├── Jinja2 (Templates)
 └── Glassmorphism UI              └── Pydantic (Validation)
@@ -152,6 +167,8 @@ artius-lab/
 ├── frontend/                    # Next.js 16 Application
 │   └── app/
 │       ├── page.tsx             # Landing page
+│       ├── ats/
+│       │   └── page.tsx         # ATS Resume Checker
 │       ├── templates/
 │       │   └── page.tsx         # Template gallery
 │       ├── builder/
@@ -169,13 +186,10 @@ artius-lab/
 │   ├── schemas.py               # Pydantic models
 │   ├── templates.py             # Template registry
 │   ├── ai_service.py            # Gemini AI integration
-│   ├── pdf_service.py           # PDF generation
+│   ├── pdf_service.py           # PDF generation/conversion
 │   └── resume_templates/        # Jinja2 HTML templates
 │       ├── modern.html
-│       ├── classic.html
-│       ├── creative.html
-│       ├── tech.html
-│       └── elegant.html
+│       ├── ... (more)
 │
 ├── docker-compose.yml
 └── README.md
@@ -188,8 +202,10 @@ artius-lab/
 | Method | Endpoint | Description |
 |:---|:---|:---|
 | `GET` | `/api/templates` | List all available templates |
-| `GET` | `/api/templates/{id}` | Get template details by ID |
-| `POST` | `/api/generate` | Generate AI-enhanced PDF resume |
+| `POST` | `/api/ai/enhance` | AI-enhance resume data without generation |
+| `POST` | `/api/generate/html` | Generate preview HTML from resume data |
+| `POST` | `/api/generate/pdf` | Convert final HTML to downloadable PDF |
+| `POST` | `/api/ats/upload` | Upload PDF and get ATS analysis & score |
 
 <details>
 <summary><b>POST /api/generate</b> — Request Body</summary>
@@ -221,10 +237,10 @@ artius-lab/
 
 ## 🗺️ Roadmap
 
-- [ ] Live resume preview before download
+- [x] Live resume preview before download
+- [x] Resume scoring & feedback (ATS Hub)
 - [ ] Template customization (colors, fonts)
 - [ ] Multiple export formats (DOCX, LaTeX)
-- [ ] Resume scoring & feedback
 - [ ] User accounts & saved resumes
 - [ ] Job description matching
 
