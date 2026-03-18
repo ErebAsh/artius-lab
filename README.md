@@ -8,13 +8,13 @@
 
  <br>
 
-  ![Next.js](https://img.shields.io/badge/Next.js_16-000?style=flat-square&logo=next.js)
-  ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-  ![Gemini AI](https://img.shields.io/badge/Gemini_AI-4285F4?style=flat-square&logo=google&logoColor=white)
+  <img src="https://img.shields.io/badge/Next.js_16-000?style=for-the-badge&logo=next.js" height="30">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" height="30">
+  <img src="https://img.shields.io/badge/Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white" height="30">
   <br>
-  ![WeasyPrint](https://img.shields.io/badge/WeasyPrint-PDF-red?style=flat-square)
-  ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-  ![Tailwind](https://img.shields.io/badge/Tailwind_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+  <img src="https://img.shields.io/badge/WeasyPrint-PDF-red?style=for-the-badge" height="30">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" height="30">
+  <img src="https://img.shields.io/badge/Tailwind_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" height="30">
 
   <br>
 
