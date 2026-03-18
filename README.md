@@ -238,18 +238,16 @@ artius-lab/
 
 ## 🗺️ Roadmap
 
-- [x] Live resume preview before download
-- [x] Resume scoring & feedback (ATS Hub)
+- [ ] Instant customization to match specific job descriptions.
+- [ ] AI identifies required certifications and skills for your target role.
+- [ ] Generates a unique shareable link for your live digital resume.
+- [ ] AI-generated cover letters and networking emails for every application.
 - [ ] Template customization (colors, fonts)
 - [ ] Multiple export formats (DOCX, LaTeX)
 - [ ] User accounts & saved resumes
-- [ ] Job description matching
 
 <br>
 
----
-
-<br>
 
 <div align="center">
 
