@@ -1,20 +1,21 @@
 <div align="center">
   <img src="./assets/logo.png" width="120" alt="Artius Lab Logo">
-  <br><br>
 
-  # ✦ A R T I U S &nbsp; L A B ✦
+  <br>
+
+  <b><font size="7">✦ A R T I U S &nbsp; L A B ✦</font></b>
 
   **AI-Powered Resume Builder — Craft Resumes That Command Attention**
 
  <br>
 
-  <img src="https://img.shields.io/badge/Next.js_16-000?style=for-the-badge&logo=next.js" height="30">
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" height="30">
-  <img src="https://img.shields.io/badge/Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white" height="30">
+  <img src="https://img.shields.io/badge/Next.js_16-000?style=for-the-badge&logo=next.js" height="40">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" height="40">
+  <img src="https://img.shields.io/badge/Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white" height="40">
   <br>
-  <img src="https://img.shields.io/badge/WeasyPrint-PDF-red?style=for-the-badge" height="30">
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" height="30">
-  <img src="https://img.shields.io/badge/Tailwind_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" height="30">
+  <img src="https://img.shields.io/badge/WeasyPrint-PDF-red?style=for-the-badge" height="40">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" height="40">
+  <img src="https://img.shields.io/badge/Tailwind_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" height="40">
 
   <br>
 
