@@ -1,2 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
+google-generativeai
+weasyprint
+python-multipart
+pydantic
+jinja2
+python-dotenv
