@@ -29,7 +29,16 @@ export default function TemplatesPage() {
       })
       .catch(() => {
         // Fallback data if backend is not running
-        const fallbackTemplates: any[] = [];
+        const fallbackTemplates: any[] = [
+          {
+            id: "classic",
+            name: "Classic Elegance",
+            description: "A sophisticated two-column template perfect for experienced professionals. Features a sharp navy header with gold typography, and clean multi-column sections.",
+            accent_color: "#1e293b",
+            features: ["Two-column layout", "ATS-friendly", "Elegant typography", "Professional Header"],
+            category: "Professional"
+          }
+        ];
         setTemplates(fallbackTemplates);
         setLoading(false);
       });
@@ -44,13 +53,13 @@ export default function TemplatesPage() {
     <div
       style={{
         minHeight: "100vh",
-        padding: "160px 24px 120px",
-        maxWidth: 1200,
+        padding: "120px 56px 80px",
+        maxWidth: 1500,
         margin: "0 auto",
       }}
     >
       {/* Header */}
-      <div className="animate-fade-in-up" style={{ textAlign: "center", marginBottom: 64 }}>
+      <div className="animate-fade-in-up" style={{ textAlign: "center", marginBottom: 32 }}>
         <div style={{
           display: "inline-block",
           padding: "6px 14px",
@@ -80,12 +89,12 @@ export default function TemplatesPage() {
         >
           Select Your Professional Foundation
         </h1>
-        <p style={{ fontSize: 18, color: "var(--text-muted)", maxWidth: 600, margin: "0 auto 40px" }}>
+        <p style={{ fontSize: 18, color: "var(--text-muted)", maxWidth: 600, margin: "0 auto 24px" }}>
           Each template is precision-engineered for maximum impact, readability, and ATS compatibility across all industries.
         </p>
 
         {/* Category Filter */}
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginBottom: 40 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginBottom: 24 }}>
           {categories.map(cat => (
             <button
               key={cat}
@@ -110,7 +119,7 @@ export default function TemplatesPage() {
           className="animate-fade-in-up"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
             gap: 32,
             animationDelay: "0.2s",
           }}

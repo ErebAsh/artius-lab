@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 import ThemeProvider from "./components/ThemeProvider";
+import ConditionalLayout from "./components/ConditionalLayout";
 
 export default function RootLayout({
   children,
@@ -36,11 +37,15 @@ export default function RootLayout({
           <div className="bg-orb bg-orb-1" />
           <div className="bg-orb bg-orb-2" />
 
-          <Navbar />
+          <ConditionalLayout>
+            <Navbar />
+          </ConditionalLayout>
 
           <main style={{ position: "relative", zIndex: 1, flex: 1 }}>{children}</main>
 
-          <Footer />
+          <ConditionalLayout>
+            <Footer />
+          </ConditionalLayout>
         </ThemeProvider>
       </body>
     </html>

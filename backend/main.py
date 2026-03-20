@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 import io
 import PyPDF2
-
 from schemas import ResumeData, HTMLData
 from templates import RESUME_TEMPLATES, get_template_by_id
 from ai_service import enhance_resume, check_ats_score
@@ -39,14 +38,132 @@ def get_template(template_id: str):
     return template
 
 
+@app.get("/api/templates/{template_id}/preview")
+def preview_template(template_id: str):
+    """Return an HTML preview of the template loaded with dummy data."""
+    template = get_template_by_id(template_id)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+        
+    dummy_data = {
+        "personal_info": {
+            "full_name": "EMMA WATSON",
+            "title": "SOFTWARE ENGINEER",
+            "email": "emma.watson@gmail.com",
+            "phone": "+1 123-456-7890",
+            "location": "New York, USA",
+            "linkedin": "linkedin.com/in/emmawatson",
+            "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience."
+        },
+
+        "experience": [
+            {
+                "company": "Tech Solutions Inc.",
+                "title": "Software Engineer",
+                "location": "New York, USA",
+                "start_date": "Jan 2022",
+                "end_date": "Present",
+                "description": "Developing scalable web applications and improving backend performance.",
+                "highlights": [
+                    "Built full-stack applications using React and FastAPI.",
+                    "Improved system performance by 30% through optimization.",
+                    "Collaborated with designers and product teams."
+                ]
+            },
+            {
+                "company": "Innovate Labs",
+                "title": "Junior Developer",
+                "location": "Boston, USA",
+                "start_date": "Jun 2020",
+                "end_date": "Dec 2021",
+                "description": "Worked on backend systems and API integrations.",
+                "highlights": [
+                    "Developed REST APIs using Python and Flask.",
+                    "Integrated third-party services and APIs.",
+                    "Maintained code quality with unit testing."
+                ]
+            }
+        ],
+
+        "education": [
+            {
+                "institution": "Stanford University",
+                "degree": "Bachelor of Science",
+                "field_of_study": "Computer Science",
+                "start_date": "2016",
+                "end_date": "2020"
+            }
+        ],
+
+        "skills": [
+            {"name": "Python"},
+            {"name": "JavaScript"},
+            {"name": "React"},
+            {"name": "FastAPI"},
+            {"name": "Docker"},
+            {"name": "Git"}
+        ],
+
+        "expertise": {
+            "professional": [
+                "Leadership",
+                "Team Collaboration",
+                "Problem Solving",
+                "Agile Development"
+            ],
+            "technical": [
+                "Web Development",
+                "API Design",
+                "Database Management",
+                "Cloud Deployment"
+            ]
+        },
+
+        "certifications": [
+            {
+                "name": "AWS Certified Developer",
+                "issuer": "Amazon",
+                "year": "2023"
+            },
+            {
+                "name": "Full Stack Web Development",
+                "issuer": "Coursera",
+                "year": "2022"
+            }
+        ],
+        "projects": [
+            {
+                "name": "AI Resume Builder",
+                "description": "An AI-powered platform using FastAPI and Next.js to generate optimized resumes and analyze ATS compatibility.",
+                "link": "github.com/emmawatson/resumebuilder"
+            },
+            {
+                "name": "E-commerce Microservices",
+                "description": "Designed a scalable e-commerce architecture using Docker and Kubernetes, resulting in 40% faster deployment cycles.",
+                "link": "github.com/emmawatson/ecommerce"
+            }
+        ]
+    }
+    
+    try:
+        from pdf_service import generate_html
+        html_content = generate_html(dummy_data, template_id)
+        return Response(content=html_content, media_type="text/html")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+
 @app.post("/api/ai/enhance")
 async def ai_enhance(data: ResumeData):
     """
     Accept basic resume data, use AI to generate summaries and professional details.
     Returns the complete enhanced resume as JSON.
     """
-    enhanced_data = await enhance_resume(data)
-    return {"enhanced_data": enhanced_data}
+    result = await enhance_resume(data)
+    return result
 
 
 @app.post("/api/generate")
@@ -59,12 +176,14 @@ async def generate_resume_legacy(data: ResumeData):
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
-    # AI enhancement
-    enhanced_data = await enhance_resume(data)
+    # AI-powered resume building/completion
+    ai_result = await enhance_resume(data)
+    enhanced_data = ai_result.get("enhanced_data", ai_result)
+    layout_settings = ai_result.get("layout_settings", {})
 
     # PDF generation
     try:
-        pdf_bytes = generate_pdf(enhanced_data, data.template_id)
+        pdf_bytes = generate_pdf(enhanced_data, data.template_id, layout_settings)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 
@@ -114,11 +233,17 @@ async def generate_resume_html(data: ResumeData):
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
-    enhanced_data = await enhance_resume(data)
+    # AI-powered resume building/completion
+    ai_result = await enhance_resume(data)
+    enhanced_data = ai_result.get("enhanced_data", ai_result)
+    layout_settings = ai_result.get("layout_settings", {})
 
     try:
         html_content = generate_html(enhanced_data, data.template_id)
-        return {"html": html_content}
+        return {
+            "html": html_content,
+            "layout_settings": layout_settings
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"HTML generation failed: {str(e)}")
 

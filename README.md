@@ -25,56 +25,17 @@
 
 <br>
 
----
-
 <br>
 
-## ✨ Features
+## 🧪 About Artius Lab
 
-<table>
-<tr>
-<td width="50%">
+**Artius Lab** derives its name from the Latin word ***Artius***, meaning "complete," "perfectly-fitted," or "well-joined." True to its name, this platform is a laboratory for professional excellence, where we combine advanced AI with curated design to craft resumes that are perfectly fitted for your career goals. 
 
-### 🎨 Premium Templates
-5 professionally designed templates — each optimized for ATS compatibility and visual impact across different industries.
+Rather than just a simple builder, Artius Lab provides a sophisticated ecosystem for career storytelling:
+- **Precision Engineering:** AI-powered content enhancement that "fits" your unique experience to industry standards and ATS keywords.
+- **Seamless Integration:** A multi-step intuitive builder that "joins" your education, experience, and skills into a cohesive professional narrative.
+- **Aesthetic Perfection:** Premium, hand-crafted templates rendered with pixel-perfect accuracy to ensure you command attention from first glance.
 
-</td>
-<td width="50%">
-
-### 🤖 AI-Powered Enhancement
-Google Gemini AI analyzes your content, adds action verbs, quantifies achievements, and optimizes for ATS keywords.
-
-</td>
-</tr>
-<tr>
-<td>
-
-### 📝 Multi-Step Form Builder
-Intuitive 5-step wizard: Personal Info → Education → Experience → Skills → Projects. Add unlimited entries per section.
-
-</td>
-<td>
-
-### 📄 Instant PDF Download
-WeasyPrint renders pixel-perfect HTML/CSS templates into beautiful, print-ready PDF resumes in seconds.
-
-</td>
-</tr>
-<tr>
-<td>
-
-### 📊 ATS Resume Checker
-Upload any PDF resume and get an instant AI-powered compatibility score, keyword analysis, and actionable improvements.
-
-</td>
-<td>
-
-### 👁️ Live Preview Editor
-Experience a real-time preview of your resume and make manual adjustments to the AI-enhanced content before finalizing.
-
-</td>
-</tr>
-</table>
 
 <br>
 
@@ -249,6 +210,8 @@ artius-lab/
 <br>
 
 ## 🔗 Connect
+
+<div align="center">
 
 <a href="https://github.com/ErebAsh"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
 &nbsp;

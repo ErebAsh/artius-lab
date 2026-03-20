@@ -8,18 +8,22 @@ load_dotenv()
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-SYSTEM_PROMPT = """You are a professional resume writer and career coach. Your job is to build a complete, professional, and ATS-optimized resume.
+SYSTEM_PROMPT = """You are an expert AI Resume Builder. Your mission is to take partial resume data and transform it into a complete, professional, and high-impact resume.
 
-Rules:
-1. If a professional summary is missing or too short, GENERATE a compelling summary based on the provided experience and skills.
-2. If work experience highlights or descriptions are missing or minimal, GENERATE 3-5 high-impact, professional bullet points for each role based on the job title and company.
-3. Improve all existing bullet points with strong action verbs (Led, Engineered, Optimized, Spearheaded, etc.)
-4. Quantify achievements where possible (e.g., "Increased sales by 30%"), even if placeholders are needed for the user to fill in (like [X]%).
-5. Ensure summaries are between 3-4 sentences long and focused on professional identity and key achievements.
-6. Keep all provided factual information (dates, company names, titles) accurate.
-7. Return the data in the EXACT JSON structure provided.
-
-You MUST return valid JSON only, no markdown formatting."""
+Rules for Completion:
+1. If any section is missing or incomplete, infer the best content based on other provided details (e.g., infer summary from experience, infer skills from projects).
+2. For PROFESSIONAL SUMMARY: Generate a powerful 3-4 sentence summary that highlights the user's career trajectory and value proposition.
+3. For EXPERIENCE: For each role, ensure there are 3-5 high-impact bullet points using strong action verbs. If the user provided no bullet points, GENERATE them based on the job title and industry standards.
+4. For SKILLS: If no skills are provided, suggest a relevant list of technical and soft skills based on the rest of the resume.
+5. For PROJECTS: Enhance descriptions to be technical and outcome-oriented.
+6. QUANTIFY achievements extensively (e.g., "[X]%", "$[Y]M", "[Z] hours saved"). If metrics aren't provided, use placeholders like [X]% to prompt the user to fill them in, but make the context realistic.
+7. Maintain the truth of provided facts (dates, titles, names) while professionalizing the phrasing.
+8. OPTIMAL LAYOUT: YOU MUST also generate a `layout_settings` object based on the content density:
+   - If very little content exists (e.g., just one job or school): Suggest wider margins (28-32mm), larger font (11.5-12pt), and higher section gaps (35-45px).
+   - If average content exists: Standard set (24mm margins, 11pt font, 24px section gaps).
+   - If content is very dense (lots of projects/experience): Suggest tighter margins (18-20mm), smaller font (10-10.5pt), lower line height (1.4), and smaller gaps (15-18px) to keep it one page.
+9. RETURN EXACT JSON with keys: "enhanced_data" (matching input resume structure) and "layout_settings" (keys: margin, fontSize, lineHeight, sectionGap, columnGap). No markdown, no conversational text.
+"""
 
 
 async def enhance_resume(data: ResumeData) -> dict:
@@ -28,12 +32,13 @@ async def enhance_resume(data: ResumeData) -> dict:
     resume_dict = data.model_dump()
     del resume_dict["template_id"]
 
-    prompt = f"""Enhance the following resume data. Improve descriptions, bullet points, and summary to be more professional and ATS-optimized. Return the enhanced data in the EXACT same JSON structure.
+    prompt = f"""Enhance the following resume data. Improve descriptions, bullet points, and summary to be more professional and ATS-optimized. 
+    ALSO, determine the best `layout_settings` based on how much content is present.
 
-Resume Data:
-{json.dumps(resume_dict, indent=2)}
+    Resume Data:
+    {json.dumps(resume_dict, indent=2)}
 
-Return ONLY valid JSON with the same structure. Do not wrap in markdown code blocks."""
+    Return ONLY valid JSON with keys "enhanced_data" and "layout_settings". Do not wrap in markdown code blocks."""
 
     try:
         model = genai.GenerativeModel(

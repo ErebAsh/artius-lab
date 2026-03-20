@@ -1,6 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 interface TemplateCardProps {
   template: {
     id: string;
@@ -15,6 +18,19 @@ interface TemplateCardProps {
 
 export default function TemplateCard({ template, onSelect }: TemplateCardProps) {
   const [hovered, setHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.4);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setScale(entry.contentRect.width / 800);
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
@@ -36,25 +52,39 @@ export default function TemplateCard({ template, onSelect }: TemplateCardProps) 
     >
       {/* Template Preview */}
       <div
+        ref={containerRef}
         style={{
           position: "relative",
-          height: 220,
+          aspectRatio: "1 / 1.414",
           background: "#fff",
           overflow: "hidden",
         }}
       >
-        {/* Actual resume image */}
-        <Image
-          src={`/images/${template.id}.png`}
-          alt={`${template.name} preview`}
-          fill
+        {/* Auto Thumbnail using iframe */}
+        <div
           style={{
-            objectFit: "cover",
-            objectPosition: "top",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "800px", 
+            height: "1131px", 
+            transform: `scale(${scale * (hovered ? 1.05 : 1)})`,
+            transformOrigin: "top left",
             transition: "transform 0.4s",
-            transform: hovered ? "scale(1.05)" : "scale(1)",
+            pointerEvents: "none", 
+            backgroundColor: "#fff",
           }}
-        />
+        >
+          <iframe
+            src={`${API_BASE}/api/templates/${template.id}/preview`}
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "none",
+            }}
+            scrolling="no"
+          />
+        </div>
 
         {/* Accent bar */}
         <div
@@ -98,49 +128,6 @@ export default function TemplateCard({ template, onSelect }: TemplateCardProps) 
             Preview Template
           </span>
         </div>
-      </div>
-
-      {/* Card Info */}
-      <div style={{ padding: "16px 20px 20px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 6,
-          }}
-        >
-          <h3
-            style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "var(--foreground)",
-            }}
-          >
-            {template.name}
-          </h3>
-          <span
-            style={{
-              fontSize: 11,
-              padding: "3px 10px",
-              borderRadius: 20,
-              background: `${template.accent_color}15`,
-              color: template.accent_color,
-              fontWeight: 500,
-            }}
-          >
-            {template.category}
-          </span>
-        </div>
-        <p
-          style={{
-            fontSize: 13,
-            color: "var(--text-muted)",
-            lineHeight: 1.5,
-          }}
-        >
-          {template.description}
-        </p>
       </div>
     </div>
   );
