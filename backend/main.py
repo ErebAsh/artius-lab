@@ -187,7 +187,8 @@ async def generate_resume_legacy(data: ResumeData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 
-    filename = data.personal_info.full_name.replace(" ", "_") + "_Resume.pdf"
+    name_slug = data.personal_info.full_name.strip().replace(" ", "_") if data.personal_info.full_name else "Candidate"
+    filename = f"{name_slug}_Resume.pdf"
 
     return Response(
         content=pdf_bytes,
@@ -221,6 +222,7 @@ async def ats_upload(file: UploadFile = File(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
+
 
 
 @app.post("/api/generate/html")

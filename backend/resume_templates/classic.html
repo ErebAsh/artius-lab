@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name }} Resume</title>
+    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
     <style>
         @page {
             size: A4;
@@ -24,7 +24,7 @@
             background-color: #1e2538; /* Navy blue matching image */
             color: #d1b897; /* Beige / Gold */
             text-align: center;
-            padding: 35px 20px 30px;
+            padding: 30px 20px 25px;
         }
         .header h1 {
             margin: 0;
@@ -49,6 +49,8 @@
         }
         .left-column {
             width: 30%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         .right-column {
             width: 65%;
@@ -58,21 +60,28 @@
         h2 {
             font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: #222;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            font-weight: 800;
+            color: #1e2538;
             margin-top: 0;
         }
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .contact-item {
             display: flex;
-            align-items: center;
-            margin-bottom: 8px;
+            align-items: flex-start;
+            margin-bottom: 10px;
             font-size: 11px;
             color: #444;
+        }
+        .contact-item span {
+            padding-top: 6px;
+            word-break: break-all;
+            line-height: 1.4;
+            min-width: 0;
+            flex-grow: 1;
         }
         .contact-icon {
             width: 28px;
@@ -88,19 +97,19 @@
             flex-shrink: 0;
         }
         .edu-item {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .edu-item h3 {
-            margin: 0 0 4px 0;
+            margin: 0 0 3px 0;
             font-size: 11px;
             text-transform: uppercase;
             color: #222;
-            font-weight: 600;
+            font-weight: 700;
         }
         .edu-item p {
-            margin: 0 0 2px 0;
+            margin: 0 0 1px 0;
             font-size: 11px;
-            color: #555;
+            color: #444;
         }
         .skills-list {
             list-style-type: none;
@@ -110,7 +119,7 @@
             margin-top: 0;
         }
         .skills-list li {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
         }
@@ -188,8 +197,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>{% if personal.full_name %}{{ personal.full_name }}{% else %}EMMA WATSON{% endif %}</h1>
-        <p>{% if personal.title %}{{ personal.title }}{% else %}YOUR PROFESSIONAL TITLE{% endif %}</p>
+        <h1>{{ personal.full_name | default('', true) }}</h1>
+        <p>{{ personal.title | default('', true) }}</p>
     </div>
     
     <div class="container">
@@ -199,129 +208,103 @@
                 <h2>Contact</h2>
                 <div class="contact-item">
                     <div class="contact-icon">📞</div>
-                    <span>{% if personal.phone %}{{ personal.phone }}{% else %}123-456-7890{% endif %}</span>
+                    <span>{{ personal.phone | default('', true) }}</span>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon">✉</div>
-                    <span>{% if personal.email %}{{ personal.email }}{% else %}youremail@gmail.com{% endif %}</span>
+                    <span>{{ personal.email | default('', true) }}</span>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon">📍</div>
-                    <span>{% if personal.location %}{{ personal.location }}{% else %}City, State{% endif %}</span>
+                    <span>{{ personal.location | default('', true) }}</span>
                 </div>
+                {% if personal.linkedin %}
                 <div class="contact-item">
                     <div class="contact-icon" style="font-weight:bold; font-size:11px;">in</div>
-                    <span>{% if personal.linkedin %}{{ personal.linkedin }}{% else %}linkedin.com/username{% endif %}</span>
+                    <a href="{% if 'http' not in personal.linkedin %}https://{% endif %}{{ personal.linkedin }}" style="text-decoration: none; color: inherit; flex-grow: 1;">
+                        <span>{{ personal.linkedin }}</span>
+                    </a>
                 </div>
+                {% endif %}
+                {% if personal.portfolio %}
+                <div class="contact-item">
+                    <div class="contact-icon" style="font-size:14px;">🌐</div>
+                    <a href="{% if 'http' not in personal.portfolio %}https://{% endif %}{{ personal.portfolio }}" style="text-decoration: none; color: inherit; flex-grow: 1;">
+                        <span>{{ personal.portfolio }}</span>
+                    </a>
+                </div>
+                {% endif %}
             </div>
 
             <div class="section">
-                <h2>Education</h2>
                 {% if education and education|length > 0 %}
+                <h2>Education</h2>
                     {% for edu in education %}
                     <div class="edu-item">
-                        <h3>{% if edu.degree %}{{ edu.degree }}{% else %}YOUR DEGREE NAME{% endif %} {% if edu.field_of_study %}/ {{ edu.field_of_study }}{% else %}/ MAJOR{% endif %}</h3>
+                        <h3>{% if edu.degree %}{{ edu.degree }}{% else %}DEGREE NAME{% endif %} {% if edu.field_of_study %}/ {{ edu.field_of_study }}{% else %}/ MAJOR{% endif %}</h3>
                         <p>{% if edu.achievements %}{{ edu.achievements }}{% else %}Education{% endif %}</p>
                         <p>{% if edu.institution %}{{ edu.institution }}{% else %}University Name{% endif %}</p>
                         <p>{% if edu.start_date %}{{ edu.start_date }}{% else %}2012{% endif %}-{% if edu.end_date %}{{ edu.end_date }}{% else %}2014{% endif %}</p>
                     </div>
                     {% endfor %}
-                {% else %}
-                    <div class="edu-item">
-                        <h3>YOUR DEGREE NAME / MAJOR</h3>
-                        <p>Education</p>
-                        <p>University Name</p>
-                        <p>2012-2014</p>
-                    </div>
-                    <div class="edu-item">
-                        <h3>YOUR DEGREE NAME / MAJOR</h3>
-                        <p>Education</p>
-                        <p>University Name</p>
-                        <p>2010-2011</p>
-                    </div>
                 {% endif %}
             </div>
+            {% if skills and skills|length > 0 %}
             <div class="section">
                 <h2>Skills</h2>
                 <ul class="skills-list">
-                    {% if skills and skills|length > 0 %}
-                        {% for skill in skills %}
-                        <li>{{ skill.name }}</li>
-                        {% endfor %}
-                    {% else %}
-                        <li>Python</li>
-                        <li>JavaScript</li>
-                        <li>React</li>
-                        <li>FastAPI</li>
-                        <li>SQL</li>
-                        <li>AWS</li>
-                        <li>Docker</li>
-                        <li>Git</li>
-                    {% endif %}
+                    {% for skill in skills %}
+                    <li>{{ skill.name }}</li>
+                    {% endfor %}
                 </ul>
             </div>
+            {% endif %}
             
+            {% if expertise.technical or expertise.professional %}
             <div class="section">
                 <h2>Expertise</h2>
                 <div style="font-size: 11px; color: #444;">
                     {% if expertise.technical %}
-                        <div style="font-weight: bold; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Technical</div>
+                        <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Technical</div>
                         <ul class="skills-list" style="margin-bottom: 15px;">
                             {% for item in expertise.technical %}
                             <li>{{ item }}</li>
                             {% endfor %}
                         </ul>
-                    {% else %}
-                        <div style="font-weight: bold; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Technical</div>
-                        <ul class="skills-list" style="margin-bottom: 15px;">
-                            <li>Web Development</li>
-                            <li>API Design</li>
-                            <li>Database Management</li>
-                            <li>Cloud Deployment</li>
-                        </ul>
                     {% endif %}
                     
                     {% if expertise.professional %}
-                        <div style="font-weight: bold; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Professional</div>
+                        <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Professional</div>
                         <ul class="skills-list">
                             {% for item in expertise.professional %}
                             <li>{{ item }}</li>
                             {% endfor %}
                         </ul>
-                    {% else %}
-                        <div style="font-weight: bold; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Professional</div>
-                        <ul class="skills-list">
-                            <li>Leadership</li>
-                            <li>Team Collaboration</li>
-                            <li>Problem Solving</li>
-                            <li>Agile Development</li>
-                        </ul>
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <!-- Right Column -->
         <div class="right-column">
+            {% if personal.summary %}
             <div class="section">
                 <h2>Profile</h2>
                 <div class="profile-text">
-                    {% if personal.summary %}
-                        {{ personal.summary }}
-                    {% else %}
-                        Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience.
-                    {% endif %}
+                    {{ personal.summary }}
                 </div>
             </div>
+            {% endif %}
 
+            {% if experience and experience|length > 0 %}
             <div class="section">
                 <h2>Professional Experience</h2>
-                {% if experience and experience|length > 0 %}
                     {% for exp in experience %}
                     <div class="exp-item">
-                        <h3 class="exp-title">{% if exp.title %}{{ exp.title }}{% else %}WRITE YOUR JOB TITLE HERE{% endif %}</h3>
+                        <h3 class="exp-title">{% if exp.title %}{{ exp.title }}{% else %}JOB TITLE{% endif %}</h3>
                         <div class="exp-details">
-                            {% if exp.company %}{{ exp.company }}{% else %}Company Name{% endif %} | {% if exp.location %}{{ exp.location }}{% else %}City, State{% endif %} | {% if exp.start_date %}{{ exp.start_date }}{% else %}Beginning Date{% endif %} - {% if exp.end_date %}{{ exp.end_date }}{% else %}End Date{% endif %}
+                            {% if exp.company %}{{ exp.company }}{% else %}Company Name{% endif %} | {% if exp.location %}{{ exp.location }}{% else %}City, State{% endif %} | {% if exp.start_date %}{{ exp.start_date }}{% else %}Start Date{% endif %} - {% if exp.end_date %}{{ exp.end_date }}{% else %}End Date{% endif %}
                         </div>
                         {% if exp.description %}
                         <p class="exp-desc">{{ exp.description }}</p>
@@ -337,60 +320,31 @@
                         {% endif %}
                     </div>
                     {% endfor %}
-                {% else %}
-                    <div class="exp-item">
-                        <h3 class="exp-title">SOFTWARE ENGINEER</h3>
-                        <div class="exp-details">
-                            Tech Solutions Inc. | New York, USA | Jan 2022 - Present
-                        </div>
-                        <p class="exp-desc">Developing scalable web applications and improving backend performance.</p>
-                        <ul class="exp-highlights">
-                            <li>Built full-stack applications using React and FastAPI.</li>
-                            <li>Improved system performance by 30% through optimization.</li>
-                            <li>Collaborated with designers and product teams.</li>
-                        </ul>
-                    </div>
-                    <div class="exp-item">
-                        <h3 class="exp-title">JUNIOR DEVELOPER</h3>
-                        <div class="exp-details">
-                            Innovate Labs | Boston, USA | Jun 2020 - Dec 2021
-                        </div>
-                        <p class="exp-desc">Worked on backend systems and API integrations.</p>
-                        <ul class="exp-highlights">
-                            <li>Developed REST APIs using Python and Flask.</li>
-                            <li>Integrated third-party services and APIs.</li>
-                            <li>Maintained code quality with unit testing.</li>
-                        </ul>
-                    </div>
-                {% endif %}
             </div>
+            {% endif %}
 
+            {% if projects and projects|length > 0 %}
             <div class="section">
                 <h2>Projects</h2>
-                {% if projects and projects|length > 0 %}
                     {% for project in projects %}
                     <div style="margin-bottom: 20px;">
-                        <h3 class="exp-title">{{ project.name }}</h3>
+                        <h3 class="exp-title">
+                            {{ project.name }}
+                            {% if project.link %}
+                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" style="font-size: 9px; color: #1e293b; text-decoration: none; margin-left: 12px; font-weight: normal; font-style: italic; vertical-align: middle;">[View Project]</a>
+                            {% endif %}
+                        </h3>
                         {% if project.description %}
                         <p class="exp-desc">{{ project.description }}</p>
                         {% endif %}
-                        {% if project.link %}
-                        <p style="font-size: 10px; color: #1e293b; margin-top: 4px;">{{ project.link }}</p>
-                        {% endif %}
                     </div>
                     {% endfor %}
-                {% else %}
-                    <div style="margin-bottom: 20px;">
-                        <h3 class="exp-title">AI RESUME BUILDER</h3>
-                        <p class="exp-desc">An AI-powered platform using FastAPI and Next.js to generate optimized resumes and analyze ATS compatibility.</p>
-                        <p style="font-size: 10px; color: #0f172a; margin-top: 4px; font-style: italic;">github.com/username/resumebuilder</p>
-                    </div>
-                {% endif %}
             </div>
+            {% endif %}
 
+            {% if certifications and certifications|length > 0 %}
             <div class="section">
                 <h2>Certifications</h2>
-                {% if certifications and certifications|length > 0 %}
                     {% for cert in certifications %}
                     <div style="margin-bottom: 15px;">
                         <h3 class="exp-title">{{ cert.name }}</h3>
@@ -399,17 +353,8 @@
                         </div>
                     </div>
                     {% endfor %}
-                {% else %}
-                    <div style="margin-bottom: 15px;">
-                        <h3 class="exp-title">AWS CERTIFIED DEVELOPER</h3>
-                        <div class="exp-details">Amazon | 2023</div>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <h3 class="exp-title">FULL STACK WEB DEVELOPMENT</h3>
-                        <div class="exp-details">Coursera | 2022</div>
-                    </div>
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
 </body>

@@ -11,7 +11,7 @@ const STEPS = [
   { id: 0, label: "Personal Info", icon: "👤" },
   { id: 1, label: "Education", icon: "🎓" },
   { id: 2, label: "Experience", icon: "💼" },
-  { id: 3, label: "Skills", icon: "⚡" },
+  { id: 3, label: "Skills & Expertise", icon: "⚡" },
   { id: 4, label: "Projects", icon: "🚀" },
   { id: 5, label: "Layout & Style", icon: "📐" },
 ];
@@ -76,6 +76,7 @@ function BuilderContent() {
   // Form state
   const [personal, setPersonal] = useState({
     full_name: "",
+    title: "",
     email: "",
     phone: "",
     location: "",
@@ -99,6 +100,12 @@ function BuilderContent() {
   const [projects, setProjects] = useState<Project[]>([
     { name: "", description: "", technologies: [""], link: "" },
   ]);
+  
+  const [expertise, setExpertise] = useState({
+    enabled: false,
+    technical: [""],
+    professional: [""]
+  });
 
   const handleAIAutoComplete = async () => {
     setEnhancing(true);
@@ -108,9 +115,17 @@ function BuilderContent() {
       template_id: templateId,
       personal_info: personal,
       education: education.filter((e) => e.institution.trim() !== ""),
-      experience: experience.filter((e) => e.company.trim() !== ""),
+      experience: experience
+        .filter((e) => e.company.trim() !== "")
+        .map(e => ({ ...e, highlights: e.highlights.filter(h => h.trim() !== "") })),
       skills: skills.filter((s) => s.name.trim() !== ""),
-      projects: projects.filter((p) => p.name.trim() !== ""),
+      projects: projects
+        .filter((p) => p.name.trim() !== "")
+        .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
+      expertise: expertise.enabled ? {
+        technical: expertise.technical.filter(t => t.trim() !== ""),
+        professional: expertise.professional.filter(p => p.trim() !== "")
+      } : null
     };
 
     try {
@@ -144,6 +159,13 @@ function BuilderContent() {
       if (enhanced.projects && enhanced.projects.length > 0) {
         setProjects(enhanced.projects);
       }
+      if (enhanced.expertise) {
+        setExpertise({
+          enabled: true,
+          technical: enhanced.expertise.technical?.length > 0 ? enhanced.expertise.technical : [""],
+          professional: enhanced.expertise.professional?.length > 0 ? enhanced.expertise.professional : [""]
+        });
+      }
 
       // Automatically apply AI-suggested layout
       if (layoutSettings) {
@@ -171,9 +193,17 @@ function BuilderContent() {
       template_id: templateId,
       personal_info: personal,
       education: education.filter((e) => e.institution.trim() !== ""),
-      experience: experience.filter((e) => e.company.trim() !== ""),
+      experience: experience
+        .filter((e) => e.company.trim() !== "")
+        .map(e => ({ ...e, highlights: e.highlights.filter(h => h.trim() !== "") })),
       skills: skills.filter((s) => s.name.trim() !== ""),
-      projects: projects.filter((p) => p.name.trim() !== ""),
+      projects: projects
+        .filter((p) => p.name.trim() !== "")
+        .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
+      expertise: expertise.enabled ? {
+        technical: expertise.technical.filter(t => t.trim() !== ""),
+        professional: expertise.professional.filter(p => p.trim() !== "")
+      } : null
     };
 
     try {
@@ -331,6 +361,10 @@ function BuilderContent() {
                 <input style={inputStyle} placeholder="John Doe" value={personal.full_name} onChange={(e) => setPersonal({ ...personal, full_name: e.target.value })} />
               </div>
               <div>
+                <label style={labelStyle}>Professional Title</label>
+                <input style={inputStyle} placeholder="Software Engineer" value={personal.title} onChange={(e) => setPersonal({ ...personal, title: e.target.value })} />
+              </div>
+              <div>
                 <label style={labelStyle}>Email *</label>
                 <input style={inputStyle} type="email" placeholder="john@example.com" value={personal.email} onChange={(e) => setPersonal({ ...personal, email: e.target.value })} />
               </div>
@@ -466,29 +500,102 @@ function BuilderContent() {
         )}
 
         {currentStep === 3 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Skills</h2>
-            {skills.map((skill, idx) => (
-              <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
-                <div style={{ flex: 2 }}>
-                  <label style={labelStyle}>Skill Name</label>
-                  <input style={inputStyle} placeholder="React, Python..." value={skill.name} onChange={(e) => { const u = [...skills]; u[idx].name = e.target.value; setSkills(u); }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Skills & Expertise</h2>
+              <div 
+                onClick={() => setExpertise({...expertise, enabled: !expertise.enabled})}
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: 12, 
+                  background: expertise.enabled ? "rgba(99, 102, 241, 0.1)" : "rgba(255,255,255,0.03)", 
+                  padding: "6px 14px", 
+                  borderRadius: 30, 
+                  border: expertise.enabled ? "1px solid var(--accent)" : "1px solid rgba(255,255,255,0.1)",
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                }}
+                className="hover:scale-105"
+              >
+                <span style={{ fontSize: 10, fontWeight: 800, color: expertise.enabled ? "var(--accent-light)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.5 }}>Advanced Columns</span>
+                <div style={{ 
+                  width: 32, 
+                  height: 18, 
+                  background: expertise.enabled ? "var(--accent)" : "rgba(255,255,255,0.1)", 
+                  borderRadius: 20, 
+                  position: "relative",
+                  transition: "background 0.3s"
+                }}>
+                  <div style={{ 
+                    width: 12, 
+                    height: 12, 
+                    background: "#fff", 
+                    borderRadius: "50%", 
+                    position: "absolute", 
+                    top: 3, 
+                    left: expertise.enabled ? 17 : 3,
+                    transition: "left 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                  }} />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <label style={labelStyle}>Level</label>
-                  <select style={{ ...inputStyle, appearance: "none" as const }} value={skill.level} onChange={(e) => { const u = [...skills]; u[idx].level = e.target.value; setSkills(u); }}>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="Expert">Expert</option>
-                  </select>
-                </div>
-                {skills.length > 1 && (
-                  <button style={{ ...removeBtnStyle, marginBottom: 2 }} onClick={() => setSkills(skills.filter((_, i) => i !== idx))}>✕</button>
-                )}
               </div>
-            ))}
-            <button style={addBtnStyle} onClick={() => setSkills([...skills, { name: "", level: "Intermediate" }])}>+ Add Skill</button>
+            </div>
+            
+            <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <h3 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--accent-light)", fontWeight: 800 }}>Essential Skills</h3>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {skills.map((skill, idx) => (
+                  <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={labelStyle}>Skill Name</label>
+                      <input style={inputStyle} placeholder="React, Python..." value={skill.name} onChange={(e) => { const u = [...skills]; u[idx].name = e.target.value; setSkills(u); }} />
+                    </div>
+                    {skills.length > 1 && (
+                      <button style={{ ...removeBtnStyle, padding: "10px 14px", marginBottom: 2 }} onClick={() => setSkills(skills.filter((_, i) => i !== idx))}>✕</button>
+                    )}
+                  </div>
+                ))}
+                <button 
+                  style={{ ...addBtnStyle, width: "100%", padding: "14px", marginTop: 8, background: "rgba(255,255,255,0.02)", borderStyle: "solid", borderOpacity: 0.1 }} 
+                  onClick={() => setSkills([...skills, { name: "", level: "Intermediate" }])}
+                  className="hover:bg-white/5"
+                >
+                  + Add New Skill
+                </button>
+              </div>
+            </div>
+
+            {expertise.enabled && (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, animation: "fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+                <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
+                  <label style={{ ...labelStyle, color: "var(--accent-light)", fontWeight: 800 }}>Technical Expertise</label>
+                  {expertise.technical.map((tech, ti) => (
+                    <div key={ti} style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                      <input style={inputStyle} placeholder="Web Development..." value={tech} onChange={(e) => { const u = [...expertise.technical]; u[ti] = e.target.value; setExpertise({...expertise, technical: u}); }} />
+                      {expertise.technical.length > 1 && (
+                        <button style={{ ...removeBtnStyle, padding: "10px 14px" }} onClick={() => { const u = expertise.technical.filter((_, i) => i !== ti); setExpertise({...expertise, technical: u}); }}>✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button style={{ ...addBtnStyle, width: "100%", padding: "10px", marginTop: 4 }} onClick={() => setExpertise({...expertise, technical: [...expertise.technical, ""]})}>+ Add Technical</button>
+                </div>
+                <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
+                  <label style={{ ...labelStyle, color: "var(--accent-light)", fontWeight: 800 }}>Professional Skills</label>
+                  {expertise.professional.map((prof, pi) => (
+                    <div key={pi} style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                      <input style={inputStyle} placeholder="Team Leadership..." value={prof} onChange={(e) => { const u = [...expertise.professional]; u[pi] = e.target.value; setExpertise({...expertise, professional: u}); }} />
+                      {expertise.professional.length > 1 && (
+                        <button style={{ ...removeBtnStyle, padding: "10px 14px" }} onClick={() => { const u = expertise.professional.filter((_, j) => j !== pi); setExpertise({...expertise, professional: u}); }}>✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button style={{ ...addBtnStyle, width: "100%", padding: "10px", marginTop: 4 }} onClick={() => setExpertise({...expertise, professional: [...expertise.professional, ""]})}>+ Add Professional</button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

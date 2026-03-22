@@ -4,6 +4,7 @@ from typing import Optional
 
 class PersonalInfo(BaseModel):
     full_name: str
+    title: Optional[str] = None
     email: str
     phone: str
     location: str
@@ -43,6 +44,11 @@ class Project(BaseModel):
     link: Optional[str] = None
 
 
+class Expertise(BaseModel):
+    technical: list[str] = []
+    professional: list[str] = []
+
+
 class ResumeData(BaseModel):
     template_id: str
     personal_info: PersonalInfo
@@ -50,6 +56,7 @@ class ResumeData(BaseModel):
     experience: list[Experience] = []
     skills: list[Skill] = []
     projects: list[Project] = []
+    expertise: Optional[Expertise] = None
 
 
 class EnhancedResumeData(BaseModel):
@@ -58,6 +65,7 @@ class EnhancedResumeData(BaseModel):
     experience: list[Experience] = []
     skills: list[Skill] = []
     projects: list[Project] = []
+    expertise: Optional[Expertise] = None
 
 
 class HTMLData(BaseModel):
