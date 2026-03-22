@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Resume', true) }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Times New Roman', Times, Georgia, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.4;
+            width: 100%;
+        }
+        .container {
+            padding: 30mm 20mm;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 30px;
+            font-weight: normal;
+        }
+        .header p {
+            margin: 0;
+            font-size: 11px;
+            color: #555;
+        }
+        .section {
+            margin-bottom: 18px;
+        }
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #333;
+            margin-bottom: 8px;
+            padding-bottom: 2px;
+            font-weight: bold;
+        }
+        .profile-text {
+            font-size: 11px;
+            text-align: justify;
+        }
+        .exp-item {
+            margin-bottom: 15px;
+        }
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+        .exp-subheader {
+            display: flex;
+            justify-content: space-between;
+            font-style: italic;
+            font-size: 11px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .exp-highlights {
+            list-style-type: disc;
+            padding-left: 15px;
+            font-size: 11px;
+            margin: 0;
+        }
+        .exp-highlights li {
+            margin-bottom: 3px;
+        }
+        .edu-item {
+            margin-bottom: 10px;
+        }
+        .edu-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        .edu-subheader {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #555;
+        }
+        .skills-section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 11px;
+        }
+        .skill-row {
+            display: flex;
+        }
+        .skill-label {
+            font-weight: bold;
+            min-width: 100px;
+        }
+        .skill-values {
+            flex: 1;
+        }
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>{{ personal.full_name | default('', true) }}</h1>
+            <p>
+                {% set contact = [] %}
+                {% if personal.location %}{% set _ = contact.append(personal.location) %}{% endif %}
+                {% if personal.email %}{% set _ = contact.append(personal.email) %}{% endif %}
+                {% if personal.phone %}{% set _ = contact.append(personal.phone) %}{% endif %}
+                {% if personal.linkedin %}{% set _ = contact.append(personal.linkedin) %}{% endif %}
+                {{ contact | join(' • ') }}
+            </p>
+        </div>
+
+        <!-- Summary -->
+        {% if personal.summary %}
+        <div class="section">
+            <div class="section-title">Professional Summary</div>
+            <div class="profile-text">{{ personal.summary }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Work Experience -->
+        {% if experience and experience|length > 0 %}
+        <div class="section">
+            <div class="section-title">Professional Experience</div>
+            {% for exp in experience %}
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span>{{ exp.company | default('Company', true) }}</span>
+                    <span>{{ exp.location | default('', true) }}</span>
+                </div>
+                <div class="exp-subheader">
+                    <span>{{ exp.title | default('Role', true) }}</span>
+                    <span>{{ exp.start_date | default('', true) }} — {{ exp.end_date | default('Present', true) }}</span>
+                </div>
+                {% if exp.highlights and exp.highlights|length > 0 %}
+                <ul class="exp-highlights">
+                    {% for hl in exp.highlights %}
+                    {% if hl %}
+                    <li>{{ hl }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Projects -->
+        {% if projects and projects|length > 0 %}
+        <div class="section">
+            <div class="section-title">Projects</div>
+            {% for project in projects %}
+            <div style="margin-bottom: 10px;">
+                <div class="exp-header">
+                    <span>{{ project.name }}</span>
+                    {% if project.link %}
+                    <span><a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" style="text-decoration: none; color: inherit; font-weight: normal; font-size: 10px;">View Project</a></span>
+                    {% endif %}
+                </div>
+                {% if project.description %}
+                <div class="profile-text" style="font-style: italic;">{{ project.description }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Education -->
+        {% if education and education|length > 0 %}
+        <div class="section">
+            <div class="section-title">Education</div>
+            {% for edu in education %}
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span>{{ edu.degree | default('Degree', true) }}{% if edu.field_of_study %} in {{ edu.field_of_study }}{% endif %}</span>
+                    <span>{{ edu.end_date | default('', true) }}</span>
+                </div>
+                <div class="edu-subheader">
+                    <span>{{ edu.institution | default('University', true) }}</span>
+                    {% if edu.achievements %}<span>{{ edu.achievements }}</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Skills -->
+        {% if skills or expertise.technical or expertise.professional %}
+        <div class="section">
+            <div class="section-title">Expert-Level Skills</div>
+            <div class="skills-section">
+                {% if expertise.technical %}
+                <div class="skill-row">
+                    <span class="skill-label">Technical:</span>
+                    <span class="skill-values">{{ expertise.technical | join(', ') }}</span>
+                </div>
+                {% endif %}
+                {% if expertise.professional %}
+                <div class="skill-row">
+                    <span class="skill-label">Professional:</span>
+                    <span class="skill-values">{{ expertise.professional | join(', ') }}</span>
+                </div>
+                {% endif %}
+                {% if skills and skills|length > 0 %}
+                <div class="skill-row">
+                    <span class="skill-label">Software/Other:</span>
+                    <span class="skill-values">
+                        {% set skill_names = [] %}
+                        {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                        {{ skill_names | join(', ') }}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
