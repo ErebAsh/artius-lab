@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #edeae4; /* Beige/Off-white background */
+            color: #333;
+            line-height: 1.5;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 297mm;
+            background: #fff;
+            width: 210mm;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* Top Accent Bar */
+        .top-accent {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 35%;
+            height: 15px;
+            background-color: #4b5463; /* Dark slate accent */
+        }
+        
+        /* Layout Columns */
+        .right-sidebar {
+            width: 35%;
+            background-color: #f7f6f2; /* Very light grey/beige sidebar */
+            padding: 80px 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .main-content {
+            width: 65%;
+            padding: 60px 50px 40px;
+            background: #fff;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42pt;
+            margin: 0;
+            color: #222;
+            font-weight: 700;
+        }
+        .job-title {
+            font-family: 'Lato', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 11pt;
+            color: #666;
+            margin: 10px 0 20px 0;
+            font-weight: 400;
+        }
+        .title-separator {
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 14pt;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 20px 0;
+            color: #333;
+            border-bottom: none;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+
+        /* Main Content Styles */
+        .profile-text {
+            font-size: 10pt;
+            color: #555;
+            text-align: justify;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+        }
+        .exp-title {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #222;
+        }
+        .exp-meta {
+            font-size: 10pt;
+            color: #666;
+            margin: 4px 0 10px 0;
+        }
+        .exp-desc {
+            font-size: 10pt;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .highlights {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .highlights li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 5px;
+            font-size: 9.5pt;
+            color: #555;
+        }
+        .highlights li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #777;
+        }
+
+        /* Sidebar Styles */
+        .sidebar-section h3 {
+            font-family: 'Lato', sans-serif;
+            font-size: 12pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 18px;
+            font-size: 9.5pt;
+            color: #555;
+        }
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: #666;
+            margin-top: 2px;
+        }
+        
+        .edu-item {
+            margin-bottom: 25px;
+        }
+        .edu-degree {
+            font-weight: 700;
+            font-size: 10pt;
+            text-transform: uppercase;
+            color: #333;
+        }
+        .edu-uni {
+            font-size: 9.5pt;
+            color: #666;
+            margin: 3px 0;
+        }
+        .edu-date {
+            font-size: 9pt;
+            color: #888;
+        }
+
+        .skills-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skills-list li {
+            font-size: 9.5pt;
+            color: #555;
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 15px;
+        }
+        .skills-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #888;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-accent"></div>
+        
+        <!-- Main Content (Left) -->
+        <main class="main-content">
+            <header>
+                <h1>{{ personal.full_name | default('Stanley Wilson', true) }}</h1>
+                <p class="job-title">{{ personal.title | default('PROFESSIONAL TITLE', true) }}</p>
+                <div class="title-separator"></div>
+            </header>
+
+            {% if personal.summary %}
+            <section class="section">
+                <h2>PROFILE</h2>
+                <div class="profile-text">
+                    {{ personal.summary }}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if experience and experience|length > 0 %}
+            <section class="section">
+                <h2>WORK EXPERIENCE</h2>
+                {% for exp in experience %}
+                <div class="experience-item">
+                    <div class="exp-title">{{ exp.title }}</div>
+                    <div class="exp-meta">{{ exp.company }} / {{ exp.start_date }} – {{ exp.end_date | default('Present', true) }}</div>
+                    <div class="exp-desc">{{ exp.description }}</div>
+                    {% if exp.highlights %}
+                    <ul class="highlights">
+                        {% for hl in exp.highlights %}
+                        <li>{{ hl }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+        </main>
+
+        <!-- Sidebar (Right) -->
+        <aside class="right-sidebar">
+            <div class="sidebar-section">
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328z"/></svg>
+                    <span>{{ personal.phone | default('+1 212-725-5400', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114V5.383zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.731z"/></svg>
+                    <span>{{ personal.email | default('emailaddress@gmail.com', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                    <span>{{ personal.location | default('59 West 46th Street, New York City, NY 10036', true) }}</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>EDUCATION</h3>
+                {% for edu in education %}
+                <div class="edu-item">
+                    <div class="edu-degree">{{ edu.degree }}, {{ edu.field_of_study }}</div>
+                    <div class="edu-uni">{{ edu.institution }}</div>
+                    <div class="edu-date">{{ edu.start_date }} - {{ edu.end_date }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="sidebar-section">
+                <h3>SKILLS</h3>
+                <ul class="skills-list">
+                    {% if expertise.professional %}
+                        {% for item in expertise.professional %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    {% endif %}
+                    {% if expertise.technical %}
+                        {% for item in expertise.technical %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    {% endif %}
+                    {% if not expertise.professional and not expertise.technical %}
+                        {% for skill in skills %}
+                        <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
