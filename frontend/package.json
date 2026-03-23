@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "rd /s /q .next && next dev"
   },
   "dependencies": {
     "next": "16.1.7",

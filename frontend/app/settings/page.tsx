@@ -91,7 +91,7 @@ export default function SettingsPage() {
             fontSize: "clamp(28px, 5vw, 42px)",
             fontWeight: 800,
             marginBottom: 12,
-            background: "linear-gradient(135deg, #fff, var(--accent-light))",
+            background: "linear-gradient(135deg, var(--foreground), var(--accent))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",

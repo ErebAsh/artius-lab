@@ -66,19 +66,22 @@ export default function Hero() {
             time += 0.003;
 
             // Animated gradient mesh blobs
+            const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
             const blobs = [
-                { x: w * 0.3 + Math.sin(time * 1.2) * 80, y: h * 0.4 + Math.cos(time * 0.8) * 60, r: 280, color: "rgba(99, 102, 241, 0.08)" },
-                { x: w * 0.7 + Math.cos(time * 0.9) * 100, y: h * 0.3 + Math.sin(time * 1.1) * 70, r: 220, color: "rgba(167, 139, 250, 0.06)" },
-                { x: w * 0.5 + Math.sin(time * 0.7) * 60, y: h * 0.7 + Math.cos(time * 1.3) * 50, r: 200, color: "rgba(129, 140, 248, 0.07)" },
+                { x: w * 0.3 + Math.sin(time * 1.2) * 80, y: h * 0.4 + Math.cos(time * 0.8) * 60, r: 280, opacity: 0.08 },
+                { x: w * 0.7 + Math.cos(time * 0.9) * 100, y: h * 0.3 + Math.sin(time * 1.1) * 70, r: 220, opacity: 0.06 },
+                { x: w * 0.5 + Math.sin(time * 0.7) * 60, y: h * 0.7 + Math.cos(time * 1.3) * 50, r: 200, opacity: 0.07 },
             ];
 
             blobs.forEach(blob => {
                 const grad = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
-                grad.addColorStop(0, blob.color);
+                grad.addColorStop(0, accentHex);
                 grad.addColorStop(1, "transparent");
+                ctx.globalAlpha = blob.opacity;
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, 0, w, h);
             });
+            ctx.globalAlpha = 1.0;
 
             // Subtle grid lines
             ctx.strokeStyle = "rgba(99, 102, 241, 0.03)";
@@ -176,8 +179,8 @@ export default function Hero() {
                                 marginBottom: 48,
                                 textTransform: "uppercase",
                                 letterSpacing: 3,
-                                background: "linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(167, 139, 250, 0.05))",
-                                border: "1px solid rgba(99, 102, 241, 0.2)",
+                                background: "var(--glow)",
+                                border: "1px solid var(--border)",
                                 backdropFilter: "blur(10px)",
                             }}
                         >
@@ -204,7 +207,7 @@ export default function Hero() {
                             <AnimatedText text="Resumes that stop" delay={200} />
                             <br />
                             <span style={{
-                                background: "linear-gradient(135deg, var(--accent-light), #c084fc, var(--accent))",
+                                background: "linear-gradient(135deg, var(--accent-light), var(--accent), var(--accent-dark))",
                                 WebkitBackgroundClip: "text",
                                 WebkitTextFillColor: "transparent",
                                 backgroundClip: "text",
