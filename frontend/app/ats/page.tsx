@@ -104,14 +104,14 @@ export default function ATSCheckPage() {
           display: "inline-block", 
           padding: "6px 14px", 
           borderRadius: 20, 
-          background: "rgba(16, 185, 129, 0.08)", 
-          color: "#10b981", 
+          background: "var(--glow)", 
+          color: "var(--accent)", 
           fontSize: 12, 
           fontWeight: 600, 
           textTransform: "uppercase", 
           letterSpacing: 1, 
           marginBottom: 20, 
-          border: "1px solid rgba(16, 185, 129, 0.2)"
+          border: "1px solid var(--border)"
         }}>
           ✦ Neural Analysis Engine
         </div>
@@ -120,7 +120,7 @@ export default function ATSCheckPage() {
             fontSize: "clamp(32px, 5vw, 48px)",
             fontWeight: 800,
             marginBottom: 16,
-            background: "linear-gradient(135deg, #fff, #10b981)",
+            background: "linear-gradient(135deg, var(--foreground), var(--accent))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
@@ -150,13 +150,13 @@ export default function ATSCheckPage() {
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             style={{
-              border: `2px dashed ${isDragging ? "rgba(16, 185, 129, 0.8)" : "rgba(16, 185, 129, 0.4)"}`,
+              border: `2px dashed ${isDragging ? "var(--accent)" : "var(--border)"}`,
               borderRadius: 16,
               padding: "56px 24px",
               cursor: "pointer",
               background: isDragging
-                ? "rgba(16, 185, 129, 0.1)"
-                : "rgba(16, 185, 129, 0.03)",
+                ? "var(--glow)"
+                : "transparent",
               transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
               marginBottom: 28,
               position: "relative",
@@ -168,7 +168,7 @@ export default function ATSCheckPage() {
               style={{
                 position: "absolute",
                 inset: -2,
-                background: "linear-gradient(135deg, rgba(16,185,129,0.3), transparent, rgba(99,102,241,0.3))",
+                background: "linear-gradient(135deg, var(--glow), transparent, var(--glow))",
                 borderRadius: 18,
                 zIndex: -1,
                 opacity: isDragging ? 1 : 0,
@@ -196,13 +196,13 @@ export default function ATSCheckPage() {
                   width: 80,
                   height: 80,
                   borderRadius: "50%",
-                  background: "rgba(16, 185, 129, 0.1)",
-                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  background: "var(--glow)",
+                  border: "1px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 0 30px rgba(16, 185, 129, 0.2)",
-                  color: "#10b981",
+                  boxShadow: "0 0 30px var(--glow)",
+                  color: "var(--accent)",
                   animation: "bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -212,13 +212,13 @@ export default function ATSCheckPage() {
                   width: 80,
                   height: 80,
                   borderRadius: "24px",
-                  background: "rgba(16, 185, 129, 0.1)",
-                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  background: "var(--glow)",
+                  border: "1px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 0 30px rgba(16, 185, 129, 0.2)",
-                  color: "#10b981",
+                  boxShadow: "0 0 30px var(--glow)",
+                  color: "var(--accent)",
                   transform: isDragging ? "scale(1.1) translateY(-4px)" : "scale(1) translateY(0)",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}>

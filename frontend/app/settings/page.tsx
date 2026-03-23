@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useTheme } from "../components/ThemeProvider";
 
 export default function SettingsPage() {
+  const { settings: globalSettings, updateSettings } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState({
-    theme: "dark",
-    accentColor: "#6366f1",
-    backgroundColor: "", // Empty means use theme default
-    surfaceColor: "", // Empty means use theme default
+    ...globalSettings,
+    userName: "John Doe",
+    userEmail: "john.doe@example.com",
     density: "comfortable",
     glassBlur: 20,
     glassOpacity: 0.7,
     fontFamily: "sans",
-    showBackgroundOrbs: true,
     language: "en",
     autoSave: true,
     aiEnabled: true,
@@ -20,24 +20,23 @@ export default function SettingsPage() {
     experimental: false,
     defaultTemplate: "modern",
     exportFormat: "pdf",
-    userName: "John Doe",
-    userEmail: "john.doe@example.com",
   });
 
   const [saveStatus, setSaveStatus] = useState("");
 
   useEffect(() => {
     setMounted(true);
-    const savedSettings = localStorage.getItem("artius_settings");
-    if (savedSettings) {
+    // Initialize draft from global settings (which handles localStorage)
+    setSettings(prev => ({ ...prev, ...globalSettings }));
+    
+    // Check if there are missing values to merge
+    const saved = localStorage.getItem("artius_settings");
+    if (saved) {
       try {
-        const parsed = JSON.parse(savedSettings);
-        setSettings(prev => ({ ...prev, ...parsed }));
-      } catch (e) {
-        console.error("Failed to parse settings", e);
-      }
+        setSettings(prev => ({ ...prev, ...JSON.parse(saved) }));
+      } catch(e) {}
     }
-  }, []);
+  }, [globalSettings]);
 
   // Apply theme and colors globally
   useEffect(() => {
@@ -76,6 +75,7 @@ export default function SettingsPage() {
   };
 
   const handleSave = () => {
+    updateSettings(settings);
     localStorage.setItem("artius_settings", JSON.stringify(settings));
     setSaveStatus("Settings saved successfully!");
     setTimeout(() => setSaveStatus(""), 3000);
@@ -153,9 +153,9 @@ export default function SettingsPage() {
                 value={settings.theme}
                 onChange={(e) => handleChange("theme", e.target.value)}
               >
-                <option value="dark">OLED Dark (Pure Black)</option>
                 <option value="creamy">Warm Creamy (Beige)</option>
                 <option value="modern">Modern Space (Indigo)</option>
+                <option value="dark">OLED Dark (Pure Black)</option>
                 <option value="system">System Default</option>
               </select>
             </div>
@@ -493,13 +493,10 @@ export default function SettingsPage() {
           alignItems: "center", 
           justifyContent: "space-between",
           padding: "20px 32px",
-          background: "rgba(15, 13, 35, 0.9)",
+          background: "var(--surface-glass)",
           backdropFilter: "blur(10px)",
           border: "1px solid var(--border)",
-          borderRadius: 20,
-          position: "sticky",
-          bottom: 24,
-          zIndex: 10
+          borderRadius: 20
         }}>
           <div style={{ color: "var(--accent-light)", fontWeight: 500, fontSize: 14 }}>
             {saveStatus ? "✓ " + saveStatus : "Unsaved changes detect automatically..."}

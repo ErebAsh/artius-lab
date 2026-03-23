@@ -8,19 +8,19 @@
 }
 
 :root {
-  /* Default: Modern Dark */
-  --background: #030014;
-  --foreground: #e2e8f0;
-  --accent: #6366f1;
-  --accent-light: #818cf8;
-  --accent-dark: #4f46e5;
-  --surface: #0f0d23;
-  --surface-light: #1a1735;
-  --surface-glass: rgba(15, 13, 35, 0.7);
-  --surface-light-glass: rgba(26, 23, 53, 0.5);
-  --border: rgba(99, 102, 241, 0.15);
-  --text-muted: #94a3b8;
-  --glow: rgba(99, 102, 241, 0.4);
+  /* Default: Warm Creamy */
+  --background: #fdfaf3;
+  --foreground: #433422;
+  --accent: #10b981;
+  --accent-light: #34d399;
+  --accent-dark: #059669;
+  --surface: #fffdf9;
+  --surface-light: #f9f5ea;
+  --surface-glass: rgba(255, 253, 249, 0.8);
+  --surface-light-glass: rgba(255, 253, 249, 0.3);
+  --border: rgba(67, 52, 34, 0.1);
+  --text-muted: #78350f99;
+  --glow: rgba(16, 185, 129, 0.1);
 }
 
 [data-theme="creamy"] {

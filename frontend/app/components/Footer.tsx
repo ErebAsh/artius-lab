@@ -9,8 +9,8 @@ export default function Footer() {
         width: "100%",
         padding: "32px 24px 20px",
         marginTop: "auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-        background: "linear-gradient(to bottom, rgba(3, 0, 20, 0.4), rgba(5, 5, 15, 0.95))",
+        borderTop: "1px solid var(--border)",
+        background: "var(--surface-glass)",
         backdropFilter: "blur(20px)",
         position: "relative",
         zIndex: 2,
@@ -32,7 +32,7 @@ export default function Footer() {
               fontSize: 20,
               fontWeight: 800,
               letterSpacing: 2,
-              background: "linear-gradient(135deg, #e2e8f0 0%, #a855f7 100%)",
+              background: "linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -45,7 +45,7 @@ export default function Footer() {
             </h3>
             <p style={{
               fontSize: 13,
-              color: "#94a3b8",
+              color: "var(--text-muted)",
               lineHeight: 1.6,
             }}>
               Precision-engineered resumes powered by neural AI. Build incredibly professional and aesthetic narratives that seamlessly open doors for your career.
@@ -74,26 +74,26 @@ export default function Footer() {
                     width: 36,
                     height: 36,
                     borderRadius: 10,
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    background: "var(--surface)",
+                    border: "1px solid var(--border)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#94a3b8",
+                    color: "var(--text-muted)",
                     cursor: "pointer",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background = "rgba(168, 85, 247, 0.15)";
-                    e.currentTarget.style.border = "1px solid rgba(168, 85, 247, 0.4)";
+                    e.currentTarget.style.color = "var(--foreground)";
+                    e.currentTarget.style.background = "var(--border)";
+                    e.currentTarget.style.border = "1px solid var(--accent)";
                     e.currentTarget.style.transform = "translateY(-3px)";
-                    e.currentTarget.style.boxShadow = "0 8px 16px rgba(168, 85, 247, 0.2)";
+                    e.currentTarget.style.boxShadow = "0 8px 16px var(--glow)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "#94a3b8";
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)";
-                    e.currentTarget.style.border = "1px solid rgba(255, 255, 255, 0.08)";
+                    e.currentTarget.style.color = "var(--text-muted)";
+                    e.currentTarget.style.background = "var(--surface)";
+                    e.currentTarget.style.border = "1px solid var(--border)";
                     e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
@@ -110,7 +110,7 @@ export default function Footer() {
               <span style={{
                 fontSize: 12,
                 fontWeight: 700,
-                color: "#e2e8f0",
+                color: "var(--foreground)",
                 textTransform: "uppercase",
                 letterSpacing: 1.5,
                 marginBottom: 4,
@@ -128,12 +128,12 @@ export default function Footer() {
                   href={link.path} 
                   style={{ 
                     fontSize: 13, 
-                    color: "#64748b", 
+                    color: "var(--text-muted)", 
                     textDecoration: "none", 
                     transition: "color 0.2s ease" 
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = "#a855f7"}
-                  onMouseLeave={(e) => e.currentTarget.style.color = "#64748b"}
+                  onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent-light)"}
+                  onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
                 >
                   {link.name}
                 </Link>
@@ -143,7 +143,7 @@ export default function Footer() {
               <span style={{
                 fontSize: 12,
                 fontWeight: 700,
-                color: "#e2e8f0",
+                color: "var(--foreground)",
                 textTransform: "uppercase",
                 letterSpacing: 1.5,
                 marginBottom: 4,
@@ -152,9 +152,9 @@ export default function Footer() {
               </span>
               <Link 
                 href="/settings" 
-                style={{ fontSize: 13, color: "#64748b", textDecoration: "none", transition: "color 0.2s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.color = "#a855f7"}
-                onMouseLeave={(e) => e.currentTarget.style.color = "#64748b"}
+                style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}
+                onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent-light)"}
+                onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
               >
                 Settings
               </Link>
@@ -162,9 +162,9 @@ export default function Footer() {
                 href="https://github.com" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                style={{ fontSize: 13, color: "#64748b", textDecoration: "none", transition: "color 0.2s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.color = "#a855f7"}
-                onMouseLeave={(e) => e.currentTarget.style.color = "#64748b"}
+                style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}
+                onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent-light)"}
+                onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
               >
                 GitHub Open Source
               </a>
@@ -176,7 +176,7 @@ export default function Footer() {
         <div style={{
           width: "100%",
           height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+          background: "linear-gradient(90deg, transparent, var(--border), transparent)",
           marginBottom: 16,
         }} />
 
@@ -186,7 +186,7 @@ export default function Footer() {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: 12,
-          color: "#64748b",
+          color: "var(--text-muted)",
           flexWrap: "wrap",
           gap: 12,
         }}>
@@ -194,15 +194,15 @@ export default function Footer() {
           <div style={{ display: "flex", gap: 24 }}>
             <span 
               style={{ cursor: "pointer", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "#64748b"}
+              onMouseEnter={(e) => e.currentTarget.style.color = "var(--foreground)"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
             >
               Privacy Policy
             </span>
             <span 
               style={{ cursor: "pointer", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "#64748b"}
+              onMouseEnter={(e) => e.currentTarget.style.color = "var(--foreground)"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
             >
               Terms of Service
             </span>

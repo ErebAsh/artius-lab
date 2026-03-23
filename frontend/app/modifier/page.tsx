@@ -334,14 +334,14 @@ export default function ModifierPage() {
               display: "inline-block",
               padding: "6px 16px",
               borderRadius: 20,
-              background: "rgba(168, 85, 247, 0.08)",
-              color: "#a855f7",
+              background: "var(--glow)",
+              color: "var(--accent)",
               fontSize: 12,
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: 1,
               marginBottom: 20,
-              border: "1px solid rgba(168, 85, 247, 0.2)",
+              border: "1px solid var(--border)",
             }}
           >
             ✦ AI-Powered Resume Modifier
@@ -351,7 +351,7 @@ export default function ModifierPage() {
               fontSize: "clamp(32px, 5vw, 48px)",
               fontWeight: 800,
               marginBottom: 16,
-              background: "linear-gradient(135deg, #fff 20%, #a855f7 60%, #6366f1 100%)",
+              background: "linear-gradient(135deg, var(--foreground) 20%, var(--accent-light) 60%, var(--accent) 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -390,13 +390,13 @@ export default function ModifierPage() {
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             style={{
-              border: `2px dashed ${isDragging ? "var(--accent-light)" : "rgba(168, 85, 247, 0.4)"}`,
+              border: `2px dashed ${isDragging ? "var(--accent)" : "var(--border)"}`,
               borderRadius: 16,
               padding: "56px 24px",
               cursor: "pointer",
               background: isDragging
-                ? "rgba(168, 85, 247, 0.1)"
-                : "rgba(168, 85, 247, 0.03)",
+                ? "var(--glow)"
+                : "transparent",
               transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
               marginBottom: 28,
               position: "relative",
@@ -409,7 +409,7 @@ export default function ModifierPage() {
                 position: "absolute",
                 inset: -2,
                 background:
-                  "linear-gradient(135deg, rgba(168,85,247,0.3), transparent, rgba(99,102,241,0.3))",
+                  "linear-gradient(135deg, var(--glow), transparent, var(--glow))",
                 borderRadius: 18,
                 zIndex: -1,
                 opacity: isDragging ? 1 : 0,
@@ -437,13 +437,13 @@ export default function ModifierPage() {
                   width: 80,
                   height: 80,
                   borderRadius: "50%",
-                  background: "rgba(16, 185, 129, 0.1)",
-                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  background: "var(--glow)",
+                  border: "1px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 0 30px rgba(16, 185, 129, 0.2)",
-                  color: "#10b981",
+                  boxShadow: "0 0 30px var(--glow)",
+                  color: "var(--accent)",
                   animation: "bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -453,13 +453,13 @@ export default function ModifierPage() {
                   width: 80,
                   height: 80,
                   borderRadius: "24px",
-                  background: "rgba(168, 85, 247, 0.1)",
-                  border: "1px solid rgba(168, 85, 247, 0.3)",
+                  background: "var(--glow)",
+                  border: "1px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 0 30px rgba(168, 85, 247, 0.2)",
-                  color: "#a855f7",
+                  boxShadow: "0 0 30px var(--glow)",
+                  color: "var(--accent)",
                   transform: isDragging ? "scale(1.1) translateY(-4px)" : "scale(1) translateY(0)",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}>
@@ -638,8 +638,8 @@ export default function ModifierPage() {
               width: "100%",
               maxWidth: 340,
               background:
-                "linear-gradient(135deg, #a855f7, #6366f1)",
-              boxShadow: "0 10px 30px -5px rgba(168, 85, 247, 0.4)",
+                "linear-gradient(135deg, var(--accent-light), var(--accent-dark))",
+              boxShadow: "0 10px 30px -5px var(--glow)",
             }}
           >
             {parsing ? "Analyzing Resume..." : "✦ Parse & Modify Resume"}

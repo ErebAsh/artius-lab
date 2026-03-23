@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 const ThemeContext = createContext({
   settings: {
-    theme: "dark",
-    accentColor: "#6366f1",
+    theme: "creamy",
+    accentColor: "#10b981",
     backgroundColor: "",
     surfaceColor: "",
     showBackgroundOrbs: true,
@@ -16,8 +16,8 @@ export const useTheme = () => useContext(ThemeContext);
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState({
-    theme: "dark",
-    accentColor: "#6366f1",
+    theme: "creamy",
+    accentColor: "#10b981",
     backgroundColor: "",
     surfaceColor: "",
     showBackgroundOrbs: true,
