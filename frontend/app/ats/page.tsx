@@ -17,6 +17,7 @@ export default function ATSCheckPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<ATSResult | null>(null);
   const [error, setError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,10 +36,14 @@ export default function ATSCheckPage() {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragging(true);
   };
+
+  const handleDragLeave = () => setIsDragging(false);
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type !== "application/pdf") {
@@ -141,18 +146,36 @@ export default function ATSCheckPage() {
         >
           <div
             onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             style={{
-              border: "2px dashed var(--accent)",
-              borderRadius: 12,
-              padding: "40px 20px",
+              border: `2px dashed ${isDragging ? "rgba(16, 185, 129, 0.8)" : "rgba(16, 185, 129, 0.4)"}`,
+              borderRadius: 16,
+              padding: "56px 24px",
               cursor: "pointer",
-              background: "rgba(99, 102, 241, 0.05)",
-              transition: "all 0.3s ease",
-              marginBottom: 24,
+              background: isDragging
+                ? "rgba(16, 185, 129, 0.1)"
+                : "rgba(16, 185, 129, 0.03)",
+              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+              marginBottom: 28,
+              position: "relative",
+              overflow: "hidden",
             }}
           >
+            {/* Animated gradient border */}
+            <div
+              style={{
+                position: "absolute",
+                inset: -2,
+                background: "linear-gradient(135deg, rgba(16,185,129,0.3), transparent, rgba(99,102,241,0.3))",
+                borderRadius: 18,
+                zIndex: -1,
+                opacity: isDragging ? 1 : 0,
+                transition: "opacity 0.4s",
+              }}
+            />
+
             <input
               type="file"
               accept="application/pdf"
@@ -160,15 +183,61 @@ export default function ATSCheckPage() {
               onChange={handleFileChange}
               style={{ display: "none" }}
             />
-            <div style={{ fontSize: 40, marginBottom: 16 }}>📄</div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 24,
+              }}
+            >
+              {file ? (
+                <div style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  background: "rgba(16, 185, 129, 0.1)",
+                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 0 30px rgba(16, 185, 129, 0.2)",
+                  color: "#10b981",
+                  animation: "bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+              ) : (
+                <div style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "24px",
+                  background: "rgba(16, 185, 129, 0.1)",
+                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 0 30px rgba(16, 185, 129, 0.2)",
+                  color: "#10b981",
+                  transform: isDragging ? "scale(1.1) translateY(-4px)" : "scale(1) translateY(0)",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg>
+                </div>
+              )}
+            </div>
+
             {file ? (
-              <h3 style={{ fontSize: 18, color: "var(--foreground)", fontWeight: 600 }}>{file.name}</h3>
+              <div>
+                <h3 style={{ fontSize: 20, color: "var(--foreground)", fontWeight: 700, marginBottom: 4 }}>{file.name}</h3>
+                <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>{(file.size / 1024).toFixed(1)} KB • Click to change file</p>
+              </div>
             ) : (
               <>
-                <h3 style={{ fontSize: 18, color: "var(--foreground)", fontWeight: 600, marginBottom: 8 }}>
-                  Click to upload or drag and drop
+                <h3 style={{ fontSize: 20, color: "var(--foreground)", fontWeight: 700, marginBottom: 8 }}>
+                  {isDragging ? "Drop your resume here" : "Upload your existing resume"}
                 </h3>
-                <p style={{ color: "var(--text-muted)", fontSize: 14 }}>Only PDF files are supported</p>
+                <p style={{ color: "var(--text-muted)", fontSize: 14, maxWidth: 380, margin: "0 auto" }}>Only PDF files are supported</p>
               </>
             )}
           </div>
