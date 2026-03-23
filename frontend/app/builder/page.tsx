@@ -559,7 +559,7 @@ function BuilderContent() {
                   </div>
                 ))}
                 <button 
-                  style={{ ...addBtnStyle, width: "100%", padding: "14px", marginTop: 8, background: "rgba(255,255,255,0.02)", borderStyle: "solid", borderOpacity: 0.1 }} 
+                  style={{ ...addBtnStyle, width: "100%", padding: "14px", marginTop: 8, background: "rgba(255,255,255,0.02)", borderStyle: "solid" }} 
                   onClick={() => setSkills([...skills, { name: "", level: "Intermediate" }])}
                   className="hover:bg-white/5"
                 >

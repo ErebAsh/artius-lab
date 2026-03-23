@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 import google.generativeai as genai
 from dotenv import load_dotenv
 from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project
@@ -28,7 +29,7 @@ Rules for Completion:
 
 
 async def enhance_resume(data: ResumeData) -> dict:
-    """Use Gemini AI to enhance resume content."""
+    """Use Gemini AI to enhance resume content with exponential backoff."""
     
     resume_dict = data.model_dump()
     del resume_dict["template_id"]
@@ -41,27 +42,42 @@ async def enhance_resume(data: ResumeData) -> dict:
 
     Return ONLY valid JSON with keys "enhanced_data" and "layout_settings". Do not wrap in markdown code blocks."""
 
-    try:
-        model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
-            system_instruction=SYSTEM_PROMPT
-        )
-        
-        response = await model.generate_content_async(
-            prompt,
-            generation_config=genai.GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.7,
-            ),
-        )
+    max_retries = 3
+    base_delay = 2  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            model = genai.GenerativeModel(
+                model_name="gemini-2.5-flash",
+                system_instruction=SYSTEM_PROMPT
+            )
+            
+            response = await model.generate_content_async(
+                prompt,
+                generation_config=genai.GenerationConfig(
+                    response_mime_type="application/json",
+                    temperature=0.7,
+                ),
+            )
 
-        enhanced = json.loads(response.text)
-        return enhanced
+            enhanced = json.loads(response.text)
+            return enhanced
 
-    except Exception as e:
-        print(f"AI Enhancement failed: {e}")
-        # Fallback: return original data without enhancement
-        return resume_dict
+        except Exception as e:
+            # Check for Rate Limit (429) errors
+            error_str = str(e)
+            if "429" in error_str or "ResourceExhausted" in error_str:
+                if attempt < max_retries - 1:
+                    wait_time = base_delay * (2 ** attempt)
+                    print(f"Rate limit hit (Enhance). Retry {attempt + 1}/{max_retries} in {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                    continue
+            
+            print(f"AI Enhancement failed: {e}")
+            break
+            
+    # Fallback: return original data without enhancement
+    return resume_dict
 
 
 async def check_ats_score(resume_text: str) -> dict:
@@ -102,3 +118,124 @@ Return the analysis strictly as valid JSON with these keys:
             "improvements": ["Failed to analyze resume using AI service.", str(e)],
             "summary": "Error analyzing resume."
         }
+
+
+async def parse_resume_text(resume_text: str) -> dict:
+    """Parse raw resume text into structured JSON matching ResumeData schema."""
+    sys_prompt = """You are an expert resume parser. Given raw text extracted from a PDF resume, 
+    parse and structure it into a clean JSON object. Be precise — extract EXACTLY what's written, 
+    don't embellish or add content that isn't present in the original text.
+    
+    Return JSON with these keys:
+    - "personal_info": { "full_name", "title", "email", "phone", "location", "linkedin", "portfolio", "summary" }
+    - "education": [{ "institution", "degree", "field_of_study", "start_date", "end_date", "gpa", "achievements" }]
+    - "experience": [{ "company", "title", "location", "start_date", "end_date", "description", "highlights": [] }]
+    - "skills": [{ "name", "level" }]
+    - "projects": [{ "name", "description", "technologies": [], "link" }]
+    - "expertise": { "technical": [], "professional": [] }
+    - "certifications": [{ "name", "issuer", "year" }]
+    
+    Rules:
+    1. Extract ALL information faithfully from the text
+    2. If a field can't be found, use empty string "" or empty array []
+    3. For skills level, infer from context: "Expert", "Advanced", "Intermediate", or "Beginner"
+    4. Parse bullet points as highlights arrays
+    5. Separate technical expertise (hard skills, domains) from professional expertise (soft skills)
+    6. Return ONLY valid JSON, no markdown, no conversational text
+    """
+    
+    prompt = f"""Parse the following resume text into structured JSON:
+
+{resume_text}
+
+Return ONLY valid JSON matching the schema described. Do not wrap in markdown code blocks."""
+
+    try:
+        model = genai.GenerativeModel(
+            model_name="gemini-2.5-flash",
+            system_instruction=sys_prompt
+        )
+        
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json",
+                temperature=0.2,
+            ),
+        )
+
+        return json.loads(response.text)
+    except Exception as e:
+        print(f"Resume parsing failed: {e}")
+        return {
+            "personal_info": {"full_name": "", "title": "", "email": "", "phone": "", "location": "", "linkedin": "", "portfolio": "", "summary": ""},
+            "education": [],
+            "experience": [],
+            "skills": [],
+            "projects": [],
+            "expertise": {"technical": [], "professional": []},
+            "certifications": [],
+            "error": f"Failed to parse resume: {str(e)}"
+        }
+
+
+async def modify_resume_with_ai(resume_data: dict, instruction: str) -> dict:
+    """Apply natural language modifications to structured resume data with exponential backoff."""
+    sys_prompt = """You are an expert resume editor. Given structured resume data and a user instruction,
+    apply the requested changes and return the COMPLETE modified resume data.
+    
+    Rules:
+    1. Apply ONLY the changes the user requested
+    2. Keep all other data exactly as is  
+    3. Maintain the same JSON structure
+    4. If the user asks to improve/enhance text, make it more professional and impactful
+    5. If the user asks to add something, add it to the appropriate section
+    6. If the user asks to remove something, remove only that specific item
+    7. Return the COMPLETE resume data with modifications applied
+    8. Return ONLY valid JSON, no markdown, no conversational text
+    9. Also return a "changes_summary" key with a brief description of what was changed
+    """
+    
+    prompt = f"""Current resume data:
+{json.dumps(resume_data, indent=2)}
+
+User instruction: {instruction}
+
+Apply the requested changes and return the complete modified resume data as JSON with keys "modified_data" and "changes_summary"."""
+
+    max_retries = 3
+    base_delay = 2  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            model = genai.GenerativeModel(
+                model_name="gemini-2.5-flash",
+                system_instruction=sys_prompt
+            )
+            
+            response = await model.generate_content_async(
+                prompt,
+                generation_config=genai.GenerationConfig(
+                    response_mime_type="application/json",
+                    temperature=0.4,
+                ),
+            )
+
+            return json.loads(response.text)
+        except Exception as e:
+            # Check for Rate Limit (429) errors
+            error_str = str(e)
+            if "429" in error_str or "ResourceExhausted" in error_str:
+                if attempt < max_retries - 1:
+                    wait_time = base_delay * (2 ** attempt)
+                    print(f"Rate limit hit (Modify). Retry {attempt + 1}/{max_retries} in {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                    continue
+            
+            print(f"Resume modification failed: {e}")
+            break
+
+    return {
+        "modified_data": resume_data,
+        "changes_summary": f"Modification failed after retries. The AI service is currently busy."
+    }

@@ -41,7 +41,7 @@ export default function RootLayout({
             <Navbar />
           </ConditionalLayout>
 
-          <main style={{ position: "relative", zIndex: 1, flex: 1 }}>{children}</main>
+          <main style={{ position: "relative", flex: 1 }}>{children}</main>
 
           <ConditionalLayout>
             <Footer />

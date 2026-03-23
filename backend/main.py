@@ -1,11 +1,12 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 import io
+import json
 import PyPDF2
 from schemas import ResumeData, HTMLData
 from templates import RESUME_TEMPLATES, get_template_by_id
-from ai_service import enhance_resume, check_ats_score
+from ai_service import enhance_resume, check_ats_score, parse_resume_text, modify_resume_with_ai
 from pdf_service import generate_pdf, generate_html, generate_pdf_from_html
 
 app = FastAPI(
@@ -270,3 +271,64 @@ async def generate_resume_pdf(data: HTMLData):
             "Content-Disposition": f'attachment; filename="{filename}"',
         },
     )
+
+
+# ===================== RESUME MODIFIER ENDPOINTS =====================
+
+@app.post("/api/resume/parse")
+async def parse_resume(file: UploadFile = File(...)):
+    """
+    Accept a PDF resume, parse text, and use AI to structure it into editable JSON.
+    """
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+    
+    contents = await file.read()
+    
+    # File size limit (5MB)
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large (max 5MB).")
+    
+    try:
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(contents))
+        text = ""
+        for page in pdf_reader.pages:
+            text += page.extract_text() + "\n"
+        
+        if not text.strip():
+            raise HTTPException(status_code=400, detail="No readable text found in the PDF.")
+        
+        # Use AI to parse into structured data
+        parsed_data = await parse_resume_text(text)
+        
+        return {
+            "parsed_data": parsed_data,
+            "raw_text": text.strip(),
+            "page_count": len(pdf_reader.pages)
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
+
+
+@app.post("/api/resume/modify")
+async def modify_resume(instruction: str = Form(...), resume_data: str = Form(...)):
+    """
+    Accept structured resume data + a natural language instruction,
+    and return the AI-modified resume data.
+    """
+    try:
+        data = json.loads(resume_data)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid resume data JSON.")
+    
+    if not instruction.strip():
+        raise HTTPException(status_code=400, detail="Instruction cannot be empty.")
+    
+    try:
+        result = await modify_resume_with_ai(data, instruction)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Modification failed: {str(e)}")

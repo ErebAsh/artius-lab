@@ -26,6 +26,14 @@ export default function Navbar() {
           Templates
         </Link>
         <Link
+          href="/modifier"
+          style={
+            pathname === "/modifier" ? { color: "var(--accent-light)" } : {}
+          }
+        >
+          Modifier
+        </Link>
+        <Link
           href="/ats"
           style={pathname === "/ats" ? { color: "var(--accent-light)" } : {}}
         >
