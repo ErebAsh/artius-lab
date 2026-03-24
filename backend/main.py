@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
+from contextlib import asynccontextmanager
 import io
 import json
 import PyPDF2
@@ -8,17 +9,38 @@ from schemas import ResumeData, HTMLData
 from templates import RESUME_TEMPLATES, get_template_by_id
 from ai_service import enhance_resume, check_ats_score, parse_resume_text, modify_resume_with_ai
 from pdf_service import generate_pdf, generate_html, generate_pdf_from_html
+from database import (
+    init_db,
+    save_resume,
+    update_resume,
+    get_resume,
+    list_resumes,
+    delete_resume,
+    save_ats_check,
+    list_ats_checks,
+    save_enhancement_log,
+)
+
+
+# ── App Lifecycle ──────────────────────────────────────────────────
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialize the DB on startup."""
+    await init_db()
+    yield
+
 
 app = FastAPI(
     title="Artius Lab API",
     description="AI-Powered Resume Builder and ATS Checker",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS for Next.js frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -156,6 +178,7 @@ def preview_template(template_id: str):
 
 
 
+# ===================== AI ENDPOINTS =====================
 
 @app.post("/api/ai/enhance")
 async def ai_enhance(data: ResumeData):
@@ -164,6 +187,12 @@ async def ai_enhance(data: ResumeData):
     Returns the complete enhanced resume as JSON.
     """
     result = await enhance_resume(data)
+
+    # Log the enhancement to the database
+    resume_dict = data.model_dump()
+    del resume_dict["template_id"]
+    await save_enhancement_log(original_data=resume_dict, enhanced_data=result)
+
     return result
 
 
@@ -219,6 +248,11 @@ async def ats_upload(file: UploadFile = File(...)):
         
         # Call AI service for ATS score
         ats_result = await check_ats_score(text)
+
+        # Save to database
+        score = ats_result.get("score", 0)
+        await save_ats_check(score=score, result_data=ats_result)
+
         return ats_result
 
     except Exception as e:
@@ -332,3 +366,117 @@ async def modify_resume(instruction: str = Form(...), resume_data: str = Form(..
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Modification failed: {str(e)}")
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  SAVED RESUMES — CRUD ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/resumes")
+async def api_list_resumes(
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+):
+    """List all saved resumes, newest first."""
+    resumes = await list_resumes(limit=limit, offset=offset)
+    return {"resumes": resumes, "count": len(resumes)}
+
+
+@app.get("/api/resumes/{resume_id}")
+async def api_get_resume(resume_id: int):
+    """Get a single saved resume by ID."""
+    resume = await get_resume(resume_id)
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+    return resume
+
+
+@app.post("/api/resumes")
+async def api_save_resume(
+    title: str = Form("Untitled Resume"),
+    template_id: str = Form("classic"),
+    resume_data: str = Form(...),
+    layout_settings: str = Form(None),
+    preview_html: str = Form(None),
+):
+    """Save a new resume draft to the database."""
+    try:
+        data = json.loads(resume_data)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid resume data JSON.")
+
+    layout = None
+    if layout_settings:
+        try:
+            layout = json.loads(layout_settings)
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="Invalid layout settings JSON.")
+
+    new_id = await save_resume(
+        title=title,
+        template_id=template_id,
+        resume_data=data,
+        layout_settings=layout,
+        preview_html=preview_html,
+    )
+
+    return {"id": new_id, "message": "Resume saved successfully."}
+
+
+@app.put("/api/resumes/{resume_id}")
+async def api_update_resume(
+    resume_id: int,
+    title: str = Form(None),
+    template_id: str = Form(None),
+    resume_data: str = Form(None),
+    layout_settings: str = Form(None),
+    preview_html: str = Form(None),
+):
+    """Update an existing saved resume."""
+    data = None
+    if resume_data:
+        try:
+            data = json.loads(resume_data)
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="Invalid resume data JSON.")
+
+    layout = None
+    if layout_settings:
+        try:
+            layout = json.loads(layout_settings)
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="Invalid layout settings JSON.")
+
+    updated = await update_resume(
+        resume_id=resume_id,
+        title=title,
+        template_id=template_id,
+        resume_data=data,
+        layout_settings=layout,
+        preview_html=preview_html,
+    )
+
+    if not updated:
+        raise HTTPException(status_code=404, detail="Resume not found or nothing to update.")
+
+    return {"message": "Resume updated successfully."}
+
+
+@app.delete("/api/resumes/{resume_id}")
+async def api_delete_resume(resume_id: int):
+    """Delete a saved resume."""
+    deleted = await delete_resume(resume_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Resume not found.")
+    return {"message": "Resume deleted successfully."}
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  ATS CHECK HISTORY
+# ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/ats/history")
+async def api_ats_history(limit: int = Query(20, ge=1, le=100)):
+    """Get recent ATS check history."""
+    checks = await list_ats_checks(limit=limit)
+    return {"checks": checks, "count": len(checks)}

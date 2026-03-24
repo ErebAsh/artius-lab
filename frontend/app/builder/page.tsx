@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import LoadingOverlay from "../components/LoadingOverlay";
@@ -50,11 +50,15 @@ interface Project {
 function BuilderContent() {
   const searchParams = useSearchParams();
   const templateId = searchParams.get("template") || "modern";
+  const resumeIdParam = searchParams.get("resume");
 
   const [currentStep, setCurrentStep] = useState(0);
   const [generating, setGenerating] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [enhancing, setEnhancing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [resumeId, setResumeId] = useState<number | null>(resumeIdParam ? parseInt(resumeIdParam) : null);
 
   const [error, setError] = useState("");
   const [layout, setLayout] = useState({
@@ -106,6 +110,94 @@ function BuilderContent() {
     technical: [""],
     professional: [""]
   });
+
+  // ── Load resume from DB if ?resume=ID is present ──
+  const loadResumeFromDB = useCallback(async (id: number) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/resumes/${id}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const rd = data.resume_data;
+
+      if (rd.personal_info) setPersonal((prev: typeof personal) => ({ ...prev, ...rd.personal_info }));
+      if (rd.education?.length) setEducation(rd.education);
+      if (rd.experience?.length) setExperience(rd.experience);
+      if (rd.skills?.length) setSkills(rd.skills);
+      if (rd.projects?.length) setProjects(rd.projects);
+      if (rd.expertise) {
+        setExpertise({
+          enabled: true,
+          technical: rd.expertise.technical?.length ? rd.expertise.technical : [""],
+          professional: rd.expertise.professional?.length ? rd.expertise.professional : [""]
+        });
+      }
+      if (data.layout_settings) {
+        setLayout((prev: typeof layout) => ({ ...prev, ...data.layout_settings }));
+      }
+    } catch (err) {
+      console.error("Failed to load resume:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (resumeId) loadResumeFromDB(resumeId);
+  }, [resumeId, loadResumeFromDB]);
+
+  // ── Save / Update resume draft ──
+  const handleSaveDraft = async () => {
+    setSaving(true);
+    setSaveMessage("");
+    setError("");
+
+    const resumeData = {
+      personal_info: personal,
+      education: education.filter((e) => e.institution.trim() !== ""),
+      experience: experience
+        .filter((e) => e.company.trim() !== "")
+        .map(e => ({ ...e, highlights: e.highlights.filter(h => h.trim() !== "") })),
+      skills: skills.filter((s) => s.name.trim() !== ""),
+      projects: projects
+        .filter((p) => p.name.trim() !== "")
+        .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
+      expertise: expertise.enabled ? {
+        technical: expertise.technical.filter(t => t.trim() !== ""),
+        professional: expertise.professional.filter(p => p.trim() !== "")
+      } : null
+    };
+
+    const title = personal.full_name.trim() || "Untitled Resume";
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("template_id", templateId);
+      formData.append("resume_data", JSON.stringify(resumeData));
+      formData.append("layout_settings", JSON.stringify(layout));
+
+      let res;
+      if (resumeId) {
+        res = await fetch(`${API_BASE}/api/resumes/${resumeId}`, { method: "PUT", body: formData });
+      } else {
+        res = await fetch(`${API_BASE}/api/resumes`, { method: "POST", body: formData });
+      }
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Save failed");
+      }
+
+      const result = await res.json();
+      if (!resumeId && result.id) {
+        setResumeId(result.id);
+      }
+      setSaveMessage("✓ Saved!");
+      setTimeout(() => setSaveMessage(""), 3000);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to save resume.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleAIAutoComplete = async () => {
     setEnhancing(true);
@@ -698,11 +790,28 @@ function BuilderContent() {
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 28, gap: 12 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 28, gap: 12, alignItems: "center" }}>
           <button className="btn-secondary" disabled={currentStep === 0} onClick={() => setCurrentStep((s) => s - 1)} style={{ opacity: currentStep === 0 ? 0.4 : 1 }}>
             ← Back
           </button>
-          <div style={{ display: "flex", gap: 12 }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            {/* Save Draft Button */}
+            <button
+              className="btn-secondary"
+              onClick={handleSaveDraft}
+              disabled={saving || generating || enhancing}
+              style={{
+                background: "rgba(16, 185, 129, 0.1)",
+                borderColor: "rgba(16, 185, 129, 0.3)",
+                color: "#34d399",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                position: "relative",
+              }}
+            >
+              {saving ? "Saving..." : saveMessage || "💾 Save Draft"}
+            </button>
             <button className="btn-secondary" onClick={handleAIAutoComplete} disabled={enhancing || generating} style={{ background: "linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2))", borderColor: "rgba(99, 102, 241, 0.4)", color: "#e0e7ff", display: "flex", alignItems: "center", gap: 8 }}>
               {enhancing 
                 ? (currentStep === 5 ? "Optimizing..." : "Building...") 

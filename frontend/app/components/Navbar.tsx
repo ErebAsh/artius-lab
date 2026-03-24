@@ -2,6 +2,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/templates", label: "Templates" },
+  { href: "/modifier", label: "Modifier" },
+  { href: "/ats", label: "ATS Check" },
+  { href: "/resumes", label: "My Resumes" },
+  { href: "/settings", label: "Settings" },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
 
@@ -11,40 +20,15 @@ export default function Navbar() {
         ARTIUS LAB
       </Link>
       <div className="nav-links">
-        <Link
-          href="/"
-          style={pathname === "/" ? { color: "var(--accent-light)" } : {}}
-        >
-          Home
-        </Link>
-        <Link
-          href="/templates"
-          style={
-            pathname === "/templates" ? { color: "var(--accent-light)" } : {}
-          }
-        >
-          Templates
-        </Link>
-        <Link
-          href="/modifier"
-          style={
-            pathname === "/modifier" ? { color: "var(--accent-light)" } : {}
-          }
-        >
-          Modifier
-        </Link>
-        <Link
-          href="/ats"
-          style={pathname === "/ats" ? { color: "var(--accent-light)" } : {}}
-        >
-          ATS Check
-        </Link>
-        <Link
-          href="/settings"
-          style={pathname === "/settings" ? { color: "var(--accent-light)" } : {}}
-        >
-          Settings
-        </Link>
+        {NAV_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            style={pathname === link.href ? { color: "var(--accent-light)" } : {}}
+          >
+            {link.label}
+          </Link>
+        ))}
       </div>
     </nav>
   );

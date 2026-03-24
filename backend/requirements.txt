@@ -6,3 +6,5 @@ python-multipart
 pydantic
 jinja2
 python-dotenv
+aiosqlite
+PyPDF2

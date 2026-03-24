@@ -55,21 +55,27 @@ export default function Footer() {
             <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
               {[
                 { 
-                  name: "X", 
-                  svg: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg> 
+                  name: "YouTube", 
+                  url: "https://youtube.com/@erebash",
+                  svg: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2A29 29 0 0 0 12 4a29 29 0 0 0-8.6.42 2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.94 2A29 29 0 0 0 12 20a29 29 0 0 0 8.6-.42 2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg> 
                 },
                 { 
                   name: "LinkedIn", 
+                  url: "https://www.linkedin.com/in/himanshurajjnu",
                   svg: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg> 
                 },
                 { 
                   name: "GitHub", 
+                  url: "https://github.com/ErebAsh/artius-lab",
                   svg: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> 
                 }
               ].map((s, i) => (
                 <a 
                   key={i} 
                   title={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
                     width: 36,
                     height: 36,
@@ -159,7 +165,7 @@ export default function Footer() {
                 Settings
               </Link>
               <a 
-                href="https://github.com" 
+                href="https://github.com/ErebAsh/artius-lab" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}

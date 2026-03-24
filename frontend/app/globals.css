@@ -350,7 +350,7 @@ select.input-field {
   display: flex;
   align-items: center;
   gap: 32px;
-  max-width: 700px;
+  max-width: 850px;
   width: calc(100% - 32px);
 }
 
