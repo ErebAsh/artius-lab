@@ -6,7 +6,7 @@ import io
 import json
 import PyPDF2
 from schemas import ResumeData, HTMLData
-from templates import RESUME_TEMPLATES, get_template_by_id
+from templates import RESUME_TEMPLATES, get_template_by_id, get_all_templates
 from ai_service import enhance_resume, check_ats_score, parse_resume_text, modify_resume_with_ai
 from pdf_service import generate_pdf, generate_html, generate_pdf_from_html
 from database import (
@@ -48,8 +48,8 @@ app.add_middleware(
 
 @app.get("/api/templates")
 def list_templates():
-    """Return all available resume templates."""
-    return {"templates": RESUME_TEMPLATES}
+    """Return all available resume templates with has_photo auto-detection."""
+    return {"templates": get_all_templates()}
 
 
 @app.get("/api/templates/{template_id}")

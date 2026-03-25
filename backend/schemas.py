@@ -11,6 +11,7 @@ class PersonalInfo(BaseModel):
     linkedin: Optional[str] = None
     portfolio: Optional[str] = None
     summary: Optional[str] = None
+    photo: Optional[str] = None
 
 
 class Education(BaseModel):

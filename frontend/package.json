@@ -13,6 +13,7 @@
     "next": "16.1.7",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-easy-crop": "^5.5.7",
     "react-pdf": "^10.4.1"
   },
   "devDependencies": {

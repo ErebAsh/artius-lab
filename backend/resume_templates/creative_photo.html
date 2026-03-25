@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f3ef;
+            color: #333;
+            line-height: 1.5;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 297mm;
+            background: #fff;
+            width: 210mm;
+            margin: 0 auto;
+        }
+
+        /* ── Left Sidebar ── */
+        .sidebar {
+            width: 35%;
+            background-color: #3d4555;
+            color: #fff;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Photo Section */
+        .photo-section {
+            padding: 40px 30px 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .photo-frame {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.25);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #5a6275, #6b7489);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Contact Section */
+        .sidebar-content {
+            padding: 20px 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            flex: 1;
+        }
+        .sidebar-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            margin: 0 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+            font-size: 9pt;
+        }
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: rgba(255,255,255,0.65);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .contact-text {
+            color: rgba(255,255,255,0.85);
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .edu-item {
+            margin-bottom: 20px;
+        }
+        .edu-degree {
+            font-weight: 700;
+            font-size: 9.5pt;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+        .edu-institution {
+            font-size: 9pt;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2px;
+        }
+        .edu-date {
+            font-size: 8.5pt;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .expertise-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .expertise-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 8px;
+            font-size: 9pt;
+            color: rgba(255,255,255,0.8);
+        }
+        .expertise-list li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: rgba(255,255,255,0.45);
+        }
+
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 9pt;
+            color: rgba(255,255,255,0.85);
+        }
+        .language-level {
+            font-size: 8pt;
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+        }
+
+        /* ── Right Main Content ── */
+        .main-content {
+            width: 65%;
+            padding: 45px 40px 40px;
+            background: #fff;
+        }
+
+        /* Header */
+        .main-header {
+            margin-bottom: 30px;
+        }
+        .main-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 30pt;
+            font-weight: 700;
+            margin: 0;
+            color: #2d3142;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1.1;
+        }
+        .main-header .job-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11pt;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+            margin: 8px 0 0 0;
+        }
+        .header-divider {
+            width: 60px;
+            height: 3px;
+            background: #3d4555;
+            margin-top: 20px;
+        }
+
+        /* Sections */
+        .main-section {
+            margin-bottom: 30px;
+        }
+        .main-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 16px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e8e8e8;
+            color: #2d3142;
+        }
+
+        .about-text {
+            font-size: 9.5pt;
+            color: #666;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 25px;
+        }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 10px;
+            bottom: 20px;
+            width: 1.5px;
+            background: #ddd;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: -25px;
+            top: 7px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3d4555;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1.5px #ddd;
+            z-index: 1;
+        }
+        .timeline-date {
+            font-size: 8.5pt;
+            color: #999;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .timeline-company {
+            font-size: 9pt;
+            color: #888;
+            margin-bottom: 2px;
+        }
+        .timeline-role {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #2d3142;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .timeline-desc {
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .timeline-highlights {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+        }
+        .timeline-highlights li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 4px;
+            font-size: 9pt;
+            color: #666;
+        }
+        .timeline-highlights li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #3d4555;
+        }
+
+        /* References */
+        .references-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .ref-item {
+            font-size: 9pt;
+        }
+        .ref-name {
+            font-weight: 700;
+            color: #2d3142;
+            font-size: 10pt;
+            margin-bottom: 2px;
+        }
+        .ref-title {
+            color: #888;
+            margin-bottom: 4px;
+        }
+        .ref-contact {
+            color: #999;
+            font-size: 8.5pt;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <!-- Profile Photo -->
+            <div class="photo-section">
+                <div class="photo-frame">
+                    {% if personal.photo %}
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Profile Photo', true) }}">
+                    {% else %}
+                    <div class="photo-placeholder">
+                        {{ personal.full_name[0] | default('?', true) | upper }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Contact -->
+                <div class="sidebar-section">
+                    <h2>Contact</h2>
+                    {% if personal.phone %}
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        <div class="contact-text">{{ personal.phone }}</div>
+                    </div>
+                    {% endif %}
+                    {% if personal.email %}
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <div class="contact-text">{{ personal.email }}</div>
+                    </div>
+                    {% endif %}
+                    {% if personal.portfolio %}
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14c-.17-.64-.26-1.31-.26-2s.09-1.36.26-2h3.38c-.09.66-.14 1.32-.14 2 0 .68.05 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.91-4.33-3.56zm2.95-8H5.08c.96-1.65 2.49-2.93 4.33-3.56-.6 1.11-1.06 2.31-1.38 3.56zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.14-1.32-.14-2 0-.68.05-1.34.14-2h4.68c.09.66.14 1.32.14 2 0 .68-.05 1.34-.14 2zm.4 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.09-.66.14-1.32.14-2 0-.68-.05-1.34-.14-2h3.38c.17.64.26 1.31.26 2s-.09 1.36-.26 2h-3.38z"/></svg>
+                        <div class="contact-text">{{ personal.portfolio }}</div>
+                    </div>
+                    {% endif %}
+                    {% if personal.location %}
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <div class="contact-text">{{ personal.location }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Education -->
+                {% if education and education|length > 0 %}
+                <div class="sidebar-section">
+                    <h2>Education</h2>
+                    {% for edu in education %}
+                    <div class="edu-item">
+                        <div class="edu-degree">{{ edu.degree }}{% if edu.field_of_study %} in {{ edu.field_of_study }}{% endif %}</div>
+                        <div class="edu-institution">{{ edu.institution }}</div>
+                        <div class="edu-date">{{ edu.start_date }}{% if edu.end_date %} – {{ edu.end_date }}{% endif %}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Expertise -->
+                {% if expertise.professional or expertise.technical %}
+                <div class="sidebar-section">
+                    <h2>Expertise</h2>
+                    <ul class="expertise-list">
+                        {% for item in expertise.professional %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                        {% for item in expertise.technical %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Skills as tags -->
+                {% if skills and skills|length > 0 %}
+                <div class="sidebar-section">
+                    <h2>Skills</h2>
+                    <ul class="expertise-list">
+                        {% for skill in skills %}
+                        <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- LinkedIn -->
+                {% if personal.linkedin %}
+                <div class="sidebar-section">
+                    <h2>Follow Me</h2>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                        <div class="contact-text">{{ personal.linkedin }}</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="main-header">
+                <h1>{{ personal.full_name | default('YOUR NAME', true) }}</h1>
+                <p class="job-title">{{ personal.title | default('YOUR PROFESSION', true) }}</p>
+                <div class="header-divider"></div>
+            </div>
+
+            <!-- About Me -->
+            {% if personal.summary %}
+            <div class="main-section">
+                <h2>About Me</h2>
+                <div class="about-text">
+                    {{ personal.summary }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Work Experience -->
+            {% if experience and experience|length > 0 %}
+            <div class="main-section">
+                <h2>Work Experience</h2>
+                <div class="timeline">
+                    {% for exp in experience %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-date">{{ exp.start_date }} – {{ exp.end_date | default('Present', true) }}</div>
+                        <div class="timeline-company">{{ exp.company }}{% if exp.location %} | {{ exp.location }}{% endif %}</div>
+                        <div class="timeline-role">{{ exp.title }}</div>
+                        {% if exp.description %}
+                        <div class="timeline-desc">{{ exp.description }}</div>
+                        {% endif %}
+                        {% if exp.highlights and exp.highlights|length > 0 %}
+                        <ul class="timeline-highlights">
+                            {% for hl in exp.highlights %}
+                            {% if hl %}
+                            <li>{{ hl }}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Projects -->
+            {% if projects and projects|length > 0 %}
+            <div class="main-section">
+                <h2>Projects</h2>
+                <div class="timeline">
+                    {% for project in projects %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-role" style="display: flex; align-items: center; justify-content: space-between;">
+                            {{ project.name }}
+                            {% if project.link %}
+                            <span style="font-size: 8pt; font-family: 'Open Sans'; text-transform: none; font-weight: 400; color: #999;">{{ project.link }}</span>
+                            {% endif %}
+                        </div>
+                        {% if project.description %}
+                        <div class="timeline-desc">{{ project.description }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Certifications -->
+            {% if certifications and certifications|length > 0 %}
+            <div class="main-section">
+                <h2>Certifications</h2>
+                {% for cert in certifications %}
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 700; font-size: 10pt; color: #2d3142; text-transform: uppercase;">{{ cert.name }}</div>
+                    <div style="font-size: 9pt; color: #888;">{{ cert.issuer }} | {{ cert.year }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

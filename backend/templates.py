@@ -1,3 +1,7 @@
+import os
+
+TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "resume_templates")
+
 RESUME_TEMPLATES = [
     {
         "id": "ats_pro",
@@ -30,11 +34,36 @@ RESUME_TEMPLATES = [
         "accent_color": "#1e2538",
         "features": ["Two-column layout", "ATS-friendly", "Projects & Certifications", "Expertise Section"],
         "category": "Professional"
+    },
+    {
+        "id": "creative_photo",
+        "name": "Creative Photo",
+        "description": "A modern two-column template with a dark sidebar featuring a circular profile photo. Ideal for creative and marketing professionals.",
+        "accent_color": "#3d4555",
+        "features": ["Profile Photo", "Dark Sidebar", "Timeline Layout", "Creative Design"],
+        "category": "Creative"
     }
 ]
+
+
+def _detect_has_photo(template_id: str) -> bool:
+    """Auto-detect whether a template HTML contains the <!-- has_photo --> marker."""
+    template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        return "<!-- has_photo -->" in content
+    except FileNotFoundError:
+        return False
+
 
 def get_template_by_id(template_id: str):
     for t in RESUME_TEMPLATES:
         if t["id"] == template_id:
-            return t
+            return {**t, "has_photo": _detect_has_photo(t["id"])}
     return None
+
+
+def get_all_templates():
+    """Return all templates with has_photo flag auto-detected."""
+    return [{**t, "has_photo": _detect_has_photo(t["id"])} for t in RESUME_TEMPLATES]

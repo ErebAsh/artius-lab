@@ -59,6 +59,7 @@ function BuilderContent() {
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [resumeId, setResumeId] = useState<number | null>(resumeIdParam ? parseInt(resumeIdParam) : null);
+  const [templateHasPhoto, setTemplateHasPhoto] = useState(false);
 
   const [error, setError] = useState("");
   const [layout, setLayout] = useState({
@@ -77,6 +78,22 @@ function BuilderContent() {
     }
   }, [previewHtml]);
 
+  // ── Detect if the selected template supports photo ──
+  useEffect(() => {
+    const fetchTemplateInfo = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/templates/${templateId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setTemplateHasPhoto(data.has_photo === true);
+        }
+      } catch (err) {
+        console.error("Failed to fetch template info:", err);
+      }
+    };
+    fetchTemplateInfo();
+  }, [templateId]);
+
   // Form state
   const [personal, setPersonal] = useState({
     full_name: "",
@@ -87,6 +104,7 @@ function BuilderContent() {
     linkedin: "",
     portfolio: "",
     summary: "",
+    photo: "",
   });
 
   const [education, setEducation] = useState<Education[]>([
@@ -447,6 +465,109 @@ function BuilderContent() {
         {currentStep === 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Personal Information</h2>
+
+            {/* ── Photo Upload (only if template supports it) ── */}
+            {templateHasPhoto && (
+              <div style={{
+                padding: 24,
+                background: "linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(236, 72, 153, 0.06))",
+                border: "1px solid rgba(99, 102, 241, 0.2)",
+                borderRadius: 16,
+                display: "flex",
+                alignItems: "center",
+                gap: 24,
+              }}>
+                {/* Photo Preview */}
+                <div style={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  border: "3px solid rgba(99, 102, 241, 0.3)",
+                  flexShrink: 0,
+                  background: "var(--surface)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                }}>
+                  {personal.photo ? (
+                    <img
+                      src={personal.photo}
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: 32, color: "var(--text-muted)", opacity: 0.4 }}>📷</span>
+                  )}
+                </div>
+                {/* Upload Controls */}
+                <div style={{ flex: 1 }}>
+                  <label style={{ ...labelStyle, color: "var(--accent-light)", fontWeight: 700, fontSize: 11, letterSpacing: 1.5 }}>PROFILE PHOTO</label>
+                  <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 12px 0", lineHeight: 1.5 }}>
+                    This template supports a profile photo. Upload a headshot for a more personalized resume.
+                  </p>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <label
+                      htmlFor="photo-upload"
+                      style={{
+                        padding: "8px 20px",
+                        background: "rgba(99, 102, 241, 0.15)",
+                        border: "1px solid rgba(99, 102, 241, 0.4)",
+                        borderRadius: 10,
+                        color: "var(--accent-light)",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        fontFamily: "inherit",
+                        transition: "all 0.3s",
+                        display: "inline-block",
+                      }}
+                    >
+                      {personal.photo ? "Change Photo" : "Upload Photo"}
+                    </label>
+                    <input
+                      id="photo-upload"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (file.size > 2 * 1024 * 1024) {
+                            setError("Photo must be under 2MB.");
+                            return;
+                          }
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setPersonal({ ...personal, photo: reader.result as string });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                    {personal.photo && (
+                      <button
+                        onClick={() => setPersonal({ ...personal, photo: "" })}
+                        style={{
+                          padding: "8px 16px",
+                          background: "rgba(239, 68, 68, 0.1)",
+                          border: "1px solid rgba(239, 68, 68, 0.3)",
+                          borderRadius: 10,
+                          color: "#ef4444",
+                          cursor: "pointer",
+                          fontSize: 12,
+                          fontFamily: "inherit",
+                        }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div>
                 <label style={labelStyle}>Full Name *</label>
