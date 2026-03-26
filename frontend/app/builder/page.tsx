@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ResumeEditor from "./ResumeEditor";
+import PhotoEditor from "./PhotoEditor";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -60,6 +61,8 @@ function BuilderContent() {
   const [saveMessage, setSaveMessage] = useState("");
   const [resumeId, setResumeId] = useState<number | null>(resumeIdParam ? parseInt(resumeIdParam) : null);
   const [templateHasPhoto, setTemplateHasPhoto] = useState(false);
+  const [rawPhoto, setRawPhoto] = useState("");  // original unedited photo for re-editing
+  const [showPhotoEditor, setShowPhotoEditor] = useState(false);
 
   const [error, setError] = useState("");
   const [layout, setLayout] = useState({
@@ -71,12 +74,12 @@ function BuilderContent() {
   });
 
   useEffect(() => {
-    if (previewHtml) {
+    if (previewHtml || showPhotoEditor) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-  }, [previewHtml]);
+  }, [previewHtml, showPhotoEditor]);
 
   // ── Detect if the selected template supports photo ──
   useEffect(() => {
@@ -416,7 +419,7 @@ function BuilderContent() {
 
       {/* Header */}
       <div className="animate-fade-in-up" style={{ textAlign: "center", marginBottom: 40 }}>
-        <h1 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, marginBottom: 8, background: "linear-gradient(135deg, #fff, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+        <h1 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, marginBottom: 8, background: "linear-gradient(135deg, var(--foreground), var(--accent-light))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
           Build Your Resume
         </h1>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
@@ -426,20 +429,23 @@ function BuilderContent() {
           <Link 
             href="/templates" 
             style={{ 
-              fontSize: 10, 
+              fontSize: 11, 
               fontWeight: 800, 
               textDecoration: "none", 
-              color: "rgba(255,255,255,0.4)",
-              padding: "4px 12px",
+              color: "var(--accent-light)",
+              padding: "6px 16px",
               borderRadius: 30,
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "color-mix(in srgb, var(--accent-light), transparent 92%)",
+              border: "1px solid color-mix(in srgb, var(--accent-light), transparent 85%)",
               transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
               textTransform: "uppercase",
               letterSpacing: 1,
-              boxShadow: "0 4px 15px rgba(0,0,0,0.1)"
+              boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+              display: "flex",
+              alignItems: "center",
+              gap: 4
             }}
-            className="hover:bg-accent-light/10 hover:text-accent-light hover:border-accent-light/40 hover:-translate-y-0.5"
+            className="hover:bg-accent-light/20 hover:border-accent-light/50 hover:-translate-y-0.5"
           >
             Change
           </Link>
@@ -490,13 +496,39 @@ function BuilderContent() {
                   alignItems: "center",
                   justifyContent: "center",
                   boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
-                }}>
+                  position: "relative",
+                  cursor: personal.photo ? "pointer" : "default",
+                }}
+                  onClick={() => {
+                    if (personal.photo && rawPhoto) setShowPhotoEditor(true);
+                  }}
+                >
                   {personal.photo ? (
-                    <img
-                      src={personal.photo}
-                      alt="Profile"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
+                    <>
+                      <img
+                        src={personal.photo}
+                        alt="Profile"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                      {/* Edit overlay on hover */}
+                      <div style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: 0,
+                        transition: "opacity 0.2s",
+                        borderRadius: "50%",
+                        fontSize: 20,
+                      }}
+                        onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0"; }}
+                      >
+                        ✏️
+                      </div>
+                    </>
                   ) : (
                     <span style={{ fontSize: 32, color: "var(--text-muted)", opacity: 0.4 }}>📷</span>
                   )}
@@ -507,7 +539,7 @@ function BuilderContent() {
                   <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 12px 0", lineHeight: 1.5 }}>
                     This template supports a profile photo. Upload a headshot for a more personalized resume.
                   </p>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                     <label
                       htmlFor="photo-upload"
                       style={{
@@ -534,38 +566,78 @@ function BuilderContent() {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          if (file.size > 2 * 1024 * 1024) {
-                            setError("Photo must be under 2MB.");
+                          if (file.size > 5 * 1024 * 1024) {
+                            setError("Photo must be under 5MB.");
                             return;
                           }
                           const reader = new FileReader();
                           reader.onloadend = () => {
-                            setPersonal({ ...personal, photo: reader.result as string });
+                            const dataUrl = reader.result as string;
+                            setRawPhoto(dataUrl);       // keep original for re-editing
+                            setShowPhotoEditor(true);   // open editor immediately
                           };
                           reader.readAsDataURL(file);
                         }
+                        // Reset input so the same file can be re-selected
+                        e.target.value = "";
                       }}
                     />
                     {personal.photo && (
-                      <button
-                        onClick={() => setPersonal({ ...personal, photo: "" })}
-                        style={{
-                          padding: "8px 16px",
-                          background: "rgba(239, 68, 68, 0.1)",
-                          border: "1px solid rgba(239, 68, 68, 0.3)",
-                          borderRadius: 10,
-                          color: "#ef4444",
-                          cursor: "pointer",
-                          fontSize: 12,
-                          fontFamily: "inherit",
-                        }}
-                      >
-                        Remove
-                      </button>
+                      <>
+                        <button
+                          onClick={() => {
+                            if (rawPhoto) setShowPhotoEditor(true);
+                          }}
+                          style={{
+                            padding: "8px 16px",
+                            background: "rgba(168, 85, 247, 0.1)",
+                            border: "1px solid rgba(168, 85, 247, 0.3)",
+                            borderRadius: 10,
+                            color: "#a78bfa",
+                            cursor: "pointer",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            fontFamily: "inherit",
+                            transition: "all 0.3s",
+                          }}
+                        >
+                          ✏️ Edit Photo
+                        </button>
+                        <button
+                          onClick={() => {
+                            setPersonal({ ...personal, photo: "" });
+                            setRawPhoto("");
+                          }}
+                          style={{
+                            padding: "8px 16px",
+                            background: "rgba(239, 68, 68, 0.1)",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            borderRadius: 10,
+                            color: "#ef4444",
+                            cursor: "pointer",
+                            fontSize: 12,
+                            fontFamily: "inherit",
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* ── Photo Editor Modal ── */}
+            {showPhotoEditor && rawPhoto && (
+              <PhotoEditor
+                imageSrc={rawPhoto}
+                onSave={(croppedImage) => {
+                  setPersonal({ ...personal, photo: croppedImage });
+                  setShowPhotoEditor(false);
+                }}
+                onCancel={() => setShowPhotoEditor(false)}
+              />
             )}
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
