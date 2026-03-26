@@ -26,6 +26,8 @@ export const metadata: Metadata = {
 
 import ThemeProvider from "./components/ThemeProvider";
 import ConditionalLayout from "./components/ConditionalLayout";
+import AuthProvider from "./components/AuthProvider";
+import AuthModal from "./components/AuthModal";
 
 export default function RootLayout({
   children,
@@ -36,6 +38,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable} antialiased`} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <ThemeProvider>
+          <AuthProvider>
           {/* Service Worker Cache Purge Script */}
           <Script id="cache-buster" strategy="afterInteractive">
             {`
@@ -71,6 +74,10 @@ export default function RootLayout({
           <ConditionalLayout>
             <Footer />
           </ConditionalLayout>
+
+          {/* Global Auth Modal */}
+          <AuthModal />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ResumeEditor from "./ResumeEditor";
 import PhotoEditor from "./PhotoEditor";
+import { useAuth } from "../components/AuthProvider";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -52,6 +53,7 @@ function BuilderContent() {
   const searchParams = useSearchParams();
   const templateId = searchParams.get("template") || "modern";
   const resumeIdParam = searchParams.get("resume");
+  const { requireAuth, token } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [generating, setGenerating] = useState(false);
@@ -166,6 +168,9 @@ function BuilderContent() {
 
   // ── Save / Update resume draft ──
   const handleSaveDraft = async () => {
+    // Gate: require login to save
+    if (!requireAuth()) return;
+
     setSaving(true);
     setSaveMessage("");
     setError("");
@@ -195,11 +200,14 @@ function BuilderContent() {
       formData.append("resume_data", JSON.stringify(resumeData));
       formData.append("layout_settings", JSON.stringify(layout));
 
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       let res;
       if (resumeId) {
-        res = await fetch(`${API_BASE}/api/resumes/${resumeId}`, { method: "PUT", body: formData });
+        res = await fetch(`${API_BASE}/api/resumes/${resumeId}`, { method: "PUT", body: formData, headers });
       } else {
-        res = await fetch(`${API_BASE}/api/resumes`, { method: "POST", body: formData });
+        res = await fetch(`${API_BASE}/api/resumes`, { method: "POST", body: formData, headers });
       }
 
       if (!res.ok) {
@@ -299,6 +307,9 @@ function BuilderContent() {
   };
 
   const handleGeneratePreview = async () => {
+    // Gate: require login to preview/generate
+    if (!requireAuth()) return;
+
     setGenerating(true);
     setError("");
 

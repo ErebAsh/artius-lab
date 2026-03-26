@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "../components/AuthProvider";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -15,16 +16,28 @@ interface SavedResume {
 }
 
 export default function ResumesPage() {
+  const { user, token, requireAuth, setShowAuthModal } = useAuth();
   const [resumes, setResumes] = useState<SavedResume[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const fetchResumes = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE}/api/resumes`);
+      const res = await fetch(`${API_BASE}/api/resumes`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401) {
+        setError("Please sign in to view your resumes.");
+        setResumes([]);
+        return;
+      }
       if (!res.ok) throw new Error("Failed to load resumes");
       const data = await res.json();
       setResumes(data.resumes || []);
@@ -37,13 +50,16 @@ export default function ResumesPage() {
 
   useEffect(() => {
     fetchResumes();
-  }, []);
+  }, [token]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this resume?")) return;
     setDeletingId(id);
     try {
-      const res = await fetch(`${API_BASE}/api/resumes/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE}/api/resumes/${id}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (!res.ok) throw new Error("Delete failed");
       setResumes((prev) => prev.filter((r) => r.id !== id));
     } catch (err: unknown) {
@@ -82,6 +98,36 @@ export default function ResumesPage() {
     const rd = resume.resume_data as Record<string, Record<string, string>>;
     return rd?.personal_info?.full_name || "Unnamed";
   };
+
+  // If not logged in, show sign-in prompt
+  if (!user) {
+    return (
+      <div style={{ minHeight: "100vh", padding: "120px 24px 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div
+          className="glass animate-fade-in-up"
+          style={{
+            textAlign: "center",
+            padding: "80px 40px",
+            borderRadius: 24,
+            marginTop: 40,
+          }}
+        >
+          <div style={{ fontSize: 56, marginBottom: 20 }}>🔒</div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 10, color: "var(--foreground)" }}>Sign In Required</h2>
+          <p style={{ color: "var(--text-muted)", fontSize: 15, marginBottom: 28, maxWidth: 400, margin: "0 auto 28px" }}>
+            Create a free account to save, edit, and manage your resumes across sessions.
+          </p>
+          <button
+            className="btn-primary"
+            onClick={() => setShowAuthModal(true)}
+            style={{ fontSize: 15, padding: "14px 32px" }}
+          >
+            ✦ Sign In to Continue
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", padding: "120px 24px 80px", maxWidth: 960, margin: "0 auto" }}>

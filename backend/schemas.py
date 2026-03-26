@@ -72,3 +72,16 @@ class EnhancedResumeData(BaseModel):
 class HTMLData(BaseModel):
     html: str
     filename: Optional[str] = "Resume.pdf"
+
+
+# ── Auth Schemas ──────────────────────────────────────────────────
+
+class UserRegister(BaseModel):
+    email: str
+    password: str
+    full_name: Optional[str] = ""
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str

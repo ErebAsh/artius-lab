@@ -1,14 +1,15 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from contextlib import asynccontextmanager
 import io
 import json
 import PyPDF2
-from schemas import ResumeData, HTMLData
+from schemas import ResumeData, HTMLData, UserRegister, UserLogin
 from templates import RESUME_TEMPLATES, get_template_by_id, get_all_templates
 from ai_service import enhance_resume, check_ats_score, parse_resume_text, modify_resume_with_ai
 from pdf_service import generate_pdf, generate_html, generate_pdf_from_html
+from auth import hash_password, verify_password, create_access_token, get_current_user, get_optional_user
 from database import (
     init_db,
     save_resume,
@@ -19,6 +20,9 @@ from database import (
     save_ats_check,
     list_ats_checks,
     save_enhancement_log,
+    create_user,
+    get_user_by_email,
+    get_user_by_id,
 )
 
 
@@ -45,6 +49,79 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  AUTH ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════
+
+@app.post("/api/auth/register")
+async def register(data: UserRegister):
+    """Register a new user account."""
+    # Validate
+    if not data.email or not data.email.strip():
+        raise HTTPException(status_code=400, detail="Email is required.")
+    if not data.password or len(data.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters.")
+
+    # Check duplicate
+    existing = await get_user_by_email(data.email)
+    if existing:
+        raise HTTPException(status_code=409, detail="An account with this email already exists.")
+
+    # Create user
+    hashed = hash_password(data.password)
+    user_id = await create_user(
+        email=data.email,
+        password_hash=hashed,
+        full_name=data.full_name or "",
+    )
+
+    # Return token immediately (auto-login after register)
+    token = create_access_token(user_id, data.email.lower().strip())
+    return {
+        "token": token,
+        "user": {
+            "id": user_id,
+            "email": data.email.lower().strip(),
+            "full_name": (data.full_name or "").strip(),
+        },
+    }
+
+
+@app.post("/api/auth/login")
+async def login(data: UserLogin):
+    """Log in with email and password. Returns a JWT token."""
+    user = await get_user_by_email(data.email)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    if not verify_password(data.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    token = create_access_token(user["id"], user["email"])
+    return {
+        "token": token,
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "full_name": user["full_name"],
+        },
+    }
+
+
+@app.get("/api/auth/me")
+async def get_me(current_user: dict = Depends(get_current_user)):
+    """Return the currently authenticated user's profile."""
+    user = await get_user_by_id(current_user["user_id"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return {
+        "id": user["id"],
+        "email": user["email"],
+        "full_name": user["full_name"],
+        "created_at": user["created_at"],
+    }
 
 @app.get("/api/templates")
 def list_templates():
@@ -376,9 +453,10 @@ async def modify_resume(instruction: str = Form(...), resume_data: str = Form(..
 async def api_list_resumes(
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
+    current_user: dict = Depends(get_current_user),
 ):
-    """List all saved resumes, newest first."""
-    resumes = await list_resumes(limit=limit, offset=offset)
+    """List the authenticated user's saved resumes, newest first."""
+    resumes = await list_resumes(limit=limit, offset=offset, user_id=current_user["user_id"])
     return {"resumes": resumes, "count": len(resumes)}
 
 
@@ -398,8 +476,9 @@ async def api_save_resume(
     resume_data: str = Form(...),
     layout_settings: str = Form(None),
     preview_html: str = Form(None),
+    current_user: dict = Depends(get_current_user),
 ):
-    """Save a new resume draft to the database."""
+    """Save a new resume draft to the database (requires login)."""
     try:
         data = json.loads(resume_data)
     except json.JSONDecodeError:
@@ -418,6 +497,7 @@ async def api_save_resume(
         resume_data=data,
         layout_settings=layout,
         preview_html=preview_html,
+        user_id=current_user["user_id"],
     )
 
     return {"id": new_id, "message": "Resume saved successfully."}
