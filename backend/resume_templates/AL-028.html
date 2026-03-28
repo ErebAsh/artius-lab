@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Evelyn Huges', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.5;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Sidebar (35%) */
+        .sidebar {
+            width: 35%;
+            background-color: #e8e2d9;
+            padding: 260px 25px 40px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #dcd3c5;
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .section-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .header-line {
+            height: 1px;
+            background-color: #beb09d;
+            width: 100%;
+            position: relative;
+        }
+        .header-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -3px;
+            width: 7px;
+            height: 7px;
+            background-color: #333;
+            border-radius: 50%;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            fill: #333;
+            margin-top: 2px;
+        }
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .contact-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        .contact-value {
+            font-size: 9pt;
+            color: #555;
+            word-break: break-all;
+        }
+
+        .skill-item {
+            margin-bottom: 15px;
+        }
+        .skill-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .skill-name {
+            font-size: 9pt;
+            color: #333;
+        }
+        .skill-percent {
+            font-size: 8pt;
+            color: #666;
+            font-weight: 600;
+        }
+        .skill-bar-bg {
+            height: 2px;
+            background-color: #d1c8bb;
+            width: 100%;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background-color: #333;
+        }
+
+        .hobbies-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .hobby-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 9pt;
+            color: #333;
+        }
+        .hobby-icon {
+            width: 16px;
+            height: 16px;
+            fill: #333;
+        }
+
+        /* Main Content (65%) */
+        .main-content {
+            width: 65%;
+            background-color: #fff;
+            padding: 260px 45px 40px;
+        }
+
+        .main-section {
+            margin-bottom: 45px;
+        }
+        .summary-text {
+            font-size: 9.5pt;
+            line-height: 1.6;
+            color: #555;
+            text-align: justify;
+        }
+
+        .edu-item {
+            margin-bottom: 30px;
+        }
+        .edu-header {
+            margin-bottom: 8px;
+        }
+        .edu-degree {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #333;
+        }
+        .edu-date {
+            font-size: 10pt;
+            color: #b9a38d;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .edu-institution {
+            font-size: 10pt;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        .edu-desc {
+            font-size: 9.5pt;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Header Overlay */
+        .header-container {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            display: flex;
+            z-index: 10;
+        }
+        .header-left-bar {
+            width: 35%;
+            height: 40px;
+            background-color: #e8e2d9;
+        }
+        .header-main-box {
+            background-color: #3d3d3d;
+            width: 440px;
+            min-height: 120px;
+            height: auto;
+            margin-top: 40px;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.05);
+        }
+        .header-main-box h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            line-height: 1.1;
+        }
+        .header-main-box p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12pt;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 8px 0 0 0;
+            color: #fff;
+            line-height: 1.2;
+        }
+        
+        .initials-box {
+            width: 70px;
+            min-height: 120px;
+            height: auto;
+            background-color: #4a4a4a;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 0;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        .initials {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22pt;
+            font-weight: 700;
+            color: #b9a38d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+            gap: 2px;
+        }
+
+        .photo-area {
+            margin-top: 40px;
+            margin-left: 50px;
+            width: 140px;
+            height: 160px;
+            background-color: #fff;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .photo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 40pt;
+            font-weight: 700;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Overlay -->
+        <div class="header-container">
+            <div class="header-left-bar"></div>
+            <div class="header-main-box">
+                <h1>{{ personal.full_name | default('Evelyn Huges', true) }}</h1>
+                <p>{{ personal.title | default('Web Designer', true) }}</p>
+            </div>
+            <div class="initials-box">
+                <div class="initials">
+                    {% set names = personal.full_name.split(' ') %}
+                    {% if names|length >= 2 %}
+                        <span>{{ names[0][0] | upper }}</span>
+                        <span>/</span>
+                        <span>{{ names[1][0] | upper }}</span>
+                    {% else %}
+                        <span>{{ personal.full_name[0] | upper }}</span>
+                        <span>/</span>
+                        <span>H</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="photo-area">
+                {% if personal.photo %}
+                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+                {% else %}
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('E', true) | upper }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Contact -->
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <h2>Contact</h2>
+                    <div class="header-line"></div>
+                </div>
+                
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    <div class="contact-info">
+                        <span class="contact-label">Phone</span>
+                        <span class="contact-value">{{ personal.phone | default('+8801744836384', true) }}</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <div class="contact-info">
+                        <span class="contact-label">E-mail</span>
+                        <span class="contact-value">{{ personal.email | default('Yourmail@gmail.com', true) }}</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    <div class="contact-info">
+                        <span class="contact-label">Website</span>
+                        <span class="contact-value">{{ personal.website | default('www.blackwellk.com', true) }}</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <div class="contact-info">
+                        <span class="contact-label">Location</span>
+                        <span class="contact-value">{{ personal.location | default('123 St. Clinton Tower, NY', true) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills -->
+            <div class="sidebar-section" style="margin-top: 20px;">
+                <div class="section-header">
+                    <h2>Skills</h2>
+                    <div class="header-line"></div>
+                </div>
+                
+                {% if skills and skills|length > 0 %}
+                    {% for skill in skills %}
+                    <div class="skill-item">
+                        <div class="skill-row">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <span class="skill-percent">{{ skill.level | default(80, true) }}%</span>
+                        </div>
+                        <div class="skill-bar-bg">
+                            <div class="skill-bar-fill" style="width: {{ skill.level | default(80, true) }}%;"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="skill-item">
+                        <div class="skill-row">
+                            <span class="skill-name">Your Skill Here</span>
+                            <span class="skill-percent">90%</span>
+                        </div>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-row">
+                            <span class="skill-name">Your Skill Here</span>
+                            <span class="skill-percent">60%</span>
+                        </div>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 60%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-row">
+                            <span class="skill-name">Your Skill Here</span>
+                            <span class="skill-percent">40%</span>
+                        </div>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 40%;"></div></div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Hobbies -->
+            <div class="sidebar-section" style="margin-top: 20px;">
+                <div class="section-header">
+                    <h2>Hobbies</h2>
+                    <div class="header-line"></div>
+                </div>
+                <div class="hobbies-grid">
+                    <div class="hobby-item">
+                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        <span>Music</span>
+                    </div>
+                    <div class="hobby-item">
+                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        <span>Hockey</span>
+                    </div>
+                    <div class="hobby-item">
+                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.43c-.16.09-.33.14-.5.14-.17 0-.34-.05-.5-.14l-7.97-4.43c-.32-.17-.53-.5-.53-.88v-9c0-.38.21-.71.53-.88l7.97-4.43c.16-.09.33-.14.5-.14.17 0 .34.05.5.14l7.97 4.43c.32.17.53.5.53.88v9z"/></svg>
+                        <span>Travel</span>
+                    </div>
+                    <div class="hobby-item">
+                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        <span>Football</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Profile Summary -->
+            {% if personal.summary %}
+            <div class="main-section">
+                <div class="section-header">
+                    <h2 style="color: #b9a38d;">Profile Summary</h2>
+                    <div class="header-line"></div>
+                </div>
+                <div class="summary-text">
+                    {{ personal.summary }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Education -->
+            {% if education and education|length > 0 %}
+            <div class="main-section">
+                <div class="section-header">
+                    <h2 style="color: #b9a38d;">Education</h2>
+                    <div class="header-line"></div>
+                </div>
+                
+                {% for edu in education %}
+                <div class="edu-item">
+                    <div class="edu-header">
+                        <span class="edu-degree">{{ edu.degree | default('Degree Name (Major)', true) }}</span>
+                        <span class="edu-date">{{ edu.start_date }} - {{ edu.end_date | default('YYYY', true) }}</span>
+                    </div>
+                    <div class="edu-institution">{{ edu.institution | default('College/University', true) }}, {{ edu.location | default('Location', true) }}</div>
+                    <div class="edu-desc">
+                        {{ edu.description | default('Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa.', true) }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="main-section">
+                    <div class="section-header">
+                        <h2 style="color: #b9a38d;">Education</h2>
+                        <div class="header-line"></div>
+                    </div>
+                    <div class="edu-item">
+                        <div class="edu-header">
+                            <span class="edu-degree">Degree Name (Major)</span>
+                            <span class="edu-date">YYYY - YYYY</span>
+                        </div>
+                        <div class="edu-institution">College/University, Location</div>
+                        <div class="edu-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa.</div>
+                    </div>
+                    <div class="edu-item">
+                        <div class="edu-header">
+                            <span class="edu-degree">Degree Name (Major)</span>
+                            <span class="edu-date">YYYY - YYYY</span>
+                        </div>
+                        <div class="edu-institution">College/University, Location</div>
+                        <div class="edu-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa.</div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Experience (Optional, but good to have) -->
+            {% if experience and experience|length > 0 %}
+            <div class="main-section">
+                <div class="section-header">
+                    <h2 style="color: #b9a38d;">Experience</h2>
+                    <div class="header-line"></div>
+                </div>
+                {% for exp in experience %}
+                <div class="edu-item">
+                    <div class="edu-header">
+                        <span class="edu-degree">{{ exp.title }}</span>
+                        <span class="edu-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
+                    </div>
+                    <div class="edu-institution">{{ exp.company }}, {{ exp.location | default('Location', true) }}</div>
+                    <div class="edu-desc">
+                        {{ exp.description }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Sahib Khan', true) }} | {{ personal.title | default('Graphic Designer', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.4;
+            width: 100%;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #1b431c;
+            display: flex;
+            position: relative;
+        }
+
+        /* ── Left Sidebar (Beige) ── */
+        .sidebar {
+            width: 40%;
+            background: #fdf5e6;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .photo-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .photo-inner {
+            width: 180px;
+            height: 180px;
+            border: 6px solid #1b431c;
+            background: #fff;
+            overflow: hidden;
+        }
+        .photo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            font-weight: 700;
+            color: #1b431c;
+        }
+
+        .sidebar-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13pt;
+            font-weight: 700;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-section h2 svg {
+            width: 18px;
+            height: 18px;
+            fill: #1b431c;
+        }
+
+        .contact-item {
+            margin-bottom: 12px;
+            font-size: 9pt;
+            color: #444;
+        }
+        .contact-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 3px;
+            color: #1b431c;
+            font-size: 8.5pt;
+        }
+
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skill-list li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 8px;
+            font-size: 9pt;
+            color: #444;
+        }
+        .skill-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #1b431c;
+        }
+
+        /* ── Main Content (Forest Green) ── */
+        .main-content {
+            width: 60%;
+            padding: 60px 50px;
+            color: #fff;
+        }
+
+        .header {
+            margin-bottom: 60px;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 38pt;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1.1;
+        }
+        .job-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 500;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.8;
+        }
+
+        .main-section {
+            margin-bottom: 45px;
+            position: relative;
+        }
+        .section-header-main {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            background: #fff;
+            color: #1b431c;
+            display: inline-block;
+            clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%);
+            width: 100%;
+        }
+
+        .profile-text {
+            font-size: 9.5pt;
+            line-height: 1.7;
+            opacity: 0.9;
+            text-align: justify;
+        }
+
+        .edu-item {
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            opacity: 0.9;
+        }
+        .edu-title { font-weight: 700; font-size: 10.5pt; }
+        .edu-date { font-weight: 600; font-size: 9pt; text-align: right; }
+        .edu-subtitle { margin-top: 3px; font-size: 9.5pt; grid-column: 1 / span 2; }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+        }
+        .skills-grid li {
+            position: relative;
+            padding-left: 15px;
+            font-size: 9.5pt;
+            opacity: 0.9;
+        }
+        .skills-grid li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+
+        @media print {
+            .container { width: 210mm; height: 297mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="photo-section">
+                <div class="photo-inner">
+                    {% if personal.photo %}
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Sahib Khan', true) }}">
+                    {% else %}
+                    <div class="photo-placeholder">{{ personal.full_name[0] | default('S', true) | upper }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Career Objective (Optional here, image shows it on right) -->
+            <div class="sidebar-section">
+                <h2><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Contact</h2>
+                <div class="contact-item">
+                    <span class="contact-label">Phone</span>
+                    {{ personal.phone | default('+91 8954400000', true) }}
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Email</span>
+                    {{ personal.email | default('you@example.com', true) }}
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Address</span>
+                    {{ personal.location | default('New Delhi, India', true) }}
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h2><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Personal Skills</h2>
+                <ul class="skill-list">
+                    {% if expertise.professional %}
+                        {% for item in expertise.professional %}<li>{{ item }}</li>{% endfor %}
+                    {% else %}
+                        <li>Communication Skills</li>
+                        <li>Teamwork</li>
+                        <li>Adaptability</li>
+                        <li>Problem Solving</li>
+                        <li>Leadership</li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14c-.17-.64-.26-1.31-.26-2s.09-1.36.26-2h3.38c-.09.66-.14 1.32-.14 2 0 .68.05 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.91-4.33-3.56zm2.95-8H5.08c.96-1.65 2.49-2.93 4.33-3.56-.6 1.11-1.06 2.31-1.38 3.56zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08-2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.14-1.32-.14-2 0-.68.05-1.34.14-2h4.68c.09.66.14 1.32.14 2 0 .68-.05 1.34-.14 2zm.4 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.09-.66.14-1.32.14-2 0-.68-.05-1.34-.14-2h3.38c.17.64.26 1.31.26 2s-.09 1.36-.26 2h-3.38z"/></svg> Language</h2>
+                <ul class="skill-list" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <li>English</li>
+                    <li>Hindi</li>
+                    <li>French</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="name">{{ personal.full_name | default('Sahib Khan', true) }}</h1>
+                <div class="job-title">{{ personal.title | default('Graphic Designer', true) }}</div>
+            </div>
+
+            <div class="main-section">
+                <h2 class="section-header-main">Career Objective</h2>
+                {% if personal.summary %}
+                <p class="profile-text">{{ personal.summary }}</p>
+                {% endif %}
+            </div>
+
+            {% if education and education|length > 0 %}
+            <div class="main-section">
+                <h2 class="section-header-main">Education</h2>
+                {% for edu in education %}
+                <div class="edu-item">
+                    <span class="edu-title">{{ edu.degree }}</span>
+                    <span class="edu-date">{{ edu.end_date | default('Present', true) }}</span>
+                    <span class="edu-subtitle">{{ edu.institution }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="main-section">
+                <h2 class="section-header-main">Technical Skills</h2>
+                <ul class="skills-grid">
+                    {% if expertise.technical %}
+                        {% for item in expertise.technical %}<li>{{ item }}</li>{% endfor %}
+                    {% else %}
+                        <li>Computer Skills</li>
+                        <li>Internet Browsing</li>
+                        <li>Email Communication</li>
+                        <li>File Management</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="main-section">
+                <h2 class="section-header-main">Hobbies</h2>
+                <ul class="skills-grid">
+                    <li>Reading Books</li>
+                    <li>Sports and Fitness</li>
+                    <li>Music</li>
+                    <li>Cooking</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

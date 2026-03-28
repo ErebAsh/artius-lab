@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Name Here', true) }} | {{ personal.title | default('Graphic Designer', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.4;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── Header ── */
+        .header {
+            height: 250px;
+            display: flex;
+            position: relative;
+            background: #000;
+        }
+        .header-left {
+            flex: 1.5;
+            background: #e74c3c;
+            color: #fff;
+            padding: 60px 50px;
+            position: relative;
+            z-index: 2;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+        .header-right {
+            flex: 1;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            margin-right: -2px; /* Pull in to prevent subpixel slivers */
+        }
+        .name {
+            font-size: 42pt;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+            line-height: 1;
+            color: #fff;
+        }
+        .prof {
+            font-size: 16pt;
+            font-weight: 500;
+            color: #333;
+            margin-top: 10px;
+            text-transform: lowercase;
+        }
+
+        /* Improved Hexagon Frame */
+        .photo-hex-wrapper {
+            width: 190px;
+            height: 210px;
+            background: #fff;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .photo-hex {
+            width: 180px;
+            height: 200px;
+            background: #e74c3c;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .photo-hex img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-hex-inner {
+            width: 100%;
+            height: 100%;
+            background: #e74c3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 48pt;
+            font-weight: 800;
+        }
+
+        /* ── Main Layout ── */
+        .main-body {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 38%;
+            background: #222;
+            color: #fff;
+            padding: 60px 40px;
+            border-bottom-right-radius: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            z-index: 2;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            background: #fff;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .icon-hex {
+            width: 35px;
+            height: 40px;
+            background: #fff;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e74c3c;
+            font-size: 14pt;
+        }
+        .sidebar .icon-hex {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .section-title {
+            font-size: 18pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 5px;
+            flex: 1;
+        }
+
+        .item-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .item {
+            margin-bottom: 25px;
+        }
+        .item-title {
+            font-weight: 700;
+            font-size: 11pt;
+            color: #e74c3c;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .item-sub {
+            font-weight: 700;
+            font-size: 10pt;
+            margin-bottom: 3px;
+        }
+        .item-text {
+            font-size: 9pt;
+            color: #555;
+            line-height: 1.6;
+        }
+        .sidebar .item-text {
+            color: #bbb;
+        }
+
+        .skill-item {
+            margin-bottom: 12px;
+        }
+        .skill-name {
+            font-size: 9pt;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .skill-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .skill-bar-bg {
+            height: 8px;
+            background: #444;
+            flex: 1;
+            position: relative;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background: #e74c3c;
+        }
+        .skill-bar-dots {
+            width: 40px;
+            height: 8px;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="name">{{ personal.full_name | default('NAME HERE', true) }}</h1>
+                <div class="prof">{{ personal.title | default('graphic designer', true) }}</div>
+            </div>
+            <div class="header-right">
+                <div class="photo-hex-wrapper">
+                    <div class="photo-hex">
+                        {% if personal.photo %}
+                        <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+                        {% else %}
+                        <div class="photo-hex-inner">{{ personal.full_name[0] | default('N', true) }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-body">
+            <!-- Sidebar (Left) -->
+            <aside class="sidebar">
+                <!-- Contact -->
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">📞</div>
+                        <h2 class="section-title">CONTACT</h2>
+                    </div>
+                    <div class="item-list">
+                        <div class="item">
+                            <div class="item-text" style="color: #fff;">{{ personal.phone | default('+12345678910', true) }}</div>
+                            <div class="item-text" style="color: #fff;">{{ personal.email | default('user@email.com', true) }}</div>
+                            <div class="item-text" style="color: #fff;">{{ personal.location | default('your location here', true) }}</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">👤</div>
+                        <h2 class="section-title">REFERENCE</h2>
+                    </div>
+                    {% set refs = references | default([{'name': 'JHON SMITH JR', 'title': 'job position here', 'phone': 'phone number', 'email': 'address here'}], true) %}
+                    {% for ref in refs %}
+                    <div class="item">
+                        <div class="item-title" style="color: #e74c3c;">{{ ref.name }}</div>
+                        <div class="item-text" style="color: #fff;">{{ ref.title }}</div>
+                        <div class="item-text" style="color: #fff;">{{ ref.phone }}</div>
+                        <div class="item-text" style="color: #fff;">{{ ref.email }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">⚙️</div>
+                        <h2 class="section-title">SKILLS</h2>
+                    </div>
+                    <div class="item-list">
+                        {% for skill in skills | default([{'name': 'Adobe Illustrator', 'level': 90}, {'name': 'Adobe Photoshop', 'level': 80}], true) %}
+                        <div class="skill-item">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <div class="skill-bar-row">
+                                <div class="skill-bar-bg">
+                                    <div class="skill-bar-fill" style="width: {{ skill.level }}%;"></div>
+                                </div>
+                                <div class="skill-bar-dots"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </aside>
+
+            <main class="content">
+                {% if personal.summary %}
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">👤</div>
+                        <h2 class="section-title">ABOUT ME</h2>
+                    </div>
+                    <div class="item-text">
+                        {{ personal.summary }}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if education and education|length > 0 %}
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">🎓</div>
+                        <h2 class="section-title">EDUCATION</h2>
+                    </div>
+                    {% for edu in education %}
+                    <div class="item">
+                        <div class="item-title">{{ edu.degree }} : {{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                        <div class="item-sub" style="color: #e74c3c;">{{ edu.institution }}</div>
+                        <div class="item-text">{{ edu.description }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+
+                {% if experience and experience|length > 0 %}
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">💼</div>
+                        <h2 class="section-title">EXPERIENCE</h2>
+                    </div>
+                    {% for exp in experience %}
+                    <div class="item">
+                        <div class="item-title">{{ exp.company }} : {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                        <div class="item-sub" style="color: #e74c3c;">{{ exp.title }}</div>
+                        <div class="item-text">{{ exp.description }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</body>
+</html>

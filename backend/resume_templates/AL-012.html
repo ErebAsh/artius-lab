@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Harry Nelson', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.4;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── Diagonal Accents ── */
+        .accent-top {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 400px;
+            height: 200px;
+            background: #004b8d;
+            transform: rotate(-15deg);
+            z-index: 1;
+        }
+        .accent-top-light {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            width: 350px;
+            height: 80px;
+            background: #00adef;
+            transform: rotate(-15deg);
+            z-index: 2;
+        }
+        .accent-bottom {
+            position: absolute;
+            bottom: -60px;
+            left: -50px;
+            width: 100%;
+            height: 200px;
+            background: #004b8d;
+            transform: rotate(-5deg);
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            padding-left: 60px;
+            color: #fff;
+            font-size: 10pt;
+            letter-spacing: 2px;
+        }
+        .accent-bottom-light {
+            position: absolute;
+            bottom: 40px;
+            left: -30px;
+            width: 110%;
+            height: 50px;
+            background: #00adef;
+            transform: rotate(-5deg);
+            z-index: 2;
+        }
+
+        /* ── Header ── */
+        .header {
+            padding: 80px 60px 50px;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 10;
+        }
+        .header-content {
+            text-align: right;
+            padding-right: 0;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .name-first {
+            font-size: 34pt;
+            font-weight: 300;
+            color: #fff;
+        }
+        .name-last {
+            font-size: 38pt;
+            font-weight: 800;
+            color: #fff;
+            display: block; /* Stack as seen in some variations or keep together */
+            margin-top: 5px;
+        }
+        .job-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13pt;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* ── Main Layout ── */
+        .main-body {
+            display: flex;
+            flex-grow: 1;
+            padding: 0 60px;
+            z-index: 5;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 40%;
+            padding-top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .photo-section {
+            margin-top: -120px;
+            margin-bottom: 20px;
+        }
+        .photo-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 8px solid #fff;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: #fff;
+            position: relative;
+        }
+        .photo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #e1e1e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .section-header-sidebar {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16pt;
+            font-weight: 700;
+            color: #004b8d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 9.5pt;
+            color: #444;
+        }
+        .contact-icon {
+            width: 28px;
+            height: 28px;
+            background: #00adef;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 3px 6px rgba(0,173,239,0.3);
+        }
+        .contact-icon svg {
+            width: 12px;
+            height: 12px;
+            fill: #fff;
+        }
+
+        .skill-item {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .skill-name {
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: #444;
+        }
+        .skill-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e1e1e1;
+        }
+        .dot.active {
+            background: #004b8d;
+        }
+        .dot.vibrant {
+            background: #00adef;
+        }
+
+        .hobby-text {
+            font-size: 9.5pt;
+            color: #555;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* ── Main column ── */
+        .main-column {
+            width: 60%;
+            padding-left: 40px;
+            padding-top: 40px;
+        }
+
+        .pill-header {
+            background: #004b8d;
+            background: linear-gradient(to right, #004b8d, #002d44);
+            color: #fff;
+            display: inline-block;
+            padding: 8px 45px;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            box-shadow: 3px 5px 15px rgba(0,75,141,0.25);
+            position: relative;
+        }
+        .pill-header::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            right: 15px;
+            width: 90%;
+            height: 100%;
+            background: #00adef;
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .profile-text {
+            font-size: 9.5pt;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            text-align: justify;
+        }
+
+        /* Timeline for main column */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 10px;
+            bottom: 0;
+            width: 2px;
+            background: #004b8d;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #004b8d;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #004b8d;
+            z-index: 10;
+        }
+        .timeline-content {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 15px;
+        }
+        .timeline-year {
+            font-weight: 700;
+            font-size: 10pt;
+            color: #222;
+        }
+        .details-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 10.5pt;
+            color: #004b8d;
+            text-transform: uppercase;
+        }
+        .details-desc {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media print {
+            .container { width: 210mm; height: 297mm; }
+            .accent-top, .accent-top-light, .accent-bottom, .accent-bottom-light { 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Accents -->
+        <div class="accent-top"></div>
+        <div class="accent-top-light"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="name">
+                    <span class="name-first">{{ personal.full_name.split(' ')[0] | default('Harry', true) }}</span>
+                    <span class="name-last">{{ personal.full_name.split(' ')[1:] | join(' ') | default('Nelson', true) }}</span>
+                </h1>
+                <div class="job-title">{{ personal.title | default('Graphic Designer', true) }}</div>
+            </div>
+        </header>
+
+        <div class="main-body">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="photo-section">
+                    <div class="photo-circle">
+                        {% if personal.photo %}
+                        <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Harry Nelson', true) }}">
+                        {% else %}
+                        <div class="photo-placeholder">{{ personal.full_name[0] | default('H', true) | upper }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-header-sidebar">Contact</h2>
+                    {% if personal.email %}
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                        <span>{{ personal.email }}</span>
+                    </div>
+                    {% endif %}
+                    {% if personal.phone %}
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+                        <span>{{ personal.phone }}</span>
+                    </div>
+                    {% endif %}
+                    {% if personal.location %}
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+                        <span>{{ personal.location }}</span>
+                    </div>
+                    {% endif %}
+                    {% if personal.portfolio %}
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14c-.17-.64-.26-1.31-.26-2s.09-1.36.26-2h3.38c-.09.66-.14 1.32-.14 2 0 .68.05 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.91-4.33-3.56zm2.95-8H5.08c.96-1.65 2.49-2.93 4.33-3.56-.6 1.11-1.06 2.31-1.38 3.56zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08-2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.14-1.32-.14-2 0-.68.05-1.34.14-2h4.68c.09.66.14 1.32.14 2 0 .68-.05 1.34-.14 2zm.4 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.09-.66.14-1.32.14-2 0-.68-.05-1.34-.14-2h3.38c.17.64.26 1.31.26 2s-.09 1.36-.26 2h-3.38z"/></svg></div>
+                        <span>{{ personal.portfolio }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-header-sidebar">Skills</h2>
+                    {% if skills and skills|length > 0 %}
+                        {% for skill in skills %}
+                        <div class="skill-item">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <div class="skill-dots">
+                                <div class="dot active"></div>
+                                <div class="dot active"></div>
+                                <div class="dot active"></div>
+                                <div class="dot active"></div>
+                                <div class="dot vibrant"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="skill-item"><span class="skill-name">Web design</span><div class="skill-dots"><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot vibrant"></div></div></div>
+                        <div class="skill-item"><span class="skill-name">Graphic design</span><div class="skill-dots"><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div></div></div>
+                    {% endif %}
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-header-sidebar">Hobbies</h2>
+                    <div class="hobby-text">Football, Writing, Music, Travel</div>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <main class="main-column">
+                {% if personal.summary %}
+                <div class="pill-header">About Me</div>
+                <div class="profile-text">
+                    {{ personal.summary }}
+                </div>
+                {% endif %}
+
+                {% if education and education|length > 0 %}
+                <div class="pill-header">Education</div>
+                <div class="timeline">
+                    {% for edu in education %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-year">{{ edu.start_date }}<br>{{ edu.end_date | default('Now', true) }}</div>
+                            <div class="timeline-details">
+                                <div class="details-title">{{ edu.institution }}</div>
+                                <div class="details-desc">{{ edu.degree }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if experience and experience|length > 0 %}
+                <div class="pill-header">Experience</div>
+                <div class="timeline">
+                    {% for exp in experience %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-year">{{ exp.start_date }}<br>{{ exp.end_date | default('Now', true) }}</div>
+                            <div class="timeline-details">
+                                <div class="details-title">{{ exp.title }}</div>
+                                <div class="details-desc">{{ exp.company }}</div>
+                                {% if exp.description %}
+                                <div style="font-size: 8.5pt; color: #777; margin-top: 5px;">{{ exp.description }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <div class="accent-bottom-light"></div>
+        <footer class="accent-bottom">
+            WWW.HELPSHARED.COM
+        </footer>
+    </div>
+</body>
+</html>

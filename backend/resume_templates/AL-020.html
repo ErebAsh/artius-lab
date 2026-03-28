@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Olivia Wilson', true) }} | {{ personal.title | default('Barista Professional', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        :root {
+            --bg-color: #3d3d3d;
+            --accent-color: #9b846b;
+            --text-light: #ffffff;
+            --text-muted: #cccccc;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            line-height: 1.5;
+            width: 210mm;
+            height: 297mm;
+        }
+        .container {
+            display: flex;
+            width: 210mm;
+            height: 297mm;
+            padding: 50px 40px;
+            gap: 40px;
+        }
+
+        /* ── Left Column ── */
+        .left-column {
+            width: 38%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-area {
+            position: relative;
+            margin-bottom: 50px;
+        }
+        .photo-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #eee;
+            border: 4px solid var(--accent-color);
+            z-index: 2;
+            position: relative;
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* The decorative bar behind the photo */
+        .photo-bg-bar {
+            position: absolute;
+            top: 50px;
+            left: -40px;
+            width: 280px;
+            height: 100px;
+            background: var(--accent-color);
+            border-radius: 0 50px 50px 0;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 16pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .experience-item {
+            margin-bottom: 30px;
+        }
+        .exp-role {
+            font-weight: 700;
+            font-size: 11pt;
+            margin-bottom: 2px;
+            color: #fff;
+        }
+        .exp-detail {
+            font-weight: 700;
+            font-size: 9.5pt;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .exp-desc {
+            font-size: 8.5pt;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .contact-section {
+            margin-top: auto;
+            padding-bottom: 20px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .contact-icon {
+            width: 36px;
+            height: 36px;
+            background: #fff;
+            color: var(--bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .contact-icon-symbol {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contact-text {
+            font-size: 9.5pt;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* ── Right Column ── */
+        .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header-section {
+            padding-bottom: 20px;
+        }
+        .name-first {
+            font-size: 48pt;
+            font-weight: 800;
+            display: block;
+            line-height: 0.9;
+            text-transform: capitalize;
+            color: #fff;
+        }
+        .name-last {
+            font-size: 48pt;
+            font-weight: 800;
+            display: block;
+            line-height: 1.1;
+            text-transform: capitalize;
+            color: #fff;
+        }
+
+        .info-card {
+            background-color: var(--accent-color);
+            padding: 45px 35px;
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            flex: 1;
+        }
+
+        .card-section-title {
+            font-size: 14pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .card-text {
+            font-size: 9.5pt;
+            line-height: 1.6;
+            color: #eee;
+        }
+
+        .edu-item {
+            margin-bottom: 15px;
+        }
+        .edu-main {
+            font-weight: 700;
+            font-size: 10pt;
+            margin-bottom: 3px;
+        }
+        .edu-sub {
+            font-size: 9pt;
+            font-weight: 400;
+            color: #ddd;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10pt;
+            font-weight: 500;
+        }
+        .skill-stars {
+            display: flex;
+            gap: 4px;
+            color: #fff;
+            font-size: 12pt;
+        }
+        .star {
+            color: #fff;
+        }
+        .star.empty {
+            color: rgba(255,255,255,0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="photo-area">
+                <div class="photo-bg-bar"></div>
+                <div class="photo-container">
+                    {% if personal.photo %}
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+                    {% else %}
+                    <div style="width: 100%; height: 100%; background: #ccc; display: flex; align-items: center; justify-content: center; font-size: 60px; color: #fff; font-family: 'Montserrat'; font-weight: 700;">
+                        {{ personal.full_name[0] | default('O', true) }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <section>
+                <h2 class="section-title">Experience</h2>
+                {% for exp in experience %}
+                <div class="experience-item">
+                    <div class="exp-role">{{ exp.title }}</div>
+                    <div class="exp-detail">{{ exp.company }} {{ exp.start_date }}-{{ exp.end_date | default('Present', true) }}</div>
+                    <div class="exp-desc">{{ exp.description }}</div>
+                </div>
+                {% endfor %}
+            </section>
+
+            <section class="contact-section">
+                <h2 class="section-title">Contact</h2>
+                {% if personal.phone %}
+                <div class="contact-item">
+                    <div class="contact-icon"><div class="contact-icon-symbol">📞</div></div>
+                    <div class="contact-text">{{ personal.phone }}</div>
+                </div>
+                {% endif %}
+                {% if personal.email %}
+                <div class="contact-item">
+                    <div class="contact-icon"><div class="contact-icon-symbol">✉️</div></div>
+                    <div class="contact-text">{{ personal.email }}</div>
+                </div>
+                {% endif %}
+                {% if personal.location %}
+                <div class="contact-item">
+                    <div class="contact-icon"><div class="contact-icon-symbol">📍</div></div>
+                    <div class="contact-text">{{ personal.location }}</div>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <header class="header-section">
+                <span class="name-first">{{ personal.full_name.split(' ')[0] | default('Olivia', true) }}</span>
+                <span class="name-last">{{ personal.full_name.split(' ')[1:] | join(' ') | default('Wilson', true) }}</span>
+            </header>
+
+            <div class="info-card">
+                {% if personal.summary %}
+                <section>
+                    <h2 class="card-section-title">About Me</h2>
+                    <div class="card-text">
+                        {{ personal.summary }}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if education and education|length > 0 %}
+                <section>
+                    <h2 class="card-section-title">Education</h2>
+                    {% for edu in education %}
+                    <div class="edu-item">
+                        <div class="edu-main">{{ edu.end_date[:4] if edu.end_date else '2023' }} | {{ edu.institution }}</div>
+                        <div class="edu-sub">{{ edu.degree }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+
+                {% if skills and skills|length > 0 %}
+                <section>
+                    <h2 class="card-section-title">Skills</h2>
+                    <div class="skill-list">
+                        {% for skill in skills %}
+                        <div class="skill-item">
+                            <span>{{ skill.name }}</span>
+                            <div class="skill-stars">
+                                {% set rating = (skill.level / 20) | round | int if skill.level else 5 %}
+                                {% for i in range(5) %}
+                                <span class="star {{ 'empty' if i >= rating else '' }}">★</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

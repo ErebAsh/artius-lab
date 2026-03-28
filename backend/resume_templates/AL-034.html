@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Alice Watson', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #444;
+            line-height: 1.5;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 35%;
+            background-color: #f4eee8;
+            padding: 50px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-container {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 40px;
+            background-color: #fff;
+            padding: 5px;
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50pt;
+            color: #aaa;
+            border-radius: 50%;
+        }
+
+        .sidebar-section {
+            margin-bottom: 35px;
+        }
+
+        .sidebar-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10.5pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dcd3c5;
+            padding-bottom: 8px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 8.5pt;
+        }
+        .contact-icon-box {
+            width: 24px;
+            height: 24px;
+            background-color: #c1a182;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .contact-icon {
+            width: 12px;
+            height: 12px;
+            fill: #fff;
+        }
+
+        .edu-item {
+            margin-bottom: 15px;
+        }
+        .edu-degree {
+            font-weight: 700;
+            font-size: 9pt;
+            color: #333;
+            text-transform: uppercase;
+        }
+        .edu-inst {
+            font-size: 8.5pt;
+            color: #666;
+            margin: 2px 0;
+        }
+        .edu-date {
+            font-size: 8pt;
+            color: #999;
+        }
+
+        .expertise-category {
+            font-weight: 700;
+            font-size: 8.5pt;
+            text-transform: uppercase;
+            color: #c1a182;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skill-list li {
+            font-size: 8.5pt;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .skill-list li::before {
+            content: "•";
+            color: #333;
+        }
+
+        /* Main Content */
+        .main {
+            width: 65%;
+            padding: 50px 45px;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 40pt;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            line-height: 1;
+        }
+        .first-name { color: #000; }
+        .last-name { color: #c1a182; font-weight: 300; }
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10pt;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-top: 15px;
+            color: #999;
+        }
+        .header-line {
+            height: 1px;
+            background-color: #eee;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .summary {
+            font-size: 9.5pt;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 40px;
+            text-align: justify;
+        }
+
+        .section-header {
+            background-color: #f4eee8;
+            padding: 8px 15px;
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #333;
+            margin: 0;
+        }
+
+        .exp-item {
+            margin-bottom: 30px;
+        }
+        .exp-role {
+            font-weight: 700;
+            font-size: 10pt;
+            color: #333;
+        }
+        .exp-meta {
+            font-size: 9pt;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        .exp-desc {
+            font-size: 9pt;
+            line-height: 1.6;
+            color: #555;
+        }
+        .exp-desc ul {
+            padding-left: 15px;
+            margin-top: 8px;
+        }
+        .exp-desc li {
+            margin-bottom: 8px;
+        }
+
+        .dev-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 9.5pt;
+        }
+        .dev-info {
+            flex: 1;
+        }
+        .dev-name {
+            font-weight: 700;
+            color: #333;
+        }
+        .dev-inst {
+            font-size: 9pt;
+            color: #777;
+        }
+        .dev-date {
+            color: #999;
+            font-size: 9pt;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="photo-container">
+                {% if personal.photo %}
+                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+                {% else %}
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Contact -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Contact</h3>
+                <div class="contact-item">
+                    <div class="contact-icon-box">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    </div>
+                    <span>{{ personal.phone | default('555-555-555', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon-box">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    </div>
+                    <span>{{ personal.email | default('alice.w@example.com', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon-box">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    </div>
+                    <span>{{ personal.location | default('123 Toronto, ON', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon-box">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                    </div>
+                    <span>{{ personal.linkedin | default('linkedin.com/in/username', true) }}</span>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Education</h3>
+                {% if education %}
+                {% for edu in education %}
+                <div class="edu-item">
+                    <div class="edu-degree">{{ edu.degree }}</div>
+                    <div class="edu-inst">{{ edu.institution }}</div>
+                    <div class="edu-date">{{ edu.start_date }} - {{ edu.end_date }}</div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="edu-item">
+                    <div class="edu-degree">DEGREE NAME</div>
+                    <div class="edu-inst">Institution Name, Location</div>
+                    <div class="edu-date">Start Date - End Date</div>
+                </div>
+                <div class="edu-item">
+                    <div class="edu-degree">DEGREE NAME</div>
+                    <div class="edu-inst">Institution Name, Location</div>
+                    <div class="edu-date">Start Date - End Date</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Expertise -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Expertise</h3>
+                <div class="expertise-category">Professional</div>
+                <ul class="skill-list">
+                    {% if skills %}
+                    {% for skill in skills %}
+                    <li>{{ skill.name }}</li>
+                    {% endfor %}
+                    {% else %}
+                    <li>Analytical problem-solving</li>
+                    <li>Strong organizational skills</li>
+                    <li>Expertise in conflict handling</li>
+                    <li>Excellent presentation skills</li>
+                    <li>Excellent negotiation skills</li>
+                    <li>Leadership experience</li>
+                    {% endif %}
+                </ul>
+                <div class="expertise-category">Technical</div>
+                <ul class="skill-list">
+                    <li>Content creation and editing</li>
+                    <li>Social media marketing</li>
+                    <li>Email marketing automation</li>
+                    <li>Video editing and production</li>
+                    <li>Paid advertising and PPC</li>
+                    <li>Advanced HTML/CSS</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <header class="header">
+                <h1 class="name">
+                    {% set names = (personal.full_name | default('Alice Watson', true)).split(' ') %}
+                    {% if names|length >= 2 %}
+                        <span class="first-name">{{ names[0] }}</span> <span class="last-name">{{ names[1:] | join(' ') }}</span>
+                    {% else %}
+                        <span class="first-name">{{ personal.full_name }}</span>
+                    {% endif %}
+                </h1>
+                <p class="title">{{ personal.title | default('Professional Title', true) }}</p>
+                <div class="header-line"></div>
+            </header>
+
+            <!-- Summary -->
+            <div class="summary">
+                {{ personal.summary | default("Write a summary that truly reflects who you are and what you bring to the table. Focus on your key strengths and relevant experiences. Showcase how your skills have driven real results in past roles, and be sure to include specific numbers or data to back up your achievements. By connecting your experience to the job you're aiming for, you'll show that you're the right fit. Keep it short and impactful.", true) }}
+            </div>
+
+            <!-- Work Experience -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Work Experience</h2>
+                </div>
+                
+                {% if experience %}
+                {% for exp in experience %}
+                <div class="exp-item">
+                    <div class="exp-role">{{ exp.title }}</div>
+                    <div class="exp-meta">{{ exp.company }}, {{ exp.location }} | {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                    <div class="exp-desc">
+                        {{ exp.description | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="exp-item">
+                    <div class="exp-role">Position Title Here</div>
+                    <div class="exp-meta">Company, Location | Date - Present</div>
+                    <div class="exp-desc">
+                        <ul>
+                            <li>Tailor your resume to the specific job you are applying for. This means highlighting the skills and experience that are most relevant to the job.</li>
+                            <li>Quantify your results whenever possible. This will help employers understand the tangible impact of your work.</li>
+                            <li>Include any certifications or additional training that are relevant to the position.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="exp-item">
+                    <div class="exp-role">Position Title Here</div>
+                    <div class="exp-meta">Company, Location | Date - Date</div>
+                    <div class="exp-desc">
+                        <ul>
+                            <li>Use action verbs that are powerful and unique to increase your chances of capturing the attention of any potential employer.</li>
+                        <li>Correlate these action verbs with specificity and impact.</li>
+                        <li>Take the time to proofread your resume - multiple times, if necessary - until every word is perfect.</li>
+                    </ul>
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Professional Development -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Professional Development</h2>
+                </div>
+                <div class="dev-item">
+                    <div class="dev-info">
+                        <div class="dev-name">Class, Course or Workshop</div>
+                        <div class="dev-inst">Organization, Location</div>
+                    </div>
+                    <div class="dev-date">Date - Date</div>
+                </div>
+                <div class="dev-item">
+                    <div class="dev-info">
+                        <div class="dev-name">Class, Course or Workshop</div>
+                        <div class="dev-inst">Organization, Location</div>
+                    </div>
+                    <div class="dev-date">Date - Date</div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

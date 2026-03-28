@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Jacob Hill', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* ── Left Sidebar ── */
+        .sidebar {
+            width: 32%;
+            background-color: #ffffff;
+            padding: 50px 35px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e5e5e5;
+        }
+
+        .header-section {
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 32pt;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+            color: #000;
+            letter-spacing: -0.5px;
+        }
+
+        .job-title-top {
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 15px;
+            color: #666;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .sidebar-section {
+            margin-bottom: 35px;
+        }
+
+        .sidebar-section h2 {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 15px 0;
+            color: #000;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 9pt;
+            color: #444;
+        }
+
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: #000;
+            flex-shrink: 0;
+        }
+
+        .expertise-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .expertise-list li {
+            font-size: 9pt;
+            color: #444;
+            margin-bottom: 6px;
+            font-weight: 400;
+        }
+
+        /* ── Right Main Content ── */
+        .main-content {
+            width: 68%;
+            padding: 70px 45px 50px;
+            background: #fff;
+        }
+
+        .main-section {
+            margin-bottom: 40px;
+        }
+
+        .main-section h2 {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 15px 0;
+            color: #000;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 8px;
+        }
+
+        .profile-text {
+            font-size: 9.5pt;
+            color: #333;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .exp-title {
+            font-weight: 700;
+            font-size: 10pt;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        .exp-date {
+            font-size: 9pt;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .exp-company {
+            font-size: 9.5pt;
+            color: #444;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .exp-desc {
+            font-size: 9pt;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .highlights {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .highlights li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 4px;
+            font-size: 9pt;
+            color: #444;
+        }
+
+        .highlights li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #000;
+        }
+
+        .education-item {
+            margin-bottom: 15px;
+        }
+
+        .edu-degree {
+            font-weight: 700;
+            font-size: 10pt;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        .edu-institution {
+            font-size: 9pt;
+            color: #444;
+        }
+
+        .edu-date {
+            font-size: 9pt;
+            color: #666;
+        }
+
+        @media print {
+            .container { width: 210mm; height: 297mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="header-section">
+                <h1 class="name">{{ personal.full_name | default('Jacob Hill', true) }}</h1>
+                <div class="job-title-top">{{ personal.title | default('Corporate Communications Assistant', true) }}</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <span>{{ personal.location | default('Washington Square, NY', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    <span>{{ personal.phone | default('012-345-6789', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span>{{ personal.email | default('yourmailhere@mail.com', true) }}</span>
+                </div>
+                {% if personal.linkedin %}
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                    <span>{{ personal.linkedin }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if expertise.professional or expertise.technical %}
+            <div class="sidebar-section">
+                <h2>Expertise</h2>
+                <ul class="expertise-list">
+                    {% for item in expertise.professional %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                    {% for item in expertise.technical %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if education and education|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div class="education-item">
+                    <div class="edu-degree">{{ edu.degree }}</div>
+                    <div class="edu-institution">{{ edu.institution }}</div>
+                    <div class="edu-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% if personal.summary %}
+            <div class="main-section">
+                <h2>Profile</h2>
+                <div class="profile-text">
+                    {{ personal.summary }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if experience and experience|length > 0 %}
+            <div class="main-section">
+                <h2>Professional Experience</h2>
+                {% for exp in experience %}
+                <div class="experience-item">
+                    <div class="exp-header">
+                        <div class="exp-title">{{ exp.title }}</div>
+                        <div class="exp-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                    </div>
+                    <div class="exp-company">{{ exp.company }}</div>
+                    {% if exp.description %}
+                    <div class="exp-desc">{{ exp.description }}</div>
+                    {% endif %}
+                    {% if exp.highlights and exp.highlights|length > 0 %}
+                    <ul class="highlights">
+                        {% for hl in exp.highlights %}
+                        <li>{{ hl }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if projects and projects|length > 0 %}
+            <div class="main-section">
+                <h2>Projects</h2>
+                {% for project in projects %}
+                <div class="experience-item">
+                    <div class="exp-header">
+                        <div class="exp-title">{{ project.name }}</div>
+                    </div>
+                    {% if project.description %}
+                    <div class="exp-desc">{{ project.description }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

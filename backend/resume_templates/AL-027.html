@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Natalie Edwards', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e0e0e0;
+            color: #333;
+            line-height: 1.5;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Sidebar Left (35%) */
+        .sidebar {
+            width: 35%;
+            background: #f4f1ea;
+            padding: 240px 30px 40px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .photo-wrapper {
+            position: absolute;
+            top: 60px;
+            left: 50px;
+            z-index: 10;
+        }
+        .photo-container {
+            width: 170px;
+            height: 180px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sidebar-section {
+            margin-bottom: 40px;
+        }
+        .sidebar-section h2 {
+            font-size: 14pt;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            color: #4b4b4b;
+            border-bottom: 1.5px solid #d1d1d1;
+            padding-bottom: 8px;
+            display: block;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 9.5pt;
+            color: #444;
+        }
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            fill: #333;
+        }
+
+        .edu-item {
+            margin-bottom: 25px;
+        }
+        .edu-degree {
+            font-size: 10pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #333;
+        }
+        .edu-sub {
+            font-size: 9pt;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .expertise-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .expertise-list li {
+            font-size: 10pt;
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .expertise-list li::before {
+            content: "▪";
+            color: #333;
+            font-size: 8pt;
+        }
+
+        /* Main Content Right (65%) */
+        .main-content {
+            width: 65%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-block {
+            background: #625f68;
+            height: 160px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding-left: 50px;
+        }
+        .header-block h1 {
+            margin: 0;
+            font-size: 36pt;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .header-block p {
+            margin: 10px 0 0;
+            font-size: 14pt;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .content-padding {
+            padding: 60px 60px 40px 60px;
+        }
+
+        .main-section {
+            margin-bottom: 50px;
+        }
+        .main-section h2 {
+            font-size: 14pt;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #4b4b4b;
+            border-bottom: 1.5px solid #d1d1d1;
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+        }
+
+        .profile-text {
+            font-size: 10.5pt;
+            line-height: 1.8;
+            color: #444;
+            text-align: justify;
+        }
+
+        .exp-item {
+            margin-bottom: 35px;
+        }
+        .exp-title {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #222;
+            margin-bottom: 3px;
+        }
+        .exp-sub {
+            font-size: 10pt;
+            color: #555;
+            margin-bottom: 12px;
+        }
+        .exp-desc {
+            font-size: 10pt;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        @media print {
+            .container { margin: 0; width: 100%; box-shadow: none; }
+            body { background: #fff; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Photo Overlay -->
+        <div class="photo-wrapper">
+            <div class="photo-container">
+                {% if personal.photo %}
+                <img src="{{ personal.photo }}" alt="Profile Photo">
+                {% else %}
+                <div style="width:100%; height:100%; background:#ddd; display:flex; align-items:center; justify-content:center; color:#888; font-size:40pt; font-weight:700;">
+                    {{ personal.full_name[0] | default('N', true) }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h2>Contact</h2>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    <span>{{ personal.phone | default('024 556 7854', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span>{{ personal.email | default('youremail@mail.com', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    <span>{{ personal.website | default('www.yourdomain.com', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <span>{{ personal.location | default('121 Your address, City', true) }}</span>
+                </div>
+            </div>
+
+            {% if education and education|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div class="edu-item">
+                    <div class="edu-degree">{{ edu.institution | upper }}</div>
+                    <div class="edu-sub">{{ edu.degree }} / {{ edu.start_date }} – {{ edu.end_date }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if skills and skills|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Expertise</h2>
+                <ul class="expertise-list">
+                    {% for skill in skills %}
+                    <li>{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header-block">
+                <h1>{{ personal.full_name | default('Natalie Edwards', true) }}</h1>
+                <p>{{ personal.title | default('Graphic Design', true) }}</p>
+            </header>
+
+            <div class="content-padding">
+                {% if personal.summary %}
+                <section class="main-section">
+                    <h2>Profile</h2>
+                    <div class="profile-text">
+                        {{ personal.summary }}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if experience and experience|length > 0 %}
+                <section class="main-section">
+                    <h2>Work Experience</h2>
+                    {% for exp in experience %}
+                    <div class="exp-item">
+                        <div class="exp-title">Job Position Here</div>
+                        <div class="exp-sub">{{ exp.company }} / {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                        <div class="exp-desc">
+                            {{ exp.description }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

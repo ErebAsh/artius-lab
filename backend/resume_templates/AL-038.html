@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Charlotte Miller', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            padding: 60px 50px;
+        }
+        
+        /* Sidebar (Left) */
+        .sidebar {
+            width: 32%;
+            padding-right: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .photo-area {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #ececec;
+            margin-bottom: 25px;
+        }
+        .photo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40pt;
+            color: #aaa;
+        }
+
+        .header-name {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header-name h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28pt;
+            margin: 0;
+            line-height: 1.1;
+            color: #444;
+        }
+        .header-name p {
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .sidebar-section {
+            width: 100%;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+        .sidebar-hr {
+            height: 4px;
+            background-color: #e5e5e5;
+            width: 100%;
+            border: none;
+            margin-bottom: 20px;
+        }
+        .sidebar-title {
+            font-size: 10.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+            color: #333;
+        }
+
+        /* Contact Details */
+        .contact-details {
+            text-align: left;
+            padding-left: 10px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 8.5pt;
+            color: #555;
+        }
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: #555;
+        }
+        .contact-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Projects */
+        .project-item {
+            margin-bottom: 25px;
+        }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .project-name {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #444;
+        }
+        .project-link {
+            font-size: 8.5pt;
+            color: #555;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .project-desc {
+            font-size: 8.5pt;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .overview-text {
+            font-size: 8.5pt;
+            line-height: 1.6;
+            color: #555;
+            text-align: justify;
+        }
+
+        .edu-item {
+            margin-bottom: 15px;
+        }
+        .edu-item b {
+            font-size: 9pt;
+            text-transform: uppercase;
+            color: #333;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .edu-item span {
+            font-size: 8.5pt;
+            color: #666;
+            display: block;
+        }
+
+        /* Main Content (Right) */
+        .main-content {
+            width: 68%;
+            padding-left: 15px;
+            border-left: 1.5px solid #eee;
+        }
+
+        .section-title {
+            font-size: 10.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #333;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+        }
+        .role-title {
+            font-size: 9.5pt;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 4px;
+        }
+        .company-info {
+            font-size: 8.5pt;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .bullet-list {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 0;
+        }
+        .bullet-list li {
+            font-size: 8.5pt;
+            color: #555;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .main-hr {
+            height: 4px;
+            background-color: #e5e5e5;
+            width: 100%;
+            border: none;
+            margin: 30px 0;
+        }
+
+        /* Core Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .skill-column h4 {
+            font-size: 9pt;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: #444;
+        }
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skill-list li {
+            font-size: 8.5pt;
+            color: #555;
+            padding: 3px 0;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; width: 100%;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="photo-area">
+                {% if personal.photo %}
+                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+                {% else %}
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('C', true) | upper }}</div>
+                {% endif %}
+            </div>
+
+            <div class="header-name">
+                <h1>{{ personal.full_name | default('Charlotte Miller', true) }}</h1>
+                <p>{{ personal.title | default('PROFESSIONAL TITLE', true) }}</p>
+            </div>
+
+            <div class="sidebar-section">
+                <hr class="sidebar-hr">
+                <span class="sidebar-title">Contact</span>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        <span>{{ personal.phone | default('1-123-1234-123', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <span>{{ personal.email | default('email@email.com', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>{{ personal.location | default('City, State, Country', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                        <a href="{% if personal.linkedin and 'http' not in personal.linkedin %}https://{% endif %}{{ personal.linkedin | default('#', true) }}" class="contact-link"><span>{{ personal.linkedin | default('LinkedIn: @username', true) }}</span></a>
+                    </div>
+                    {% if personal.portfolio %}
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M10 13c.22 0 .44-.09.61-.26.34-.33.34-.88 0-1.21L9.07 10l1.54-1.54c.34-.33.34-.88 0-1.21-.33-.34-.88-.34-1.21 0l-2.14 2.15c-.34.33-.34.88 0 1.21l2.14 2.15c.16.16.38.24.61.24zM14 13c.22 0 .44-.09.61-.26l2.14-2.15c.34-.33.34-.88 0-1.21l-2.14-2.15c-.33-.34-.88-.34-1.21 0-.34.33-.34.88 0 1.21L14.93 10l-1.54 1.54c-.34.33-.34.88 0 1.21.17.17.39.25.61.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        <a href="{% if 'http' not in personal.portfolio %}https://{% endif %}{{ personal.portfolio }}" class="contact-link"><span>{{ personal.portfolio | replace('https://', '') | replace('http://', '') }}</span></a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <hr class="sidebar-hr">
+                <span class="sidebar-title">Professional Overview</span>
+                <div class="overview-text">
+                    {{ personal.summary | default('Write a summary about your qualifications. Things you can mention: Number of years of experience in the field or line of work, accomplishments directly relating to the job position, relevant credentials, training, or education. Use easy to read language.', true) }}
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <hr class="sidebar-hr">
+                <span class="sidebar-title">Education</span>
+                {% if education and education|length > 0 %}
+                    {% for edu in education %}
+                    <div class="edu-item">
+                        <b>{{ edu.degree | default('DEGREE', true) }}{% if edu.field_of_study %} — {{ edu.field_of_study }}{% endif %}</b>
+                        <span>{{ edu.institution | default('University Name', true) }}</span>
+                        <span>{{ edu.location | default('City, State') }}</span>
+                        <span>{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
+                        {% if edu.gpa %}<span style="font-size: 8pt;">GPA: {{ edu.gpa }}</span>{% endif %}
+                        {% if edu.achievements %}<span style="font-size: 8pt; color: #666; margin-top: 5px;">{{ edu.achievements }}</span>{% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="edu-item">
+                        <b>DEGREE DIPLOMA NAME</b>
+                        <span>University College Name</span>
+                        <span>City, State, Country</span>
+                        <span>YEAR-YEAR</span>
+                    </div>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Content (Right) -->
+        <main class="main-content">
+            <span class="section-title">Professional Experience</span>
+            
+            {% if experience and experience|length > 0 %}
+                {% for exp in experience %}
+                <div class="experience-item">
+                    <div class="role-title">//{{ exp.title | upper | default('PROFESSIONAL TITLE', true) }}</div>
+                    <div class="company-info">{{ exp.company | default('Company Name') }} — {{ exp.location | default('City, State') }} — {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                    {% if exp.description %}
+                    <div class="item-desc" style="font-size: 8.5pt; color: #555; margin-bottom: 8px;">
+                        {{ exp.description }}
+                    </div>
+                    {% endif %}
+                    {% if exp.highlights and exp.highlights|length > 0 %}
+                    <ul class="bullet-list">
+                        {% for highlight in exp.highlights %}
+                        {% if highlight %}
+                        <li>{{ highlight }}</li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="experience-item">
+                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
+                    <ul class="bullet-list">
+                        <li>Keep your bullet points one sentence in length, brief, and concise, using simple-to-read language and removing all irrelevant jargon.</li>
+                        <li>Start each bullet with a strong action verb to create more interest for the reader- see your Powerful Action Verb Guide.</li>
+                        <li>Always highlight your strongest accomplishments before listing your daily responsibilities and tasks.</li>
+                        <li>Show a situation or responsibility, the responsibility you took, and the results or outcome that prove your qualifications.</li>
+                    </ul>
+                </div>
+                <div class="experience-item">
+                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
+                    <ul class="bullet-list">
+                        <li>To transfer old resume: (1) Remove bullet points (2) Copy the original text (CMD+C) (3) Select "filler" text (4) Right-click, select paste special > unformatted text.</li>
+                        <li>Give quantifiable examples of your achievements like positive statistics, customer ratings, or profit increases.</li>
+                        <li>Profit increasing example: 40% improvement of monthly sales increased through self-developed marketing techniques.</li>
+                    </ul>
+                </div>
+                <div class="experience-item">
+                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
+                    <ul class="bullet-list">
+                        <li>An accomplishment is a solution you created, an action you took, or a contribution you made that had a positive impact.</li>
+                        <li>State what are you most proud of at work, what you do better than other employees, and why you were a strong asset to the company.</li>
+                        <li>Any skills listed on your resume need to be substantiated in an interview - always be truthful with your work skills and history.</li>
+                    </ul>
+                </div>
+                <div class="experience-item">
+                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
+                    <ul class="bullet-list">
+                        <li>Your resume must capture the employer's attention right away - you have roughly 15-20 seconds to make an impression.</li>
+                        <li>Proofread your resume, your grammar and spelling must be perfect as one mistake could have your application thrown out.</li>
+                        <li>Employers are looking for evidence that you will succeed in the job position, you must prove to be the best choice.</li>
+                    </ul>
+                </div>
+            {% endif %}
+
+            <hr class="main-hr">
+
+            {% if projects and projects|length > 0 %}
+            <hr class="main-hr">
+            <span class="section-title">Projects</span>
+            {% for project in projects %}
+            <div class="project-item">
+                <div class="project-header">
+                    <div class="project-name">{{ project.name }}</div>
+                    {% if project.link %}
+                    <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="project-link">View Project</a>
+                    {% endif %}
+                </div>
+                {% if project.description %}
+                <div class="project-desc">{{ project.description }}</div>
+                {% endif %}
+                {% if project.technologies and project.technologies|length > 0 %}
+                <div class="project-desc" style="font-style: italic; font-size: 8pt; margin-top: 5px;">Technologies: {{ project.technologies | join(', ') }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if certifications and certifications|length > 0 %}
+            <hr class="main-hr">
+            <span class="section-title">Certifications</span>
+            <ul class="bullet-list">
+                {% for cert in certifications %}
+                <li>
+                    <strong>{{ cert.name }}</strong> {% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <hr class="main-hr">
+
+            <span class="section-title">Core Skills</span>
+            <div class="skills-grid">
+                <div class="skill-column">
+                    <h4>//PROFESSIONAL</h4>
+                    <ul class="skill-list">
+                        {% if skills and skills|length > 0 %}
+                            {% for skill in skills %}
+                                {% if loop.index <= (skills|length / 2) | round(0, 'ceil') %}
+                                <li>{{ skill.name }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif expertise and expertise.professional %}
+                            {% for skill in expertise.professional %}
+                            <li>{{ skill }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Time Management</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="skill-column">
+                    <h4>//TECHNICAL</h4>
+                    <ul class="skill-list">
+                        {% if skills and skills|length > 0 %}
+                            {% for skill in skills %}
+                                {% if loop.index > (skills|length / 2) | round(0, 'ceil') %}
+                                <li>{{ skill.name }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif expertise and expertise.technical %}
+                            {% for skill in expertise.technical %}
+                            <li>{{ skill }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Microsoft Word</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

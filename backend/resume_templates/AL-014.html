@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Robert Anthoni', true) }} | {{ personal.title | default('Web Designer', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.4;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 35%;
+            background-color: #d8dbe2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-left-box {
+            background-color: #444;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        .photo-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            overflow: hidden;
+            background: #fff;
+        }
+        .photo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header-left-box::after {
+            content: "";
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left: 15px solid #444;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+        }
+
+        .sidebar-content {
+            padding: 40px 30px;
+            flex-grow: 1;
+        }
+
+        .sidebar-section {
+            margin-bottom: 35px;
+        }
+        .sidebar-header {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11pt;
+            font-weight: 700;
+            color: #222;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #aaa;
+            margin-bottom: 20px;
+        }
+        .sidebar-header svg {
+            width: 18px;
+            height: 18px;
+            fill: #333;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 8.5pt;
+            color: #444;
+        }
+        .contact-icon {
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .contact-icon svg {
+            width: 12px;
+            height: 12px;
+            fill: #444;
+        }
+        .contact-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+            font-size: 8pt;
+        }
+
+        .edu-item {
+            margin-bottom: 18px;
+        }
+        .edu-year {
+            font-weight: 700;
+            font-size: 9pt;
+            color: #333;
+        }
+        .edu-degree {
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 9.5pt;
+            color: #222;
+            margin: 2px 0;
+        }
+        .edu-school {
+            font-size: 8.5pt;
+            color: #555;
+        }
+
+        .expertise-sidebar {
+            background-color: #444;
+            color: #fff;
+            padding: 40px 30px;
+        }
+        .expertise-sidebar .sidebar-header {
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .expertise-sidebar .sidebar-header svg {
+            fill: #fff;
+        }
+        .expertise-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .expertise-list li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 10px;
+            font-size: 8.5pt;
+        }
+        .expertise-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #fff;
+        }
+
+        /* ── Main Column ── */
+        .main-column {
+            width: 65%;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-right {
+            padding: 60px 45px;
+            border-bottom: 1px solid #eee;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32pt;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+        .subtitle {
+            font-size: 11pt;
+            font-weight: 500;
+            color: #666;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .main-content {
+            padding: 40px 45px;
+        }
+
+        .section-header-main {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11pt;
+            font-weight: 700;
+            color: #222;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 8px;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+            margin-bottom: 25px;
+            padding-top: 8px;
+        }
+        .section-header-main svg {
+            width: 20px;
+            height: 20px;
+            fill: #333;
+        }
+
+        .profile-text {
+            font-size: 9.5pt;
+            color: #555;
+            line-height: 1.7;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+
+        .exp-item {
+            margin-bottom: 30px;
+        }
+        .exp-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .exp-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 10.5pt;
+            color: #222;
+            text-transform: uppercase;
+        }
+        .exp-date {
+            font-size: 8.5pt;
+            color: #666;
+            font-weight: 600;
+        }
+        .exp-company {
+            font-size: 9pt;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .exp-desc {
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .skills-reference {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        .skill-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .skill-name {
+            font-size: 8.5pt;
+            font-weight: 600;
+            color: #444;
+        }
+        .skill-bar {
+            height: 6px;
+            background: #eee;
+            width: 100%;
+            border-radius: 3px;
+        }
+        .skill-fill {
+            height: 100%;
+            background: #444;
+            border-radius: 3px;
+        }
+
+        .ref-item {
+            font-size: 9pt;
+            margin-bottom: 15px;
+        }
+        .ref-name {
+            font-weight: 700;
+            color: #222;
+            text-transform: uppercase;
+            font-size: 9.5pt;
+            margin-bottom: 3px;
+        }
+        .ref-org {
+            font-size: 8.5pt;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        .ref-contact {
+            font-size: 8.5pt;
+            color: #777;
+        }
+
+        @media print {
+            .container { width: 210mm; height: 297mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="header-left-box">
+                <div class="photo-circle">
+                    {% if personal.photo %}
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Robert Anthoni', true) }}">
+                    {% else %}
+                    <div style="width: 100%; height: 100%; background: #666; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 40px; font-weight: 700;">{{ personal.full_name[0] | default('R', true) | upper }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Contact Me -->
+                <div class="sidebar-section">
+                    <h2 class="sidebar-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        Contact Me
+                    </h2>
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+                        <div>
+                            <span class="contact-label">Phone :</span>
+                            {{ personal.phone | default('+123 654 30 33 15', true) }}
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                        <div>
+                            <span class="contact-label">E-Mail :</span>
+                            {{ personal.email | default('you@example.com', true) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                {% if education and education|length > 0 %}
+                <div class="sidebar-section">
+                    <h2 class="sidebar-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM3.88 9L12 4.57 20.12 9 12 13.43 3.88 9z"/></svg>
+                        Education
+                    </h2>
+                    {% for edu in education %}
+                    <div class="edu-item">
+                        <div class="edu-year">{{ edu.start_date }}</div>
+                        <div class="edu-degree">{{ edu.degree }}</div>
+                        <div class="edu-school">{{ edu.institution }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Expertise Section (Bottom Sidebar) -->
+            <div class="expertise-sidebar">
+                <h2 class="sidebar-header">
+                    <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8h2.5V2c-2.76 0-5 2.24-5 4z"/></svg>
+                    Expertise
+                </h2>
+                <ul class="expertise-list">
+                    {% if expertise.technical %}
+                        {% for item in expertise.technical %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>Graphic Design</li>
+                        <li>UI/UX Design</li>
+                        <li>Web Development</li>
+                        <li>Project Management</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Column -->
+        <main class="main-column">
+            <div class="header-right">
+                <h1 class="name">{{ personal.full_name | default('Robert Anthoni', true) }}</h1>
+                <div class="subtitle">{{ personal.title | default('Web Designer / UI UX', true) }}</div>
+            </div>
+
+            <div class="main-content">
+                <!-- Personal -->
+                {% if personal.summary %}
+                <div class="section-header-main">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    Personal
+                </div>
+                <p class="profile-text">{{ personal.summary }}</p>
+                {% endif %}
+
+                <!-- Work Experience -->
+                {% if experience and experience|length > 0 %}
+                <div class="section-header-main">
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                    Work Experience
+                </div>
+                {% for exp in experience %}
+                <div class="exp-item">
+                    <div class="exp-row">
+                        <span class="exp-title">{{ exp.title }}</span>
+                        <span class="exp-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
+                    </div>
+                    <div class="exp-company">{{ exp.company }} | {{ exp.location | default('Location', true) }}</div>
+                    <div class="exp-desc">{{ exp.description }}</div>
+                    {% if exp.highlights %}
+                    <ul style="margin: 8px 0 0; padding-left: 20px; font-size: 8.5pt; color: #666;">
+                        {% for hl in exp.highlights %}
+                        <li>{{ hl }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Skills & Reference -->
+                <div class="skills-reference">
+                    <div>
+                        <div class="section-header-main">
+                            <svg viewBox="0 0 24 24"><path d="M11 18l-2-2 1.41-1.41L11 15.17l4.59-4.59L17 12l-6 6zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            Skills
+                        </div>
+                        {% if skills and skills|length > 0 %}
+                            {% for skill in skills %}
+                            <div class="skill-item">
+                                <span class="skill-name">{{ skill.name }}</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: {{ skill.level | default(80, true) }}%;"></div></div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="skill-item"><span class="skill-name">Adobe Photoshop</span><div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div></div>
+                            <div class="skill-item"><span class="skill-name">Adobe Illustrator</span><div class="skill-bar"><div class="skill-fill" style="width: 75%;"></div></div></div>
+                            <div class="skill-item"><span class="skill-name">Adobe InDesign</span><div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div></div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="section-header-main">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
+                            Reference
+                        </div>
+                        <div class="ref-item">
+                            <div class="ref-name">Phone Smithany</div>
+                            <div class="ref-org">Founder of CM | Company Name</div>
+                            <div class="ref-contact">Email: company@mail.com</div>
+                        </div>
+                        <div class="ref-item">
+                            <div class="ref-name">Olivia Rosean</div>
+                            <div class="ref-org">Marketing Manager | Company Name</div>
+                            <div class="ref-contact">Email: rosean@mail.com</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Julia Griffith', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.5;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 33%;
+            background-color: #2d3440;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-section {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+        .photo-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: 700;
+            color: #666;
+        }
+
+        .sidebar-content {
+            padding: 30px 25px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 35px;
+        }
+
+        .sidebar-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 9pt;
+            gap: 12px;
+        }
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: #b49e85;
+        }
+
+        .edu-item {
+            margin-bottom: 15px;
+        }
+        .edu-degree {
+            font-weight: 600;
+            font-size: 9.5pt;
+            display: block;
+            text-transform: uppercase;
+        }
+        .edu-inst {
+            font-size: 8.5pt;
+            color: rgba(255,255,255,0.7);
+            display: block;
+        }
+        .edu-date {
+            font-size: 8pt;
+            color: #b49e85;
+        }
+
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skill-list li {
+            font-size: 9pt;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .skill-list li::before {
+            content: "//";
+            color: #b49e85;
+            font-weight: 700;
+            font-size: 8pt;
+        }
+
+        /* Main Content */
+        .main-content {
+            width: 67%;
+            padding: 50px 45px;
+            background-color: #ffffff;
+        }
+
+        .header {
+            margin-bottom: 50px;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36pt;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin: 0;
+            line-height: 1.1;
+            color: #b49e85;
+        }
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 10px 0 0 0;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #b49e85;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .summary {
+            font-size: 10pt;
+            line-height: 1.6;
+            color: #555;
+            text-align: justify;
+        }
+
+        .exp-item {
+            margin-bottom: 25px;
+        }
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .exp-role {
+            font-weight: 700;
+            font-size: 11pt;
+            color: #333;
+        }
+        .exp-date {
+            font-size: 9pt;
+            color: #b49e85;
+            font-weight: 600;
+        }
+        .exp-company {
+            font-size: 10pt;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .exp-desc {
+            font-size: 9.5pt;
+            line-height: 1.5;
+            color: #555;
+        }
+        .exp-desc ul {
+            padding-left: 18px;
+            margin: 8px 0;
+        }
+        .exp-desc li {
+            margin-bottom: 5px;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="photo-section">
+                {% if personal.photo %}
+                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+                {% else %}
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('J', true) | upper }}</div>
+                {% endif %}
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Contact -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Contact</h3>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        <span>{{ personal.phone | default('555-555-555', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <span>{{ personal.email | default('email@mail.com', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                        <span>{{ personal.linkedin | default('linkedin.com/in/username', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>{{ personal.location | default('123 Madison Avenue, NY', true) }}</span>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Education</h3>
+                    {% if education %}
+                    {% for edu in education %}
+                    <div class="edu-item">
+                        <span class="edu-degree">{{ edu.degree }}</span>
+                        <span class="edu-inst">{{ edu.institution }}</span>
+                        <span class="edu-date">{{ edu.start_date }} — {{ edu.end_date }}</span>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="edu-item">
+                        <span class="edu-degree">Degree Name</span>
+                        <span class="edu-inst">Institution Name, Location</span>
+                        <span class="edu-date">2015 — 2017</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Skills -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Skills</h3>
+                    <ul class="skill-list">
+                        {% if skills %}
+                        {% for skill in skills %}
+                        <li>{{ skill.name }}</li>
+                        {% endfor %}
+                        {% else %}
+                        <li>Leadership</li>
+                        <li>Project Management</li>
+                        <li>Team Building</li>
+                        <li>Technical Analysis</li>
+                        <li>Operations Management</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Languages -->
+                {% if languages %}
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Languages</h3>
+                    <ul class="skill-list">
+                        {% for lang in languages %}
+                        <li>{{ lang.name }} ({{ lang.level }})</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="name">{{ personal.full_name | default('Julia Griffith', true) }}</h1>
+                <p class="title">{{ personal.title | default('Professional Title', true) }}</p>
+            </header>
+
+            <!-- Summary -->
+            <section class="section">
+                <h2 class="section-title">Professional Summary</h2>
+                <div class="summary">
+                    {{ personal.summary | default('A compelling resume should start with an effective statement that shows why you are the ideal candidate for the job. Demonstrate your value to the company by summarizing your accomplishments and how they can improve the organization.', true) }}
+                </div>
+            </section>
+
+            <!-- Experience -->
+            <section class="section">
+                <h2 class="section-title">Professional Experience</h2>
+                {% if experience %}
+                {% for exp in experience %}
+                <div class="exp-item">
+                    <div class="exp-header">
+                        <span class="exp-role">{{ exp.title }}</span>
+                        <span class="exp-date">{{ exp.start_date }} — {{ exp.end_date | default('Present', true) }}</span>
+                    </div>
+                    <div class="exp-company">{{ exp.company }} / {{ exp.location }}</div>
+                    <div class="exp-desc">
+                        {{ exp.description | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="exp-item">
+                    <div class="exp-header">
+                        <span class="exp-role">Position Title</span>
+                        <span class="exp-date">Date — Date</span>
+                    </div>
+                    <div class="exp-company">Company / Location</div>
+                    <div class="exp-desc">
+                        Utilize this paragraph to succinctly outline your achievements with the use of powerful action verbs.
+                        <ul>
+                            <li>The most crucial step in ensuring your resume gets selected as a suitable fit for the job you're applying for is to tailor it specifically to the company and role.</li>
+                            <li>Employers are interested in your accomplishments. Make it simple for them by mentioning what you accomplished, then contextualize it—using numbers or milestones if you can.</li>
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

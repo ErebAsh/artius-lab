@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Garrett Henderson', true) }} | {{ personal.title | default('Web Designer & Developer', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.5;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+            background: #fff;
+        }
+
+        /* ── Header ── */
+        .header-banner {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 36pt;
+            font-weight: 700;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .subtitle {
+            font-size: 11pt;
+            font-weight: 400;
+            color: #aaa;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* ── Main Layout ── */
+        .main-layout {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        /* ── Left Content (65%) ── */
+        .left-content {
+            width: 65%;
+            padding: 40px 60px;
+        }
+
+        .section-header {
+            font-family: 'Inter', sans-serif;
+            font-size: 12pt;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 15px;
+            border-bottom: 1.5px solid #1a1a1a;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-header svg {
+            width: 18px;
+            height: 18px;
+            fill: #1a1a1a;
+        }
+
+        .expertise-item-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 40px;
+            margin-bottom: 40px;
+        }
+        .expertise-point {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: #444;
+        }
+        .expertise-point::before {
+            content: "•";
+            color: #000;
+            font-size: 14pt;
+        }
+
+        .edu-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .edu-item:last-child { border-bottom: none; }
+        .edu-degree {
+            font-weight: 700;
+            font-size: 10.5pt;
+            text-transform: uppercase;
+            color: #1a1a1a;
+        }
+        .edu-school {
+            font-size: 9.5pt;
+            color: #555;
+            font-weight: 500;
+        }
+        .edu-year {
+            font-size: 9pt;
+            color: #888;
+            font-style: italic;
+        }
+
+        .exp-item {
+            margin-bottom: 30px;
+        }
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .exp-title {
+            font-weight: 700;
+            font-size: 11pt;
+            text-transform: uppercase;
+            color: #1a1a1a;
+        }
+        .exp-date {
+            font-size: 9pt;
+            color: #666;
+            font-weight: 600;
+        }
+        .exp-company {
+            font-size: 9.5pt;
+            color: #444;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .exp-desc {
+            font-size: 9pt;
+            color: #666;
+            text-align: justify;
+        }
+
+        /* ── Right Content (35%) ── */
+        .right-sidebar {
+            width: 35%;
+            background-color: #f3f4f6;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .photo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .photo-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+        .photo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sidebar-section-header {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 1.5px solid #1a1a1a;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .sidebar-section-header svg {
+            width: 16px;
+            height: 16px;
+            fill: #1a1a1a;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 8.5pt;
+            color: #444;
+        }
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .contact-icon svg {
+            width: 12px;
+            height: 12px;
+            fill: #fff;
+        }
+
+        .skill-item {
+            margin-bottom: 15px;
+        }
+        .skill-name {
+            font-size: 8pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .skill-bar {
+            height: 5px;
+            background: #ddd;
+            width: 100%;
+        }
+        .skill-fill {
+            height: 100%;
+            background: #1a1a1a;
+        }
+
+        .lang-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        .lang-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        .dot.active { background: #1a1a1a; }
+
+        @media print {
+            .container { width: 210mm; height: 297mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header-banner">
+            <h1 class="name">{{ personal.full_name | default('Garrett Henderson', true) }}</h1>
+            <div class="subtitle">{{ personal.title | default('Web Designer & Developer', true) }}</div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Left Content -->
+            <main class="left-content">
+                <!-- Expertises -->
+                <div class="main-section">
+                    <h2 class="section-header">
+                        <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8h2.5V2c-2.76 0-5 2.24-5 4z"/></svg>
+                        Expertise & Skills
+                    </h2>
+                    <div class="expertise-item-row">
+                        <div class="expertise-point">Personal Management</div>
+                        <div class="expertise-point">Time Management</div>
+                        <div class="expertise-point">Self-motivation</div>
+                        <div class="expertise-point">Computer Language</div>
+                        <div class="expertise-point">Conflict Resolution</div>
+                        <div class="expertise-point">Graphic Design</div>
+                        <div class="expertise-point">Leadership</div>
+                        <div class="expertise-point">Web Design</div>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                {% if education and education|length > 0 %}
+                <div class="main-section">
+                    <h2 class="section-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM3.88 9L12 4.57 20.12 9 12 13.43 3.88 9z"/></svg>
+                        Education
+                    </h2>
+                    {% for edu in education %}
+                    <div class="edu-item">
+                        <div class="edu-degree">{{ edu.degree }}</div>
+                        <div class="edu-school">{{ edu.institution }}</div>
+                        <div class="edu-year">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Work Experience -->
+                {% if experience and experience|length > 0 %}
+                <div class="main-section">
+                    <h2 class="section-header">
+                        <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                        Work Experience
+                    </h2>
+                    {% for exp in experience %}
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <span class="exp-title">{{ exp.title }}</span>
+                            <span class="exp-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
+                        </div>
+                        <div class="exp-company">{{ exp.company }} | {{ exp.location | default('Location', true) }}</div>
+                        <p class="exp-desc">{{ exp.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </main>
+
+            <!-- Sidebar -->
+            <aside class="right-sidebar">
+                <div class="photo-container">
+                    <div class="photo-circle">
+                        {% if personal.photo %}
+                        <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Garrett Henderson', true) }}">
+                        {% else %}
+                        <div style="width: 100%; height: 100%; background: #e1e1e1; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 50px;">{{ personal.full_name[0] | default('G', true) | upper }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        Contact Me
+                    </h3>
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+                        <span>{{ personal.phone | default('+8248593152', true) }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                        <span>{{ personal.email | default('you@example.com', true) }}</span>
+                    </div>
+                    {% if personal.location %}
+                    <div class="contact-item">
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+                        <span>{{ personal.location }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Skills -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-header">Skills</h3>
+                    <div class="skill-item">
+                        <span class="skill-name">Adobe Illustrator</span>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">MS Word</span>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Adobe Photoshop</span>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 70%;"></div></div>
+                    </div>
+                </div>
+
+                <!-- Language -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-header">Language</h3>
+                    <div class="lang-item">
+                        <span>English</span>
+                        <div class="lang-dots">
+                            <div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot"></div>
+                        </div>
+                    </div>
+                    <div class="lang-item">
+                        <span>Greek</span>
+                        <div class="lang-dots">
+                            <div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</body>
+</html>

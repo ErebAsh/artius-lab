@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Emma Watson', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-top: 15px solid #8B0000;
+            border-bottom: 15px solid #8B0000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Section */
+        header {
+            text-align: center;
+            padding: 50px 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header-photo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #8B0000;
+            margin-bottom: 20px;
+        }
+        .header-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header-photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36pt;
+            color: #ccc;
+            font-family: 'Playfair Display', serif;
+        }
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32pt;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+            font-weight: 700;
+        }
+        header p {
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        /* Two Column Layout */
+        .content-wrapper {
+            display: flex;
+            padding: 0 40px 40px;
+            flex: 1;
+        }
+        
+        .sidebar {
+            width: 30%;
+            padding-right: 30px;
+        }
+        
+        .main-content {
+            width: 70%;
+            padding-left: 30px;
+            border-left: 1px solid #eee;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            position: relative;
+            display: block;
+        }
+        
+        /* Contact Items */
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+        .contact-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #d2b48c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .contact-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        .contact-text {
+            font-size: 9pt;
+            color: #555;
+            word-break: break-all;
+            text-decoration: none;
+        }
+
+        /* Portfolio/Website */
+        .website-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+
+        /* Profile Text */
+        .profile-text {
+            font-size: 10pt;
+            line-height: 1.6;
+            color: #444;
+            text-align: justify;
+        }
+
+        /* Experience & Education Items */
+        .item {
+            margin-bottom: 20px;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .item-title {
+            font-size: 10.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .item-subtitle {
+            font-size: 10pt;
+            font-weight: 600;
+            color: #555;
+        }
+        .item-date {
+            font-size: 9pt;
+            color: #888;
+            font-weight: 500;
+        }
+        .item-desc {
+            font-size: 9.5pt;
+            color: #555;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        .item-list {
+            margin: 8px 0 0 0;
+            padding-left: 18px;
+            list-style-type: disc;
+        }
+        .item-list li {
+            font-size: 9.5pt;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* Projects */
+        .project-item {
+            margin-bottom: 20px;
+        }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .project-name {
+            font-size: 10.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .project-link {
+            font-size: 9pt;
+            color: #8B0000;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .project-desc {
+            font-size: 9.5pt;
+            color: #555;
+            line-height: 1.5;
+        }
+        .tech-list {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Skills */
+        .skills-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skills-list li {
+            font-size: 9pt;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+        }
+        .skills-list li::before {
+            content: "•";
+            color: #333;
+            font-weight: bold;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; width: 100%; border-top: 15px solid #8B0000; border-bottom: 15px solid #8B0000;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            {% if personal.photo %}
+            <div class="header-photo-container">
+                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+            </div>
+            {% endif %}
+            <h1>{{ personal.full_name | default('Emma Watson', true) }}</h1>
+            <p>{{ personal.title | default('Your Professional Title', true) }}</p>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Left Sidebar -->
+            <aside class="sidebar">
+                <div class="section">
+                    <span class="section-title">Contact</span>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </div>
+                        <span class="contact-text">{{ personal.phone | default('123-456-7890', true) }}</span>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </div>
+                        <span class="contact-text">{{ personal.email | default('youremail@gmail.com', true) }}</span>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        </div>
+                        <span class="contact-text">{{ personal.location | default('City, State', true) }}</span>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                        </div>
+                        <a href="{% if personal.linkedin and 'http' not in personal.linkedin %}https://{% endif %}{{ personal.linkedin | default('#', true) }}" class="contact-text">{{ personal.linkedin | default('linkedin.com/username', true) }}</a>
+                    </div>
+
+                    {% if personal.portfolio %}
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M10 13c.22 0 .44-.09.61-.26.34-.33.34-.88 0-1.21L9.07 10l1.54-1.54c.34-.33.34-.88 0-1.21-.33-.34-.88-.34-1.21 0l-2.14 2.15c-.34.33-.34.88 0 1.21l2.14 2.15c.16.16.38.24.61.24zM14 13c.22 0 .44-.09.61-.26l2.14-2.15c.34-.33.34-.88 0-1.21l-2.14-2.15c-.33-.34-.88-.34-1.21 0-.34.33-.34.88 0 1.21L14.93 10l-1.54 1.54c-.34.33-.34.88 0 1.21.17.17.39.25.61.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <a href="{% if 'http' not in personal.portfolio %}https://{% endif %}{{ personal.portfolio }}" class="contact-text">{{ personal.portfolio | replace('https://', '') | replace('http://', '') }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="section">
+                    <span class="section-title">Education</span>
+                    {% if education and education|length > 0 %}
+                        {% for edu in education %}
+                        <div class="item">
+                            <div class="item-title">{{ edu.degree | default('Degree', true) }}{% if edu.field_of_study %} in {{ edu.field_of_study }}{% endif %}</div>
+                            <div class="item-subtitle">{{ edu.institution | default('University Name', true) }}</div>
+                            <div class="item-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                            {% if edu.gpa %}<div class="item-desc" style="font-size: 8.5pt;">GPA: {{ edu.gpa }}</div>{% endif %}
+                            {% if edu.achievements %}<div class="item-desc">{{ edu.achievements }}</div>{% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="item">
+                            <div class="item-title">YOUR DEGREE NAME / MAJOR</div>
+                            <div class="item-subtitle">Education</div>
+                            <div class="item-subtitle">University Name</div>
+                            <div class="item-date">2012–2014</div>
+                        </div>
+                        <div class="item">
+                            <div class="item-title">YOUR DEGREE NAME / MAJOR</div>
+                            <div class="item-subtitle">Education</div>
+                            <div class="item-subtitle">University Name</div>
+                            <div class="item-date">2010–2011</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="section">
+                    <span class="section-title">Skills</span>
+                    <ul class="skills-list">
+                        {% if skills and skills|length > 0 %}
+                            {% for skill in skills %}
+                            <li>{{ skill.name }}</li>
+                            {% endfor %}
+                        {% elif expertise and (expertise.technical or expertise.professional) %}
+                            {% for skill in expertise.technical %}
+                            <li>{{ skill }}</li>
+                            {% endfor %}
+                            {% for skill in expertise.professional %}
+                            <li>{{ skill }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Relevant Skill</li>
+                            <li>Relevant Skill</li>
+                            <li>Relevant Skill</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                {% if personal.summary %}
+                <div class="section">
+                    <span class="section-title">Profile</span>
+                    <div class="profile-text">
+                        {{ personal.summary }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="section">
+                    <span class="section-title">Professional Experience</span>
+                    {% if experience and experience|length > 0 %}
+                        {% for exp in experience %}
+                        <div class="item">
+                            <div class="item-header">
+                                <div class="item-title">{{ exp.title | default('WRITE YOUR JOB TITLE HERE', true) }}</div>
+                                <div class="item-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                            </div>
+                            <div class="item-subtitle">{{ exp.company | default('Company Name') }}, {{ exp.location | default('City, State') }}</div>
+                            {% if exp.description %}
+                            <div class="item-desc">
+                                {{ exp.description }}
+                            </div>
+                            {% endif %}
+                            {% if exp.highlights and exp.highlights|length > 0 %}
+                            <ul class="item-list">
+                                {% for highlight in exp.highlights %}
+                                {% if highlight %}
+                                <li>{{ highlight }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="item">
+                            <div class="item-header">
+                                <div class="item-title">WRITE YOUR JOB TITLE HERE</div>
+                                <div class="item-date">Beginning Date–End Date</div>
+                            </div>
+                            <div class="item-subtitle">Company Name | City, State</div>
+                            <div class="item-desc">
+                                In 2 lines, summarize your main responsibilities using past tense and provide information about the organization.
+                            </div>
+                            <ul class="item-list">
+                                <li>Beginning with a powerful action verb, write up to six responsibilities and/or accomplishments in the past tense.</li>
+                                <li>Highlight your most relevant qualifications for the job by listing them first.</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if projects and projects|length > 0 %}
+                <div class="section">
+                    <span class="section-title">Projects</span>
+                    {% for project in projects %}
+                    <div class="project-item">
+                        <div class="project-header">
+                            <div class="project-name">{{ project.name }}</div>
+                            {% if project.link %}
+                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="project-link">View Project</a>
+                            {% endif %}
+                        </div>
+                        {% if project.description %}
+                        <div class="project-desc">{{ project.description }}</div>
+                        {% endif %}
+                        {% if project.technologies and project.technologies|length > 0 %}
+                        <div class="tech-list">Technologies: {{ project.technologies | join(', ') }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if certifications and certifications|length > 0 %}
+                <div class="section">
+                    <span class="section-title">Certifications</span>
+                    <ul class="item-list">
+                        {% for cert in certifications %}
+                        <li>
+                            <strong>{{ cert.name }}</strong> {% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</body>
+</html>
