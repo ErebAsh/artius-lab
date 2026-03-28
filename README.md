@@ -1,11 +1,12 @@
 <div align="center">
   <img src="./assets/logo.png" width="120" alt="Artius Lab Logo">
+<div align="center">
 
-  <br>
+### ✦ A R T I U S &nbsp; L A B ✦
 
-  <b><font size="7">✦ A R T I U S &nbsp; L A B ✦</font></b>
+</div>
 
-  **AI-Powered Resume Builder** <br> Build professional, ATS-friendly resumes in minutes using AI.
+  **AI-Powered Resume Builder** - Build professional, ATS-friendly resumes in minutes using AI.
 
  <br>
 
