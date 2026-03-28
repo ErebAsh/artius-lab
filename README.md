@@ -5,7 +5,7 @@
 
   <b><font size="7">✦ A R T I U S &nbsp; L A B ✦</font></b>
 
-  **AI-Powered Resume Builder — Craft Resumes That Command Attention**
+  **AI-Powered Resume Builder** <br> Build professional, ATS-friendly resumes in minutes using AI.
 
  <br>
 
@@ -20,37 +20,43 @@
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" height="40">
   <img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg?style=for-the-badge" height="40">
 
-  <br>
-
-  <sub>Choose a template → Fill your details → AI enhances your content → Download a stunning PDF</sub>
-
 </div>
-
-<br>
 
 <br>
 
 ## 🧪 About Artius Lab
 
-**Artius Lab** derives its name from the Latin word ***Artius***, meaning "complete," "perfectly-fitted," or "well-joined." True to its name, this platform is a laboratory for professional excellence, where we combine advanced AI with curated design to craft resumes that are perfectly fitted for your career goals. 
+The word Artius Lab is derived from the Latin root art, meaning skills and craftsmanship, with the suffix ius giving it a refined and timeless character, representing a mastery of excellence in creative works. Lab represents a place of experimentation and innovation, where ideas are transformed into reality. Combined, it means a laboratory where art meets intelligence to create something truly exceptional.
 
-Rather than just a simple builder, Artius Lab provides a sophisticated ecosystem for career storytelling:
-- **Precision Engineering:** AI-powered content enhancement that "fits" your unique experience to industry standards and ATS keywords.
-- **Seamless Integration:** A multi-step intuitive builder that "joins" your education, experience, and skills into a cohesive professional narrative.
-- **Aesthetic Perfection:** Premium, hand-crafted templates rendered with pixel-perfect accuracy to ensure you command attention from first glance.
+## ⚙️ How It Works
 
+It is an AI-based resume builder where users can create a resume simply by following these steps:
 
+1. Choose a template from the template gallery.
+2. Fill in the respective personal details such as name, contact information, work experience, education, and skills through an intuitive multi-step form.
+3. After filling in the details, let the LLM enhance the resume content with professional descriptions, action verbs, and ATS-friendly formatting.
+4. When done, it will generate a high-quality PDF that can be downloaded from the preview page (also editable manually if needed).
+  
+<sub><div align="center">***Choose a template → Fill your details → AI enhances your content → Download a stunning PDF***</div></sub>
 <br>
+
 
 ## 🎯 Templates
 
-| Template | Style | Best For |
-|:---|:---|:---|
-| **Modern Minimalist** | Clean sans-serif, indigo accents, pill-shaped skill tags | Tech, Design, Startups |
-| **Executive Classic** | Serif two-column, navy palette, formal dividers | Corporate, Finance, Executive |
-| **Creative Studio** | Gradient header, pink/purple palette, card-style projects | Design, Marketing, Creative |
-| **Tech Professional** | Dark header, monospace accents, code-style sections | Engineering, Data Science, DevOps |
-| **Elegant Serif** | Gold accents, Garamond typography, centered layout | Academia, Publishing, Law |
+Artius Lab now features **a variety of high-fidelity templates** from our premium **AL-Series**. Each template is meticulously crafted for maximum impact and ATS readability.
+
+| ID | Template Name | Style | Category |
+|:---|:---|:---|:---|
+| **AL-001** | ATS Standard Pro | Clean single-column, professional | Technical |
+| **AL-002** | Modern Timeline | Stylish sidebar, experience timeline | Modern |
+| **AL-004** | Navy Gold Corporate | High-end corporate, project-focused | Professional |
+| **AL-021** | Graphic Hex Red | Hexagonal photo frame, bold accents | Creative |
+| **AL-025** | Script Font Elegant | Script typography, horizontal bands | Creative |
+| **AL-030** | Navy Gold Arch | Architectural layout, gold accents | Executive |
+| **AL-035** | Deep Red Border | Classic serif, clean two-column | Professional |
+| **AL-038** | Horizontal Bars | Bold sidebar bars, circular photo | Modern |
+
+*...and many more professional designs available in the gallery.*
 
 <br>
 
@@ -58,11 +64,11 @@ Rather than just a simple builder, Artius Lab provides a sophisticated ecosystem
 
 ```
 Frontend                          Backend
-├── Next.js 16 (App Router)       ├── FastAPI
+├── Next.js 16 (App Router)       ├── FastAPI (Python)
 ├── TypeScript                    ├── Google Gemini 2.5 Flash
-├── Tailwind CSS v4               ├── WeasyPrint (PDF)
-├── React 19                      ├── Jinja2 (Templates)
-└── Glassmorphism UI              └── Pydantic (Validation)
+├── Tailwind CSS v4               ├── WeasyPrint (PDF Engine)
+├── Lucide Icons                  ├── Jinja2 (HTML Templates)
+└── Glassmorphism UI              └── SQLite (Database)
 ```
 
 <br>
@@ -93,6 +99,7 @@ Create a `.env` file in the `backend/` directory:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
+JWT_SECRET=your_secret_key_here
 ```
 
 Start the server:
@@ -121,8 +128,6 @@ Navigate to **[http://localhost:3000](http://localhost:3000)** and start buildin
 docker-compose up --build
 ```
 
-> **Note:** Make sure to set `GEMINI_API_KEY` as an environment variable or in `backend/.env` before running.
-
 <br>
 
 ## 📁 Project Structure
@@ -130,34 +135,25 @@ docker-compose up --build
 ```
 artius-lab/
 ├── frontend/                    # Next.js 16 Application
-│   └── app/
-│       ├── page.tsx             # Landing page
-│       ├── ats/
-│       │   └── page.tsx         # ATS Resume Checker
-│       ├── templates/
-│       │   └── page.tsx         # Template gallery
-│       ├── builder/
-│       │   └── page.tsx         # Multi-step form wizard
-│       ├── components/
-│       │   ├── Navbar.tsx       # Floating glass navbar
-│       │   ├── TemplateCard.tsx # Template preview card
-│       │   ├── TemplateModal.tsx# Template detail modal
-│       │   └── LoadingOverlay.tsx# AI processing animation
-│       ├── globals.css          # Design system
-│       └── layout.tsx           # Root layout
+│   ├── app/
+│   │   ├── page.tsx             # Home
+│   │   ├── ats/                 # ATS Checker
+│   │   ├── modifier/            # AI Resume Editor
+│   │   ├── builder/             # Multi-step Form Builder
+│   │   ├── resumes/             # Saved Drafts
+│   │   ├── settings/            # User Profile
+│   │   └── templates/           # Template Library
+│   └── components/              # UI Components
 │
 ├── backend/                     # FastAPI Application
-│   ├── main.py                  # API endpoints
-│   ├── schemas.py               # Pydantic models
-│   ├── templates.py             # Template registry
-│   ├── ai_service.py            # Gemini AI integration
-│   ├── pdf_service.py           # PDF generation/conversion
-│   └── resume_templates/        # Jinja2 HTML templates
-│       ├── modern.html
-│       ├── ... (more)
+│   ├── main.py                  # API Gateway
+│   ├── auth.py                  # JWT & Auth Logic
+│   ├── database.py              # SQLite & SQLModel/CRUD
+│   ├── ai_service.py            # Gemini Integration
+│   ├── pdf_service.py           # HTML/PDF Rendering
+│   └── resume_templates/        # 38+ Jinja2 Templates (AL-Series)
 │
-├── docker-compose.yml
-└── README.md
+└── docker-compose.yml
 ```
 
 <br>
@@ -166,55 +162,28 @@ artius-lab/
 
 | Method | Endpoint | Description |
 |:---|:---|:---|
+| `POST` | `/api/auth/register` | Create a new account |
+| `POST` | `/api/auth/login` | Authenticate and get JWT |
 | `GET` | `/api/templates` | List all available templates |
-| `POST` | `/api/ai/enhance` | AI-enhance resume data without generation |
-| `POST` | `/api/generate/html` | Generate preview HTML from resume data |
-| `POST` | `/api/generate/pdf` | Convert final HTML to downloadable PDF |
-| `POST` | `/api/ats/upload` | Upload PDF and get ATS analysis & score |
-
-<details>
-<summary><b>POST /api/generate</b> — Request Body</summary>
-
-```json
-{
-  "template_id": "modern",
-  "personal_info": {
-    "full_name": "John Doe",
-    "email": "john@example.com",
-    "phone": "+1 234 567 890",
-    "location": "San Francisco, CA",
-    "linkedin": "linkedin.com/in/johndoe",
-    "portfolio": "johndoe.dev",
-    "summary": "Senior Software Engineer with 5+ years..."
-  },
-  "education": [...],
-  "experience": [...],
-  "skills": [...],
-  "projects": [...]
-}
-```
-
-**Response:** PDF file (`application/pdf`)
-
-</details>
+| `POST` | `/api/ai/enhance` | AI-enhance resume data |
+| `POST` | `/api/resume/modify` | Conversational resume editing |
+| `POST` | `/api/ats/upload` | PDF ATS analysis & scoring |
+| `GET` | `/api/resumes` | Fetch saved resume drafts |
 
 <br>
 
-## 🗺️ Roadmap
+## 🗺️ Inspiration Behind the Project
 
-- [ ] Instant customization to match specific job descriptions.
-- [ ] AI identifies required certifications and skills for your target role.
-- [ ] Generates a unique shareable link for your live digital resume.
-- [ ] AI-generated cover letters and networking emails for every application.
-- [ ] Template customization (colors, fonts)
-- [ ] Multiple export formats (DOCX, LaTeX)
-- [ ] User accounts & saved resumes
+When I was creating my resume for the first time, I got confused about the section format and what to write in each section. I also struggled to find a good free tool to create a simple resume. I found many tools, but they were either paid or had very limited free features. Free tools lacked automated summary and content enhancement features, while manual tools led to issues with grammar, punctuation, and formatting.
 
-<br>
-
-## 🔗 Connect
+So, I decided to build a resume builder that is free and includes all the features a user needs, ensuring that others do not face the same problems I did. I am still working on this project and continuously adding new features. I am open to suggestions and contributions to improve it further. I hope this project helps many people create their resumes easily and effectively.
+<br> <br>
 
 <div align="center">
+
+
+***Have feedback or suggestions, or just want to connect? Don’t hesitate to reach out!***
+<br>
 
 <a href="https://github.com/ErebAsh"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
 &nbsp;
@@ -222,10 +191,9 @@ artius-lab/
 &nbsp;
 <a href="mailto:hr7207096@gmail.com"><img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
 
-<br><br>
-
 **Built with ❤️ by [Himanshu Raj](https://github.com/ErebAsh)**
 
-<sub>⭐ If you found this useful, consider giving it a star — it means a lot!</sub>
+<sub>**If you found this useful, consider giving it a star ⭐ — it means a lot!**</sub><br>
+<sub>Thanks for giving your valuable time!</sub>
 
 </div>
