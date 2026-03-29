@@ -492,16 +492,18 @@ export default function PhotoEditor({ imageSrc, onSave, onCancel }: PhotoEditorP
           }} />
 
           {/* Right: Controls Panel */}
-          <div className="photo-editor-controls" style={{
+          <div className="photo-editor-controls custom-scrollbar" style={{
             width: 320,
             padding: "24px",
             borderLeft: "none",
             overflowY: "auto",
+            scrollbarGutter: "stable",
             background: "var(--surface-light-glass)",
             display: "flex",
             flexDirection: "column",
             gap: 16,
           }}>
+
             {/* Face Detect Button */}
             <button
               onClick={handleDetectFace}

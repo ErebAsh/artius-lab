@@ -60,20 +60,25 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--surface-light);
+  border-left: 1px solid var(--border);
 }
 
+
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #b8860b, #daa520, #ffd700) !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light), var(--accent)) !important;
+  background-size: 200% 200% !important;
+  animation: gradient-shift 4s ease infinite !important;
   border-radius: 10px !important;
-  border: 4px solid var(--background) !important;
-  box-shadow: 0 0 8px rgba(218, 165, 32, 0.3) !important;
+  border: 3px solid var(--background) !important;
+  box-shadow: 0 0 10px var(--glow) !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #daa520, #ffd700, #fff8dc) !important;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6) !important;
+  background: var(--accent-light) !important;
+  box-shadow: 0 0 15px var(--glow), 0 0 5px var(--accent-light) !important;
 }
+
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 7px;
@@ -84,15 +89,16 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #daa520 !important;
+  background: var(--accent) !important;
   border-radius: 10px !important;
   opacity: 0.8 !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #ffd700 !important;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
+  background: var(--accent-light) !important;
+  box-shadow: 0 0 15px var(--glow) !important;
 }
+
 
 
 
@@ -104,17 +110,29 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #daa520 var(--background);
+  scrollbar-color: var(--accent) var(--background);
 }
 
 
+
+
+html {
+  overflow-y: scroll; /* Force scrollbar to prevent layout jumps */
+  height: 100%;
+}
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
+
+
+
 
 /* ====== GLOBAL ANIMATIONS ====== */
 @keyframes fadeInUp {

@@ -83,6 +83,7 @@ function BuilderContent() {
     }
   }, [previewHtml, showPhotoEditor]);
 
+
   // ── Detect if the selected template supports photo ──
   useEffect(() => {
     const fetchTemplateInfo = async () => {
