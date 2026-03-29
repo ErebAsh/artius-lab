@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ResumeEditor from "./ResumeEditor";
@@ -50,6 +50,7 @@ interface Project {
 }
 
 function BuilderContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const templateId = searchParams.get("template") || "modern";
   const resumeIdParam = searchParams.get("resume");
@@ -168,9 +169,13 @@ function BuilderContent() {
   }, [resumeId, loadResumeFromDB]);
 
   // ── Save / Update resume draft ──
-  const handleSaveDraft = async () => {
+  const handleSaveDraft = useCallback(async (isAutoSave = false) => {
     // Gate: require login to save
-    if (!requireAuth()) return;
+    if (isAutoSave) {
+      if (!token) return;
+    } else {
+      if (!requireAuth()) return;
+    }
 
     setSaving(true);
     setSaveMessage("");
@@ -212,22 +217,42 @@ function BuilderContent() {
       }
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.detail || "Save failed");
+        if (!isAutoSave) {
+          const errData = await res.json();
+          throw new Error(errData.detail || "Save failed");
+        }
+        return; // Silent fail for auto-save
       }
 
       const result = await res.json();
       if (!resumeId && result.id) {
         setResumeId(result.id);
       }
-      setSaveMessage("✓ Saved!");
+      setSaveMessage("Draft Saved");
       setTimeout(() => setSaveMessage(""), 3000);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to save resume.");
+      if (!isAutoSave) {
+        setError(err instanceof Error ? err.message : "Failed to save resume.");
+      }
     } finally {
       setSaving(false);
     }
-  };
+  }, [requireAuth, token, personal, education, experience, skills, projects, expertise, templateId, layout, resumeId, API_BASE]);
+
+  // Auto-save effect
+  useEffect(() => {
+    if (!token || generating || enhancing) return;
+    
+    // Check if there is at least some data to save
+    const hasData = personal.full_name || personal.email || education[0].institution || experience[0].company;
+    if (!hasData) return;
+
+    const timer = setTimeout(() => {
+      handleSaveDraft(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [personal, education, experience, skills, projects, expertise, layout, token, generating, enhancing, handleSaveDraft]);
 
   const handleAIAutoComplete = async () => {
     setEnhancing(true);
@@ -435,8 +460,21 @@ function BuilderContent() {
           Build Your Resume
         </h1>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
-          <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0, fontWeight: 500, letterSpacing: 0.5 }}>
+          <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0, fontWeight: 500, letterSpacing: 0.5, display: "flex", alignItems: "center", gap: 8 }}>
             Active Template: <span style={{ color: "var(--accent-light)", fontWeight: 700, textTransform: "uppercase" }}>{templateId}</span>
+            {(saving || saveMessage) && (
+              <span style={{ 
+                fontSize: 11, 
+                color: saving ? "var(--accent-light)" : "#34d399", 
+                fontWeight: 600,
+                padding: "2px 8px",
+                borderRadius: 4,
+                background: saving ? "rgba(99, 102, 241, 0.1)" : "rgba(16, 185, 129, 0.1)",
+                animation: "fadeIn 0.3s ease"
+              }}>
+                {saving ? "Saving..." : `✓ ${saveMessage}`}
+              </span>
+            )}
           </p>
           <Link 
             href="/templates" 
@@ -996,27 +1034,20 @@ function BuilderContent() {
         )}
 
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 28, gap: 12, alignItems: "center" }}>
-          <button className="btn-secondary" disabled={currentStep === 0} onClick={() => setCurrentStep((s) => s - 1)} style={{ opacity: currentStep === 0 ? 0.4 : 1 }}>
-            ← Back
+          <button 
+            className="btn-secondary" 
+            onClick={() => {
+              if (currentStep === 0) {
+                router.push("/templates");
+              } else {
+                setCurrentStep((s) => s - 1);
+              }
+            }}
+          >
+            {currentStep === 0 ? "← Back to Templates" : "← Back"}
           </button>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            {/* Save Draft Button */}
-            <button
-              className="btn-secondary"
-              onClick={handleSaveDraft}
-              disabled={saving || generating || enhancing}
-              style={{
-                background: "rgba(16, 185, 129, 0.1)",
-                borderColor: "rgba(16, 185, 129, 0.3)",
-                color: "#34d399",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                position: "relative",
-              }}
-            >
-              {saving ? "Saving..." : saveMessage || "💾 Save Draft"}
-            </button>
+
             <button className="btn-secondary" onClick={handleAIAutoComplete} disabled={enhancing || generating} style={{ background: "linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2))", borderColor: "rgba(99, 102, 241, 0.4)", color: "#e0e7ff", display: "flex", alignItems: "center", gap: 8 }}>
               {enhancing 
                 ? (currentStep === 5 ? "Optimizing..." : "Building...") 

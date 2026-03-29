@@ -370,6 +370,11 @@ select.input-field {
   gap: 32px;
   max-width: 850px;
   width: calc(100% - 32px);
+  transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar.logged-in {
+  max-width: 680px;
 }
 
 .navbar .logo {
@@ -867,8 +872,8 @@ select.input-field {
 .nav-user-section {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-left: auto;
+  gap: 16px;
+  position: relative;
 }
 
 .nav-login-btn {

@@ -38,12 +38,18 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar glass">
+    <nav className={`navbar glass ${user ? "logged-in" : ""}`}>
       <Link href="/" className="logo">
         ARTIUS LAB
       </Link>
       <div className="nav-links">
-        {NAV_LINKS.map((link) => (
+        {NAV_LINKS.filter(link => {
+          // If logged in, hide links that are already in the dropdown
+          if (user && (link.href === "/resumes" || link.href === "/settings")) {
+            return false;
+          }
+          return true;
+        }).map((link) => (
           <Link
             key={link.href}
             href={link.href}
