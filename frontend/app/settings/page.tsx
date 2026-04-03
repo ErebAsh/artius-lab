@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "../components/ThemeProvider";
 
 export default function SettingsPage() {
-  const { settings: globalSettings, updateSettings } = useTheme();
+  const { settings: globalSettings, updateSettings, resetToDefaults } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState({
     ...globalSettings,
@@ -23,19 +23,16 @@ export default function SettingsPage() {
   });
 
   const [saveStatus, setSaveStatus] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
 
   useEffect(() => {
     setMounted(true);
-    // Initialize draft from global settings (which handles localStorage)
-    setSettings(prev => ({ ...prev, ...globalSettings }));
-    
-    // Check if there are missing values to merge
-    const saved = localStorage.getItem("artius_settings");
-    if (saved) {
-      try {
-        setSettings(prev => ({ ...prev, ...JSON.parse(saved) }));
-      } catch(e) {}
-    }
+    // Initialize draft from global settings (which handles localStorage and DB)
+    setSettings(prev => ({ 
+      ...prev, 
+      ...globalSettings 
+    }));
   }, [globalSettings]);
 
   // Apply theme and colors globally
@@ -76,7 +73,6 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     updateSettings(settings);
-    localStorage.setItem("artius_settings", JSON.stringify(settings));
     setSaveStatus("Settings saved successfully!");
     setTimeout(() => setSaveStatus(""), 3000);
   };
@@ -505,13 +501,11 @@ export default function SettingsPage() {
             <button 
               className="btn-secondary" 
               style={{ padding: "10px 24px", fontSize: 14 }}
-              onClick={() => {
-                const saved = localStorage.getItem("artius_settings");
-                if (saved) setSettings(JSON.parse(saved));
-              }}
+              onClick={() => setShowResetConfirm(true)}
             >
               Reset
             </button>
+
             <button 
               className="btn-primary" 
               style={{ padding: "10px 32px", fontSize: 14 }}
@@ -522,6 +516,66 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* Global Modals */}
+      {showResetConfirm && (
+        <div 
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 10000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(8px)",
+            animation: "fadeIn 0.2s ease-out"
+          }}
+          onClick={() => setShowResetConfirm(false)}
+        >
+          <div 
+            className="glass"
+            style={{
+              padding: "40px 32px",
+              borderRadius: "24px",
+              maxWidth: "420px",
+              width: "90%",
+              textAlign: "center",
+              boxShadow: "0 24px 80px rgba(0,0,0,0.4), 0 0 0 1px var(--border)",
+              animation: "fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: "40px", marginBottom: "20px" }}>⚠️</div>
+            <h3 style={{ fontSize: "22px", fontWeight: 800, marginBottom: "12px", color: "var(--foreground)" }}>Reset All Settings?</h3>
+            <p style={{ fontSize: "15px", color: "var(--text-muted)", marginBottom: "32px", lineHeight: "1.6" }}>
+              This will revert your theme, colors, and all personal preferences to factory defaults. This action cannot be undone.
+            </p>
+            <div style={{ display: "flex", gap: "16px", justifyContent: "center" }}>
+              <button 
+                className="btn-secondary" 
+                style={{ flex: 1, padding: "12px", fontSize: "14px" }}
+                onClick={() => setShowResetConfirm(false)}
+              >
+                No, Keep Them
+              </button>
+              <button 
+                className="btn-primary" 
+                style={{ flex: 1.2, padding: "12px", fontSize: "14px", background: "linear-gradient(135deg, #ef4444, #b91c1c)" }}
+                onClick={() => {
+                  resetToDefaults();
+                  setShowResetConfirm(false);
+                  setSaveStatus("Reset to factory defaults.");
+                  setTimeout(() => setSaveStatus(""), 3000);
+                }}
+              >
+                Yes, Reset All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

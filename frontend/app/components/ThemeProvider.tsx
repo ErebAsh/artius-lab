@@ -28,6 +28,7 @@ const ThemeContext = createContext({
     exportFormat: "pdf",
   },
   updateSettings: (newSettings: any) => {},
+  resetToDefaults: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
@@ -147,9 +148,47 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   }, [user, token]);
 
 
+  const resetToDefaults = useCallback(() => {
+    const defaults = {
+      theme: "creamy",
+      accentColor: "#10b981",
+      backgroundColor: "",
+      surfaceColor: "",
+      showBackgroundOrbs: true,
+      renderMode: "html",
+      selectedCategory: "All",
+      density: "comfortable",
+      glassBlur: 20,
+      glassOpacity: 0.7,
+      fontFamily: "sans",
+      language: "en",
+      autoSave: true,
+      aiEnabled: true,
+      aiCreativity: "balanced",
+      experimental: false,
+      defaultTemplate: "modern",
+      exportFormat: "pdf",
+    };
+    
+    setSettings(defaults);
+    localStorage.setItem("artius_settings", JSON.stringify(defaults));
+
+    if (user && token) {
+      fetch(`${API_BASE}/api/user/settings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(defaults),
+      }).catch((err) => console.error("Failed to reset UI settings:", err));
+    }
+  }, [user, token]);
+
   return (
-    <ThemeContext.Provider value={{ settings, updateSettings }}>
+    <ThemeContext.Provider value={{ settings, updateSettings, resetToDefaults }}>
       {children}
     </ThemeContext.Provider>
   );
 }
+
