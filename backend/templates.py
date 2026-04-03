@@ -11,7 +11,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A high-scoring ATS-optimized template focusing on clarity and single-column structure. Ideal for technical and corporate roles.",
         "accent_color": "#000000",
         "features": ["Single-column layout", "Maximum ATS readability", "Clean structure", "Professional typography"],
-        "category": "Technical"
+        "category": "Technical",
+        "has_latex": True
     },
     {
         "id": "AL-002",
@@ -19,7 +20,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A stylish two-column resume with a side panel for personal details and expertise, featuring a clean timeline for work history.",
         "accent_color": "#666666",
         "features": ["Sidebar Layout", "Experience Timeline", "Modern Typography", "Premium Design"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-003",
@@ -75,7 +77,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated palette of beige and charcoal with a bold header. Features a unique circular photo placement and structured expertise sections.",
         "accent_color": "#5a5a5a",
         "features": ["Dual-tone Header", "Circular Photo", "Beige Sidebar", "Structured Content"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-010",
@@ -99,7 +102,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A vibrant blue template with modern diagonal accents and Pill-shaped section headers. Features a clean timeline for education and experience.",
         "accent_color": "#00adef",
         "features": ["Blue Accents", "Pill Headers", "Timeline Layout", "Modern Icons"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-013",
@@ -107,7 +111,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A bold, angular design with high-contrast yellow and black themes. Perfect for creative directors and forward-thinking professionals.",
         "accent_color": "#ffc107",
         "features": ["Angular Design", "High Contrast", "Yellow Sidebar", "Modern Typography"],
-        "category": "Creative"
+        "category": "Creative",
+        "has_latex": False
     },
     {
         "id": "AL-014",
@@ -115,7 +120,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated grayscale layout with a strong structural sidebar and integrated expertise sections. Great for designers and UI/UX specialists.",
         "accent_color": "#444444",
         "features": ["Grayscale Theme", "Structural Sidebar", "Skill Progress Bars", "Integrated Expertise"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-015",
@@ -123,7 +129,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A high-impact black-banner design with a clean right sidebar and elegant serif typography. Ideal for managers and creative directors.",
         "accent_color": "#212121",
         "features": ["Black Header Banner", "Right Sidebar", "Serif Typography", "Horizontal Skill Bars"],
-        "category": "Executive"
+        "category": "Executive",
+        "has_latex": False
     },
     {
         "id": "AL-016",
@@ -131,7 +138,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A minimalist, hyper-clean template with generous whitespace and subtle dividers. Perfect for modern, sleek professional profiles.",
         "accent_color": "#666666",
         "features": ["Minimalist Design", "Clean Typography", "Subtle Dividers", "Whitespace Focused"],
-        "category": "Minimalist"
+        "category": "Minimalist",
+        "has_latex": False
     },
     {
         "id": "AL-017",
@@ -139,7 +147,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A striking dual-column design with a deep purple theme and capsule-shaped white sidebar. Features a bold and modern layout for freshes and professionals.",
         "accent_color": "#4b2c5e",
         "features": ["Deep Purple Theme", "Capsule Sidebar", "High Contrast", "Modern Icons"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-018",
@@ -147,7 +156,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A clean, contemporary layout with professional blue accent blocks and a strong emphasis on profile and skills. Ideal for tech and design roles.",
         "accent_color": "#283593",
         "features": ["Blue Accent Blocks", "Bold Header", "Two-column Layout", "Modern Typography"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-019",
@@ -155,7 +165,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A forest green design with beige accents and sharp angular section dividers. Excellent for candidates looking for a unique, nature-inspired professional look.",
         "accent_color": "#1b431c",
         "features": ["Forest Green Theme", "Beige Accents", "Angular Dividers", "Structured Profile"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-020",
@@ -163,7 +174,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A warm, sophisticated template with earthy brown tones and rounded card layouts. Perfect for artisanal and service-oriented professionals.",
         "accent_color": "#9b846b",
         "features": ["Earth Tones", "Rounded Layout", "Star Skill Ratings", "Elegant Cards"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-021",
@@ -171,7 +183,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A high-impact design for creatives featuring a unique hexagon photo frame, bold red accents, and a rounded contrast sidebar.",
         "accent_color": "#e74c3c",
         "features": ["Hexagon Photo Frame", "Red Accents", "Rounded Sidebar", "High Contrast"],
-        "category": "Creative"
+        "category": "Creative",
+        "has_latex": False
     },
     {
         "id": "AL-022",
@@ -179,7 +192,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A high-impact professional design with a dark sidebar, curved header, and vertical section navigation. Ideal for analysts and corporate roles.",
         "accent_color": "#B35C1E",
         "features": ["Dark Sidebar", "Curved Header", "Vertical Section Headers", "Photo Support"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-023",
@@ -187,7 +201,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A minimalist, elegant layout with a focus on typography and whitespace. Perfect for creative and corporate professionals seeking a refined look.",
         "accent_color": "#1a1a1a",
         "features": ["Minimalist Style", "Clean Typography", "Sidebar Layout", "Letter-spaced Headings"],
-        "category": "Minimalist"
+        "category": "Minimalist",
+        "has_latex": False
     },
     {
         "id": "AL-024",
@@ -195,7 +210,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A modern centered design with a unique initials badge and a clean two-column structure. Ideal for designers and marketing professionals.",
         "accent_color": "#000000",
         "features": ["Centered Header", "Initials Badge", "Two-column Layout", "Circular Icons"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-025",
@@ -203,7 +219,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "An elegant high-contrast template with horizontal bands and a stunning script font. Features a unique header layout and a clean split profile.",
         "accent_color": "#EAE3D9",
         "features": ["Horizontal Bands", "Script Typography", "Circular Photo", "Contrast Layout"],
-        "category": "Creative"
+        "category": "Creative",
+        "has_latex": False
     },
     {
         "id": "AL-026",
@@ -211,7 +228,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A professional two-column template with a dark navy header, initials badge, and a light gray sidebar. Features circular photo and skills visualization.",
         "accent_color": "#2c3e50",
         "features": ["Initials Badge", "Navy Header", "Circular Photo", "Skill Progress Dots"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-027",
@@ -219,7 +237,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated cream and slate design with a unique overlapping square photo and strong architectural block structure.",
         "accent_color": "#625f68",
         "features": ["Overlapping Photo", "Cream Sidebar", "Slate Header Block", "Expertise Bullets"],
-        "category": "Creative"
+        "category": "Creative",
+        "has_latex": False
     },
     {
         "id": "AL-028",
@@ -227,7 +246,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A premium dual-tone design with a unique charcoal header block and initials badge. Features a structured beige sidebar and modern progress bars.",
         "accent_color": "#3d3d3d",
         "features": ["Initials Badge", "Dual-tone Header", "Beige Sidebar", "Skill Progress Bars"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-029",
@@ -235,7 +255,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A bold contemporary layout with large typography and a unique yellow photo frame. Perfect for creative and modern professional profiles.",
         "accent_color": "#f7b42c",
         "features": ["Yellow Photo Frame", "Large Typography", "Vertical Accent Bar", "Clean Footer"],
-        "category": "Creative"
+        "category": "Creative",
+        "has_latex": False
     },
     {
         "id": "AL-030",
@@ -243,7 +264,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A premium two-column template with a dark navy sidebar and elegant gold accents. Features a clean architectural layout for high-level professionals.",
         "accent_color": "#b49e85",
         "features": ["Dark Sidebar", "Gold Accents", "Architectural Layout", "Professional Typography"],
-        "category": "Executive"
+        "category": "Executive",
+        "has_latex": False
     },
     {
         "id": "AL-031",
@@ -251,7 +273,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated high-contrast template with a black sidebar and stunning gold serif typography. Features a circular profile photo and structured profile summary.",
         "accent_color": "#c59d5f",
         "features": ["Black Sidebar", "Gold Name Branding", "Circular Photo", "Elegant Serif Typography"],
-        "category": "Executive"
+        "category": "Executive",
+        "has_latex": False
     },
     {
         "id": "AL-032",
@@ -259,7 +282,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A warm, modern template with a light beige sidebar and sharp minimalist typography. Features unique prefix-based headings and a clean structured layout.",
         "accent_color": "#e6d5c8",
         "features": ["Beige Sidebar", "Minimalist Typography", "Slash Headings", "Circular Photo"],
-        "category": "Minimalist"
+        "category": "Minimalist",
+        "has_latex": False
     },
     {
         "id": "AL-033",
@@ -267,7 +291,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "An elegant template with a dual-tone header, beige accent line, and structured two-column content. Perfect for marketing and management roles.",
         "accent_color": "#c3b091",
         "features": ["Dual-tone Header", "Beige Accent line", "Light Gray Sidebar", "Clean Grid Layout"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-034",
@@ -275,7 +300,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated dual-tone template with a cream sidebar and elegant background-bar headers. Features a large circular photo and structured expertise sections.",
         "accent_color": "#c1a182",
         "features": ["Cream Sidebar", "Background-bar Headers", "Circular Photo", "Structured Expertise"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-035",
@@ -283,7 +309,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A classic professional template with deep red top and bottom borders, featuring a clean two-column layout and elegant serif typography. Perfect for corporate and executive roles.",
         "accent_color": "#8B0000",
         "features": ["Deep Red Borders", "Serif Typography", "Two-column Layout", "Professional Design"],
-        "category": "Professional"
+        "category": "Professional",
+        "has_latex": False
     },
     {
         "id": "AL-036",
@@ -291,7 +318,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A modern, sophisticated template with a unique lavender horizontal bar header and a clean structured layout. Ideal for administrative and management professionals.",
         "accent_color": "#E8EAF6",
         "features": ["Lavender Header Bar", "Structured Side Panel", "Clean Layout", "Modern Typography"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
     {
         "id": "AL-037",
@@ -299,7 +327,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A minimalist, hyper-clean template with a neutral grey theme and integrated contact icon bar. Features a structured multi-section layout for experienced professionals.",
         "accent_color": "#666666",
         "features": ["Minimalist Grey Theme", "Contact Icon Bar", "Multi-section Sidebar", "Clean Architecture"],
-        "category": "Minimalist"
+        "category": "Minimalist",
+        "has_latex": False
     },
     {
         "id": "AL-038",
@@ -307,7 +336,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated two-column template with a circular profile photo and thick horizontal sidebar bars. Designed for clear professional history tracking and skills breakdown.",
         "accent_color": "#ececec",
         "features": ["Circular Profile Photo", "Horizontal Sidebar Bars", "Prefix-based Headings", "Dual-column Skills"],
-        "category": "Modern"
+        "category": "Modern",
+        "has_latex": False
     },
 ]
 

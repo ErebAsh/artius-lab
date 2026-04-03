@@ -132,14 +132,12 @@ export default function Footer() {
                 <Link 
                   key={link.path}
                   href={link.path} 
+                  className="footer-link-animated"
                   style={{ 
                     fontSize: 13, 
                     color: "var(--text-muted)", 
-                    textDecoration: "none", 
                     transition: "color 0.2s ease" 
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent-light)"}
-                  onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
                 >
                   {link.name}
                 </Link>
@@ -158,9 +156,8 @@ export default function Footer() {
               </span>
               <Link 
                 href="/settings" 
-                style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent-light)"}
-                onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
+                className="footer-link-animated"
+                style={{ fontSize: 13, color: "var(--text-muted)", transition: "color 0.2s ease" }}
               >
                 Settings
               </Link>
@@ -168,9 +165,8 @@ export default function Footer() {
                 href="https://github.com/ErebAsh/artius-lab" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent-light)"}
-                onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
+                className="footer-link-animated"
+                style={{ fontSize: 13, color: "var(--text-muted)", transition: "color 0.2s ease" }}
               >
                 GitHub Open Source
               </a>
@@ -199,16 +195,14 @@ export default function Footer() {
           <span>© {new Date().getFullYear()} Artius Lab. Engineered with precision.</span>
           <div style={{ display: "flex", gap: 24 }}>
             <span 
+              className="footer-link-animated"
               style={{ cursor: "pointer", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "var(--foreground)"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
             >
               Privacy Policy
             </span>
             <span 
+              className="footer-link-animated"
               style={{ cursor: "pointer", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "var(--foreground)"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
             >
               Terms of Service
             </span>

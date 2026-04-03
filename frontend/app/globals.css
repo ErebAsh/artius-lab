@@ -989,3 +989,32 @@ select.input-field {
     font-size: 20px;
   }
 }
+
+/* Footer Link Animation - High End */
+.footer-link-animated {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.footer-link-animated:hover {
+  transform: scale(1.1); /* Zoom Effect */
+  color: var(--foreground) !important; /* Highlighting */
+}
+
+.footer-link-animated::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent-light), transparent); /* Dark-to-Light Fade */
+  transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 0 10px var(--glow); 
+}
+
+.footer-link-animated:hover::after {
+  width: 100%;
+}

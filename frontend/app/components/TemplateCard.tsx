@@ -12,6 +12,7 @@ interface TemplateCardProps {
     accent_color: string;
     features: string[];
     category: string;
+    has_latex?: boolean;
   };
   onSelect: (template: TemplateCardProps["template"]) => void;
 }
@@ -60,6 +61,34 @@ export default function TemplateCard({ template, onSelect }: TemplateCardProps) 
           overflow: "hidden",
         }}
       >
+        {/* LaTeX Badge */}
+        {template.has_latex && (
+          <div
+            style={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              zIndex: 30,
+              background: "rgba(0, 0, 0, 0.8)",
+              backdropFilter: "blur(4px)",
+              color: "#fff",
+              padding: "4px 10px",
+              borderRadius: "20px",
+              fontSize: "10px",
+              fontWeight: 700,
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px"
+            }}
+          >
+            <span style={{ color: "#00adef" }}>✦</span> LaTeX Ready
+          </div>
+        )}
+
         {/* Auto Thumbnail using iframe */}
         <div
           style={{

@@ -10,6 +10,7 @@ interface Template {
   accent_color: string;
   features: string[];
   category: string;
+  has_latex?: boolean;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -19,6 +20,7 @@ export default function TemplatesPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [renderMode, setRenderMode] = useState<"html" | "latex">("html");
 
   useEffect(() => {
     fetch(`${API_BASE}/api/templates`)
@@ -317,9 +319,11 @@ export default function TemplatesPage() {
     if (indexB !== -1) return 1;
     return a.localeCompare(b);
   });
-  const filteredTemplates = selectedCategory === "All"
-    ? templates
-    : templates.filter(t => t.category === selectedCategory);
+  const filteredTemplates = templates.filter(t => {
+    const matchesCategory = selectedCategory === "All" || t.category === selectedCategory;
+    const matchesRenderMode = renderMode === "html" ? true : t.has_latex;
+    return matchesCategory && matchesRenderMode;
+  });
 
   return (
     <div
@@ -330,23 +334,77 @@ export default function TemplatesPage() {
         margin: "0 auto",
       }}
     >
+      {/* Unified Premium Library & View Toggle */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 56 }}>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          padding: "4px",
+          background: "#00c4a315", // Subtle green background
+          borderRadius: 40,
+          border: "1px solid rgba(0, 196, 163, 0.2)",
+          backdropFilter: "blur(8px)",
+          gap: 4
+        }}>
+          {/* Static Branding Part */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "8px 16px 8px 12px",
+            color: "#00a884",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.5px",
+            textTransform: "uppercase",
+            userSelect: "none"
+          }}>
+            Premium Library
+          </div>
+
+          {/* Divider */}
+          <div style={{ width: 1, height: 16, background: "rgba(0, 168, 132, 0.15)", margin: "0 4px" }} />
+
+          {/* Toggle Switches */}
+          <div style={{ display: "flex", gap: 4, paddingRight: 4 }}>
+            <button
+              onClick={() => setRenderMode("html")}
+              style={{
+                padding: "8px 18px",
+                borderRadius: 30,
+                border: "none",
+                background: renderMode === "html" ? "#00c4a3" : "transparent",
+                color: renderMode === "html" ? "#fff" : "rgba(0, 168, 132, 0.6)",
+                fontSize: 11,
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.3s ease"
+              }}
+            >
+              HTML
+            </button>
+            <button
+              onClick={() => setRenderMode("latex")}
+              style={{
+                padding: "8px 18px",
+                borderRadius: 30,
+                border: "none",
+                background: renderMode === "latex" ? "#00c4a3" : "transparent",
+                color: renderMode === "latex" ? "#fff" : "rgba(0, 168, 132, 0.6)",
+                fontSize: 11,
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.3s ease"
+              }}
+            >
+              LaTeX
+            </button>
+          </div>
+        </div>
+      </div>
       {/* Header */}
       <div className="animate-fade-in-up" style={{ textAlign: "center", marginBottom: 32 }}>
-        <div style={{
-          display: "inline-block",
-          padding: "6px 14px",
-          borderRadius: 20,
-          background: "var(--glow)",
-          color: "var(--accent)",
-          fontSize: 12,
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          marginBottom: 20,
-          border: "1px solid var(--border)"
-        }}>
-          ✦ Premium Library
-        </div>
+
         <h1
           style={{
             fontSize: "clamp(32px, 5vw, 48px)",
@@ -403,6 +461,32 @@ export default function TemplatesPage() {
               onSelect={setSelectedTemplate}
             />
           ))}
+          
+          {/* Professional Coming Soon Placeholder */}
+          <div
+            className="glass"
+            style={{
+              borderRadius: 16,
+              aspectRatio: "1 / 1.414",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 32,
+              textAlign: "center",
+              border: "1px dashed var(--border)",
+              background: "rgba(255,255,255,0.02)",
+              opacity: 0.6
+            }}
+          >
+            <div style={{ fontSize: 24, marginBottom: 16, opacity: 0.5 }}>✦</div>
+            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 8, color: "var(--foreground)" }}>
+              Designing New Foundations
+            </h3>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5 }}>
+              Our design team is currently engineering new high-impact templates for this collection.
+            </p>
+          </div>
         </div>
       )}
 
