@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import TemplateCard from "../components/TemplateCard";
 import TemplateModal from "../components/TemplateModal";
+import { useTheme } from "../components/ThemeProvider";
+
 
 interface Template {
   id: string;
@@ -16,11 +18,12 @@ interface Template {
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function TemplatesPage() {
+  const { settings, updateSettings } = useTheme();
+  const { selectedCategory, renderMode } = settings;
   const [templates, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [renderMode, setRenderMode] = useState<"html" | "latex">("html");
+
 
   useEffect(() => {
     fetch(`${API_BASE}/api/templates`)
@@ -340,9 +343,9 @@ export default function TemplatesPage() {
           display: "flex",
           alignItems: "center",
           padding: "4px",
-          background: "#00c4a315", // Subtle green background
+          background: "var(--glow)",
           borderRadius: 40,
-          border: "1px solid rgba(0, 196, 163, 0.2)",
+          border: "1px solid var(--border)",
           backdropFilter: "blur(8px)",
           gap: 4
         }}>
@@ -352,7 +355,7 @@ export default function TemplatesPage() {
             alignItems: "center",
             gap: 8,
             padding: "8px 16px 8px 12px",
-            color: "#00a884",
+            color: "var(--accent)",
             fontSize: 11,
             fontWeight: 700,
             letterSpacing: "0.5px",
@@ -363,18 +366,19 @@ export default function TemplatesPage() {
           </div>
 
           {/* Divider */}
-          <div style={{ width: 1, height: 16, background: "rgba(0, 168, 132, 0.15)", margin: "0 4px" }} />
+          <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 4px" }} />
 
           {/* Toggle Switches */}
           <div style={{ display: "flex", gap: 4, paddingRight: 4 }}>
             <button
-              onClick={() => setRenderMode("html")}
+              onClick={() => updateSettings({ renderMode: "html" })}
+
               style={{
                 padding: "8px 18px",
                 borderRadius: 30,
                 border: "none",
-                background: renderMode === "html" ? "#00c4a3" : "transparent",
-                color: renderMode === "html" ? "#fff" : "rgba(0, 168, 132, 0.6)",
+                background: renderMode === "html" ? "var(--accent)" : "transparent",
+                color: renderMode === "html" ? "#fff" : "var(--text-muted)",
                 fontSize: 11,
                 fontWeight: 700,
                 cursor: "pointer",
@@ -384,13 +388,14 @@ export default function TemplatesPage() {
               HTML
             </button>
             <button
-              onClick={() => setRenderMode("latex")}
+              onClick={() => updateSettings({ renderMode: "latex" })}
+
               style={{
                 padding: "8px 18px",
                 borderRadius: 30,
                 border: "none",
-                background: renderMode === "latex" ? "#00c4a3" : "transparent",
-                color: renderMode === "latex" ? "#fff" : "rgba(0, 168, 132, 0.6)",
+                background: renderMode === "latex" ? "var(--accent)" : "transparent",
+                color: renderMode === "latex" ? "#fff" : "var(--text-muted)",
                 fontSize: 11,
                 fontWeight: 700,
                 cursor: "pointer",
@@ -428,7 +433,8 @@ export default function TemplatesPage() {
           {categories.map(cat => (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => updateSettings({ selectedCategory: cat })}
+
               className={selectedCategory === cat ? "btn-primary" : "btn-secondary"}
               style={{ padding: "10px 24px", fontSize: 13, borderRadius: 30 }}
             >

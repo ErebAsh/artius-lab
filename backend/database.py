@@ -85,6 +85,16 @@ async def init_db() -> None:
             )
         """)
 
+        # ── User settings (UI preferences, etc.) ────────────────────
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS user_settings (
+                user_id         INTEGER PRIMARY KEY,
+                settings_json   TEXT NOT NULL,
+                updated_at      TEXT NOT NULL DEFAULT (datetime('now')),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+
         await db.commit()
         print(f"✅ Database initialized at: {DB_PATH}")
 
@@ -371,5 +381,43 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
             "created_at": row["created_at"],
             "updated_at": row["updated_at"],
         }
+    finally:
+        await db.close()
+
+# ═══════════════════════════════════════════════════════════════════
+#  USER SETTINGS
+# ═══════════════════════════════════════════════════════════════════
+
+async def save_user_settings(user_id: int, settings_dict: dict[str, Any]) -> bool:
+    """Save user UI settings. Upserts if they already exist."""
+    db = await aiosqlite.connect(DB_PATH)
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        await db.execute(
+            """
+            INSERT INTO user_settings (user_id, settings_json, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET
+                settings_json = excluded.settings_json,
+                updated_at = excluded.updated_at
+            """,
+            (user_id, json.dumps(settings_dict), now),
+        )
+        await db.commit()
+    finally:
+        await db.close()
+    return True
+
+
+async def get_user_settings(user_id: int) -> dict[str, Any] | None:
+    """Fetch user-specific UI settings."""
+    db = await aiosqlite.connect(DB_PATH)
+    db.row_factory = aiosqlite.Row
+    try:
+        cursor = await db.execute("SELECT settings_json FROM user_settings WHERE user_id = ?", (user_id,))
+        row = await cursor.fetchone()
+        if row is None:
+            return None
+        return json.loads(row["settings_json"])
     finally:
         await db.close()

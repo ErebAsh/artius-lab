@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query, Depen
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from contextlib import asynccontextmanager
+from typing import Any, Optional
 import io
 import json
 import PyPDF2
@@ -23,6 +24,8 @@ from database import (
     create_user,
     get_user_by_email,
     get_user_by_id,
+    save_user_settings,
+    get_user_settings,
 )
 
 
@@ -560,3 +563,34 @@ async def api_ats_history(limit: int = Query(20, ge=1, le=100)):
     """Get recent ATS check history."""
     checks = await list_ats_checks(limit=limit)
     return {"checks": checks, "count": len(checks)}
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  USER UI SETTINGS
+# ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/user/settings")
+async def api_get_user_settings(current_user: dict = Depends(get_current_user)):
+    """Fetch the authenticated user's UI preferences."""
+    from typing import Any
+    settings = await get_user_settings(current_user["user_id"])
+    if settings is None:
+        # Return default settings
+        return {
+            "theme": "creamy",
+            "accentColor": "#10b981",
+            "showBackgroundOrbs": True
+        }
+    return settings
+
+
+@app.post("/api/user/settings")
+async def api_save_user_settings(
+    settings: dict[str, Any],
+    current_user: dict = Depends(get_current_user)
+):
+    """Save the authenticated user's UI preferences."""
+    success = await save_user_settings(current_user["user_id"], settings)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to save settings.")
+    return {"message": "Settings saved successfully."}
