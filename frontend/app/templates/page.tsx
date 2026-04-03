@@ -485,12 +485,11 @@ export default function TemplatesPage() {
               opacity: 0.6
             }}
           >
-            <div style={{ fontSize: 24, marginBottom: 16, opacity: 0.5 }}>✦</div>
-            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 8, color: "var(--foreground)" }}>
-              Designing New Foundations
+            <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 12, color: "var(--foreground)" }}>
+              Crafting New Standards
             </h3>
-            <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5 }}>
-              Our design team is currently engineering new high-impact templates for this collection.
+            <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.6, maxWidth: 220 }}>
+              I'm currently meticulously refining a new series of elite templates to ensure your professional story remains ahead of the trend.
             </p>
           </div>
         </div>

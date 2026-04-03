@@ -264,7 +264,8 @@ export default function SettingsPage() {
                   background: settings.autoSave ? "var(--accent)" : "var(--surface-light)",
                   position: "relative",
                   cursor: "pointer",
-                  transition: "background 0.3s ease"
+                  transition: "all 0.3s ease",
+                  boxShadow: settings.autoSave ? "0 0 12px var(--glow)" : "none"
                 }}
               >
                 <div style={{
@@ -342,7 +343,8 @@ export default function SettingsPage() {
                   background: settings.showBackgroundOrbs ? "var(--accent)" : "var(--surface-light)",
                   position: "relative",
                   cursor: "pointer",
-                  transition: "background 0.3s ease"
+                  transition: "all 0.3s ease",
+                  boxShadow: settings.showBackgroundOrbs ? "0 0 12px var(--glow)" : "none"
                 }}
               >
                 <div style={{
@@ -415,7 +417,8 @@ export default function SettingsPage() {
                   background: settings.aiEnabled ? "var(--accent)" : "var(--surface-light)",
                   position: "relative",
                   cursor: "pointer",
-                  transition: "background 0.3s ease"
+                  transition: "all 0.3s ease",
+                  boxShadow: settings.aiEnabled ? "0 0 15px var(--glow)" : "none"
                 }}
               >
                 <div style={{
@@ -461,10 +464,11 @@ export default function SettingsPage() {
                   width: 52,
                   height: 28,
                   borderRadius: 14,
-                  background: settings.experimental ? "#ec4899" : "var(--surface-light)",
+                  background: settings.experimental ? "var(--accent)" : "var(--surface-light)",
                   position: "relative",
                   cursor: "pointer",
-                  transition: "background 0.3s ease"
+                  transition: "all 0.3s ease",
+                  boxShadow: settings.experimental ? "0 0 15px var(--glow)" : "none"
                 }}
               >
                 <div style={{

@@ -192,7 +192,20 @@ export default function Footer() {
           flexWrap: "wrap",
           gap: 12,
         }}>
-          <span>© {new Date().getFullYear()} Artius Lab. Engineered with precision.</span>
+          <span>
+            © {new Date().getFullYear()} Artius Lab. Architected for peak performance by{" "}
+            <a 
+              href="https://www.linkedin.com/in/himanshurajjnu" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: "var(--foreground)", textDecoration: "none", fontWeight: 600, transition: "color 0.2s" }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent)"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "var(--foreground)"}
+            >
+              Himanshu Raj
+            </a>
+            .
+          </span>
           <div style={{ display: "flex", gap: 24 }}>
             <span 
               className="footer-link-animated"
