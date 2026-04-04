@@ -1,0 +1,157 @@
+%% AL-040 — Teal Vertical Timeline (LaTeX)
+%% Teal summary banner, vertical timeline connectors, executive
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=0pt]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{multicol}
+
+% ── Colors ──
+\definecolor{teal-pri}{HTML}{1AA094}
+\definecolor{white}{HTML}{FFFFFF}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{777777}
+\definecolor{border}{HTML}{EEEEEE}
+
+\hypersetup{colorlinks=true,urlcolor=teal-pri,linkcolor=teal-pri,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\begin{document}
+
+\noindent
+\begin{minipage}[t]{\textwidth}
+\vspace{15mm}
+\hspace{15mm}
+\begin{minipage}[t]{0.9\textwidth}
+
+% ── Header ──
+\begin{minipage}[t]{0.6\textwidth}
+{\fontsize{28}{32}\selectfont\bfseries ((( personal.full_name | default('Susan Williams', true) )))}\\[5pt]
+{\fontsize{11}{13}\selectfont\color{teal-pri}\bfseries ((( personal.title | default('Software Development Head', true) )))}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.35\textwidth}
+\raggedleft
+\color{body!80}
+{\fontsize{9}{11}\selectfont ((( personal.phone | default('+1 (555) 555-555', true) ))) \space \color{teal-pri}\faPhone}\\[4pt]
+{\fontsize{9}{11}\selectfont ((( personal.email | default('susan.williams@resumegemini.com', true) ))) \space \color{teal-pri}\faEnvelope}\\[4pt]
+{\fontsize{9}{11}\selectfont ((( personal.linkedin | replace('https://', '') | replace('http://', '') | default('linkedin.com/company/resumegemini', true) ))) \space \color{teal-pri}\faLinkedin}\\[4pt]
+{\fontsize{9}{11}\selectfont ((( personal.location | default('Atlanta, GA, 30301', true) ))) \space \color{teal-pri}\faMapMarker*}
+\end{minipage}
+
+\vspace{15pt}
+
+% ── Summary Banner ──
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[teal-pri] ([yshift=-125pt, xshift=0pt]current page.north west) rectangle ([yshift=-210pt, xshift=\paperwidth]current page.north west);
+\end{tikzpicture}
+
+\vspace{8mm}
+\noindent
+\hspace{-15mm}
+\begin{minipage}[t]{\paperwidth}
+\hspace{15mm}
+\begin{minipage}[t]{0.85\textwidth}
+\color{white}
+{\fontsize{9.5}{15}\selectfont ((( personal.summary | default('Summary goes here...', true) )))}
+\end{minipage}
+\end{minipage}
+
+\vspace{35pt}
+
+% ── Main Content Grid ──
+\noindent
+\begin{minipage}[t]{0.62\textwidth}
+\vspace{0pt}
+
+% ── Experience ──
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[teal-pri, thick, dotted] (0.2,-0.5) -- (0.2,-10); % Timeline line left
+\end{tikzpicture}
+
+{\color{teal-pri}\faCircle\space\space\space\bfseries\large Experience}\\[15pt]
+((* for exp in experience *))
+\hspace{15pt}
+\begin{minipage}{0.92\linewidth}
+{\fontsize{10.5}{12}\selectfont\bfseries ((( exp.company )))} \hfill {\scriptsize\color{white}\setbox0=\hbox{\textbf{((( exp.start_date ))) --- ((( exp.end_date | default('Present', true) )))}} \begin{tikzpicture}[baseline=(char.base)]\node[fill=teal-pri, rounded corners=2pt, inner sep=3pt] (char) {\copy0};\end{tikzpicture}}\\[2pt]
+{\fontsize{9.5}{11}\selectfont\bfseries ((( exp.title )))}\\[2pt]
+{\scriptsize\color{teal-pri}\textit{((( exp.location )))}}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* endfor *))
+\end{itemize}
+((* endif *))
+\end{minipage}
+\vspace{15pt}
+((* endfor *))
+
+% ── Education ──
+{\color{teal-pri}\faCircle\space\space\space\bfseries\large Education}\\[15pt]
+((* for edu in education *))
+\hspace{15pt}
+\begin{minipage}{0.92\linewidth}
+{\fontsize{10.5}{12}\selectfont\bfseries ((( edu.institution )))} \hfill {\scriptsize\color{white}\setbox0=\hbox{\textbf{((( edu.end_date )))}} \begin{tikzpicture}[baseline=(char.base)]\node[fill=teal-pri, rounded corners=2pt, inner sep=3pt] (char) {\copy0};\end{tikzpicture}}\\[2pt]
+{\fontsize{9.5}{11}\selectfont\bfseries ((( edu.degree )))((* if edu.field_of_study *)) \textbar\ ((( edu.field_of_study )))((* endif *))}\\[2pt]
+{\scriptsize\color{teal-pri}\textit{((( edu.location )))}}
+\end{minipage}
+\vspace{12pt}
+((* endfor *))
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.32\textwidth}
+\vspace{0pt}
+
+% ── Skills ──
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[teal-pri, thick, dotted] (0.2,-0.5) -- (0.2,-15); % Timeline line right
+\end{tikzpicture}
+
+{\color{teal-pri}\faCircle\space\space\space\bfseries\large Skills}\\[15pt]
+\hspace{15pt}
+\begin{minipage}{0.85\linewidth}
+\begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=0pt]
+((* for skill in skills *))
+\item {\fontsize{9}{11}\selectfont ((( skill.name )))}
+((* endfor *))
+\end{itemize}
+\end{minipage}
+\vspace{25pt}
+
+% ── Language ──
+{\color{teal-pri}\faCircle\space\space\space\bfseries\large Language}\\[15pt]
+\hspace{15pt}
+\begin{minipage}{0.85\linewidth}
+\begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=0pt]
+((* for lang in languages *))
+\item {\fontsize{9}{11}\selectfont ((( lang.name or lang )))}
+((* endfor *))
+\end{itemize}
+\end{minipage}
+\vspace{25pt}
+
+% ── Certifications ──
+{\color{teal-pri}\faCircle\space\space\space\bfseries\large Certifications}\\[15pt]
+\hspace{15pt}
+\begin{minipage}{0.85\linewidth}
+\begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=0pt]
+((* for cert in certifications *))
+\item {\fontsize{9}{11}\selectfont ((( cert.name or cert )))}
+((* endfor *))
+\end{itemize}
+\end{minipage}
+
+\end{minipage}
+
+\end{minipage}
+\end{minipage}
+
+\end{document}

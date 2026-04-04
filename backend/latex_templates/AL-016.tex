@@ -1,0 +1,122 @@
+%% AL-016 — Hyper-Clean Minimalist (LaTeX)
+%% Ultra-clean, whitespace-focused, subtle dividers
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[top=25mm, bottom=25mm, left=22mm, right=22mm]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{titlesec}
+
+% ── Colors ──
+\definecolor{primary}{HTML}{333333}
+\definecolor{muted}{HTML}{888888}
+\definecolor{light}{HTML}{CCCCCC}
+
+\hypersetup{colorlinks=true,urlcolor=primary,linkcolor=primary,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+% ── Section formatting — ultra-minimalist ──
+\titleformat{\section}{\fontsize{10}{12}\selectfont\bfseries\color{primary}\MakeUppercase}{}{0em}{}
+\titlespacing*{\section}{0pt}{24pt}{10pt}
+
+\begin{document}
+
+% ═══════════ HEADER ═══════════
+\begin{center}
+  {\fontsize{28}{32}\selectfont\bfseries\color{primary} ((( personal.full_name | default('Full Name', true) )))}\\[8pt]
+  {\fontsize{10}{12}\selectfont\color{muted}\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}\\[10pt]
+  {\color{light}\rule{0.4\textwidth}{0.3pt}}\\[8pt]
+  {\fontsize{8}{10}\selectfont\color{muted}
+    ((* set contact = [] *))
+    ((* if personal.email *))((* set _ = contact.append(personal.email) *))((* endif *))
+    ((* if personal.phone *))((* set _ = contact.append(personal.phone) *))((* endif *))
+    ((* if personal.location *))((* set _ = contact.append(personal.location) *))((* endif *))
+    ((* if personal.linkedin *))((* set _ = contact.append(personal.linkedin) *))((* endif *))
+    ((* if personal.portfolio *))((* set _ = contact.append(personal.portfolio) *))((* endif *))
+    ((( contact | join(' \\enspace\\textbar\\enspace ') )))
+  }
+\end{center}
+
+\vspace{8pt}
+
+% ═══════════ SUMMARY ═══════════
+((* if personal.summary *))
+\section{Summary}
+{\small ((( personal.summary )))}
+((* endif *))
+
+% ═══════════ EXPERIENCE ═══════════
+((* if experience and experience|length > 0 *))
+\section{Experience}
+((* for exp in experience *))
+\noindent{\bfseries ((( exp.title | default('Role', true) )))} \hfill {\small\color{muted} ((( exp.start_date | default('', true) ))) --- ((( exp.end_date | default('Present', true) )))}\\
+{\small\color{muted} ((( exp.company | default('Company', true) )))((* if exp.location *)), ((( exp.location )))((* endif *))}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=14pt, itemsep=1pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\small ((( hl )))}((* endif *))
+((* endfor *))
+\end{itemize}
+((* endif *))
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ EDUCATION ═══════════
+((* if education and education|length > 0 *))
+\section{Education}
+((* for edu in education *))
+\noindent{\bfseries ((( edu.degree | default('Degree', true) )))((* if edu.field_of_study *)) in ((( edu.field_of_study )))((* endif *))} \hfill {\small\color{muted} ((( edu.end_date | default('', true) )))}\\
+{\small\color{muted} ((( edu.institution | default('University', true) )))}\\
+((* if edu.gpa *))
+{\small GPA: ((( edu.gpa )))}\\
+((* endif *))
+((* if edu.achievements *))
+{\small\textit{((( edu.achievements )))}}\\ 
+((* endif *))
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ SKILLS ═══════════
+((* if skills or expertise.technical or expertise.professional *))
+\section{Skills}
+((* if expertise.technical *))
+{\small\bfseries Technical:} {\small ((( expertise.technical | join(' \\enspace\\textbullet\\enspace ') )))}\\[4pt]
+((* endif *))
+((* if expertise.professional *))
+{\small\bfseries Professional:} {\small ((( expertise.professional | join(' \\enspace\\textbullet\\enspace ') )))}\\[4pt]
+((* endif *))
+((* if skills and skills|length > 0 *))
+{\small\bfseries Tools:}
+((* set skill_names = [] *))
+((* for s in skills *))((* set _ = skill_names.append(s.name) *))((* endfor *))
+{\small ((( skill_names | join(' \\enspace\\textbullet\\enspace ') )))}
+((* endif *))
+((* endif *))
+
+% ═══════════ PROJECTS ═══════════
+((* if projects and projects|length > 0 *))
+\section{Projects}
+((* for project in projects *))
+\noindent{\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{View}}((* endif *))\\
+((* if project.description *)){\small\color{muted}\textit{((( project.description )))}}\\((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\small\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{12pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ CERTIFICATIONS ═══════════
+((* if certifications and certifications|length > 0 *))
+\section{Certifications}
+((* for cert in certifications *))
+\noindent{\bfseries ((( cert.name )))} \hfill {\small\color{muted} ((( cert.issuer ))), ((( cert.year )))}\\[4pt]
+((* endfor *))
+((* endif *))
+
+\end{document}

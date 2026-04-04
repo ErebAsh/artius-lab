@@ -1,0 +1,170 @@
+%% AL-031 — Black Gold Serif (LaTeX)
+%% Black sidebar, gold serif typography, executive
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=0pt]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+% ── Colors ──
+\definecolor{black}{HTML}{111111}
+\definecolor{gold}{HTML}{C59D5F}
+\definecolor{white}{HTML}{FFFFFF}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{777777}
+\definecolor{divider}{HTML}{EEEEEE}
+
+\hypersetup{colorlinks=true,urlcolor=gold,linkcolor=gold,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\begin{document}
+
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  % Black sidebar
+  \fill[black] (current page.north west) rectangle ([xshift=75mm]current page.south west);
+\end{tikzpicture}
+
+% ═══════════ SIDEBAR ═══════════
+\noindent
+\begin{minipage}[t]{0.35\textwidth}
+\color{white}
+\vspace{12mm}
+\hspace{8mm}
+\begin{minipage}[t]{0.80\textwidth}
+
+\vspace{10mm}
+{\fontsize{14}{16}\selectfont\color{gold}\bfseries\MakeUppercase{((( personal.full_name | default('Full Name', true) )))}}\\[6pt]
+{\fontsize{8}{10}\selectfont\color{white!60}\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}
+
+\vspace{10mm}
+
+% ── Contact ──
+{\fontsize{9}{11}\selectfont\color{gold}\bfseries\MakeUppercase{Contact}}\\[2pt]
+{\color{gold!30}\rule{\linewidth}{0.4pt}}\\[10pt]
+((* if personal.email *))
+{\small\color{gold}\faEnvelope\hspace{8pt}\color{white!90}\href{mailto:((( personal.email )))}{((( personal.email ))) }}\\[10pt]
+((* endif *))
+((* if personal.phone *))
+{\small\color{gold}\faPhone\hspace{8pt}\color{white!90} ((( personal.phone ))) }\\[10pt]
+((* endif *))
+((* if personal.location *))
+{\small\color{gold}\faMapMarker*\hspace{8pt}\color{white!90} ((( personal.location ))) }\\[10pt]
+((* endif *))
+((* if personal.linkedin *))
+{\small\color{gold}\faLinkedin\hspace{8pt}\color{white!90}\href{((* if 'http' not in personal.linkedin *))https://((* endif *))((( personal.linkedin )))}{LinkedIn }}\\[10pt]
+((* endif *))
+((* if personal.portfolio *))
+{\small\color{gold}\faGlobe\hspace{8pt}\color{white!90}\href{((* if 'http' not in personal.portfolio *))https://((* endif *))((( personal.portfolio )))}{Portfolio }}\\[10pt]
+((* endif *))
+
+\vspace{10pt}
+
+% ── Skills ──
+((* if skills and skills|length > 0 *))
+{\fontsize{9}{11}\selectfont\color{gold}\bfseries\MakeUppercase{Skills}}\\[2pt]
+{\color{gold!30}\rule{\linewidth}{0.4pt}}\\[10pt]
+((* for skill in skills *))
+{\small\color{gold}\faCheck\hspace{8pt}\color{white!85}{\fontsize{8.5}{10}\selectfont ((( skill.name )))}\\[6pt]
+((* endfor *))
+\vspace{7pt}
+((* endif *))
+
+% ── Education ──
+((* if education and education|length > 0 *))
+{\fontsize{9}{11}\selectfont\color{gold}\bfseries\MakeUppercase{Education}}\\[2pt]
+{\color{gold!30}\rule{\linewidth}{0.4pt}}\\[10pt]
+((* for edu in education *))
+{\small\bfseries\color{white} ((( edu.institution )))}\\[2pt]
+{\small\color{gold} ((( edu.degree )))((* if edu.field_of_study *)) \textbar\ ((( edu.field_of_study )))((* endif *))}\\[2pt]
+{\scriptsize\color{white!50} ((( edu.start_date ))) --- ((( edu.end_date | default('Present', true) )))}
+((* if edu.gpa *))\\[1pt] {\scriptsize\color{white!70} GPA: ((( edu.gpa )))}(* endif *)
+((* if edu.achievements *))\\[1pt] {\scriptsize\color{white!60}\textit{((( edu.achievements )))}}((* endif *))
+\\[12pt]
+((* endfor *))
+((* endif *))
+
+\end{minipage}
+\end{minipage}%
+\hfill
+% ═══════════ MAIN COLUMN ═══════════
+\begin{minipage}[t]{0.62\textwidth}
+\color{body}
+\vspace{12mm}
+\hspace{5mm}
+\begin{minipage}[t]{0.88\textwidth}
+
+% ── Profile ──
+((* if personal.summary *))
+{\fontsize{12}{14}\selectfont\bfseries\color{black}\MakeUppercase{Professional Profile}}\\[2pt]
+{\color{black}\rule{\linewidth}{1.5pt}}\\[8pt]
+{\fontsize{9.5}{13.5}\selectfont ((( personal.summary )))}
+\vspace{15pt}
+((* endif *))
+
+% ── Experience ──
+((* if experience and experience|length > 0 *))
+{\fontsize{12}{14}\selectfont\bfseries\color{black}\MakeUppercase{Experience}}\\[2pt]
+{\color{black}\rule{\linewidth}{1.5pt}}\\[10pt]
+((* for exp in experience *))
+\begin{minipage}{\linewidth}
+{\fontsize{10}{12}\selectfont\bfseries ((( exp.title )))} \hfill {\scriptsize\color{muted}\bfseries ((( exp.start_date | upper ))) --- ((( exp.end_date | default('Present', true) | upper )))}\\[2pt]
+{\fontsize{9}{11}\selectfont\color{gold}\bfseries ((( exp.company )))((* if exp.location *)) \textbar\ ((( exp.location )))((* endif *))}
+((* if exp.description *))\\[4pt] {\fontsize{8.5}{11.5}\selectfont ((( exp.description )))}((* endif *))
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* endfor *))
+\end{itemize}
+((* endif *))
+\end{minipage}
+\vspace{11pt}
+((* endfor *))
+((* endif *))
+
+% ── Projects ──
+((* if projects and projects|length > 0 *))
+{\fontsize{12}{14}\selectfont\bfseries\color{black}\MakeUppercase{Recent Projects}}\\[2pt]
+{\color{black}\rule{\linewidth}{1.5pt}}\\[8pt]
+((* for project in projects *))
+{\fontsize{10}{12}\selectfont\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{\color{gold}VIEW PROJECT \faExternalLinkAlt}}( (* endif *) )\\
+((* if project.description *)){\fontsize{8.5}{11.5}\selectfont ((( project.description )))}\\((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\fontsize{8}{10}\selectfont\color{muted}\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+% ── Expertise ──
+((* if expertise.technical or expertise.professional *))
+{\fontsize{12}{14}\selectfont\bfseries\color{black}\MakeUppercase{Core Expertise}}\\[2pt]
+{\color{black}\rule{\linewidth}{1.5pt}}\\[8pt]
+((* if expertise.technical *))
+{\fontsize{9}{11}\selectfont\bfseries Technical:} {\fontsize{8.5}{11}\selectfont ((( expertise.technical | join(', ') )))}\\[6pt]
+((* endif *))
+((* if expertise.professional *))
+{\fontsize{9}{11}\selectfont\bfseries Professional:} {\fontsize{8.5}{11}\selectfont ((( expertise.professional | join(', ') )))}
+((* endif *))
+\vspace{10pt}
+((* endif *))
+
+% ── Certifications ──
+((* if certifications and certifications|length > 0 *))
+{\fontsize{12}{14}\selectfont\bfseries\color{black}\MakeUppercase{Certifications}}\\[2pt]
+{\color{black}\rule{\linewidth}{1.5pt}}\\[8pt]
+((* for cert in certifications *))
+{\fontsize{9}{11}\selectfont\bfseries ((( cert.name )))} \hfill {\fontsize{8}{10}\selectfont\color{muted} ((( cert.issuer ))) \textbar\ ((( cert.year )))}\\[4pt]
+((* endfor *))
+((* endif *))
+
+\end{minipage}
+\end{minipage}
+
+\end{document}

@@ -1,0 +1,134 @@
+%% AL-001 — ATS Standard Pro (LaTeX)
+%% Single-column, serif, maximum ATS readability
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=20mm]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{parskip}
+
+% ── Colors ──
+\definecolor{primary}{HTML}{000000}
+\definecolor{muted}{HTML}{555555}
+
+% ── Link style ──
+\hypersetup{colorlinks=true,urlcolor=primary,linkcolor=primary,pdfborder={0 0 0}}
+
+% ── Section formatting ──
+\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{18pt}{8pt}
+
+% ── Remove page numbers ──
+\pagestyle{empty}
+
+% ── Custom commands ──
+\newcommand{\resumeSubheading}[4]{
+  \noindent\textbf{#1} \hfill #2 \\
+  \textit{#3} \hfill \textit{#4}
+  \vspace{2pt}
+}
+
+\begin{document}
+
+% ═══════════ HEADER ═══════════
+\begin{center}
+  {\LARGE\bfseries ((( personal.full_name | default('FULL NAME', true) | upper )))}\\[6pt]
+  {\small\color{muted}
+    ((* set contact = [] *))
+    ((* if personal.location *))((* set _ = contact.append(personal.location) *))((* endif *))
+    ((* if personal.email *))((* set _ = contact.append(personal.email) *))((* endif *))
+    ((* if personal.phone *))((* set _ = contact.append(personal.phone) *))((* endif *))
+    ((* if personal.linkedin *))((* set _ = contact.append(personal.linkedin) *))((* endif *))
+    ((* if personal.portfolio *))((* set _ = contact.append(personal.portfolio) *))((* endif *))
+    ((( contact | join(' \\textbullet\\ ') )))
+  }
+\end{center}
+
+% ═══════════ PROFESSIONAL SUMMARY ═══════════
+((* if personal.summary *))
+\section{Professional Summary}
+((( personal.summary )))
+((* endif *))
+
+% ═══════════ PROFESSIONAL EXPERIENCE ═══════════
+((* if experience and experience|length > 0 *))
+\section{Professional Experience}
+((* for exp in experience *))
+\resumeSubheading
+  {((( exp.company | default('Company', true) )))}{((( exp.location | default('', true) )))}
+  {((( exp.title | default('Role', true) )))}{((( exp.start_date | default('', true) ))) --- ((( exp.end_date | default('Present', true) )))}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=16pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))
+((* if hl *))
+  \item ((( hl )))
+((* endif *))
+((* endfor *))
+\end{itemize}
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ PROJECTS ═══════════
+((* if projects and projects|length > 0 *))
+\section{Projects}
+((* for project in projects *))
+\noindent\textbf{((( project.name )))}((* if project.link *)) \hfill {\small\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{View Project}}((* endif *))\\
+((* if project.description *))
+{\small\textit{((( project.description )))}}\\
+((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\small\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ EDUCATION ═══════════
+((* if education and education|length > 0 *))
+\section{Education}
+((* for edu in education *))
+\resumeSubheading
+  {((( edu.degree | default('Degree', true) )))((* if edu.field_of_study *)) in ((( edu.field_of_study )))((* endif *))}{((( edu.end_date | default('', true) )))}
+  {((( edu.institution | default('University', true) )))}{((( edu.start_date | default('', true) )))((* if edu.end_date *)) --- ((( edu.end_date )))((* endif *))}
+((* if edu.gpa *))
+{\small GPA: ((( edu.gpa )))}\\
+((* endif *))
+((* if edu.achievements *))
+{\small\textit{((( edu.achievements )))}\\
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ SKILLS ═══════════
+((* if skills or expertise.technical or expertise.professional *))
+\section{Expert-Level Skills}
+((* if expertise.technical *))
+\noindent\textbf{Technical:} ((( expertise.technical | join(', ') )))\\
+((* endif *))
+((* if expertise.professional *))
+\noindent\textbf{Professional:} ((( expertise.professional | join(', ') )))\\
+((* endif *))
+((* if skills and skills|length > 0 *))
+\noindent\textbf{Software/Other:}
+((* set skill_names = [] *))
+((* for s in skills *))((* set _ = skill_names.append(s.name) *))((* endfor *))
+((( skill_names | join(', ') )))
+((* endif *))
+((* endif *))
+
+% ═══════════ CERTIFICATIONS ═══════════
+((* if certifications and certifications|length > 0 *))
+\section{Certifications}
+((* for cert in certifications *))
+\noindent\textbf{((( cert.name )))} --- ((( cert.issuer ))), ((( cert.year )))\\[4pt]
+((* endfor *))
+((* endif *))
+
+\end{document}

@@ -1,0 +1,154 @@
+%% AL-041 — Soft Bubble Modern (LaTeX)
+%% Background orbs, teal timeline, modern two-column
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=0pt]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{multicol}
+
+% ── Colors ──
+\definecolor{teal-pri}{HTML}{1AA094}
+\definecolor{bubble}{HTML}{E0F7F9}
+\definecolor{white}{HTML}{FFFFFF}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{777777}
+\definecolor{border}{HTML}{EEEEEE}
+
+\hypersetup{colorlinks=true,urlcolor=teal-pri,linkcolor=teal-pri,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\begin{document}
+
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  % Background Orbs at top
+  \fill[bubble, opacity=0.6] ([xshift=-10pt, yshift=30pt]current page.north west) circle (1.5cm);
+  \fill[bubble, opacity=0.4] ([xshift=100pt, yshift=-40pt]current page.north west) circle (1.2cm);
+  \fill[bubble, opacity=0.5] ([xshift=250pt, yshift=40pt]current page.north west) circle (1.8cm);
+  \fill[bubble, opacity=0.3] ([xshift=400pt, yshift=-30pt]current page.north west) circle (1.3cm);
+  \fill[bubble, opacity=0.6] ([xshift=-10pt, yshift=35pt]current page.north east) circle (1.6cm);
+  \fill[bubble, opacity=0.4] ([xshift=-80pt, yshift=-50pt]current page.north east) circle (1.1cm);
+\end{tikzpicture}
+
+\noindent
+\begin{minipage}[t]{\textwidth}
+\vspace{15mm}
+\hspace{12mm}
+\begin{minipage}[t]{0.9\textwidth}
+
+% ── Header ──
+\begin{minipage}[t]{0.5\textwidth}
+{\fontsize{26}{30}\selectfont\bfseries ((( personal.full_name | default('Rahul Kumar', true) )))}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\raggedleft
+\color{body!80}
+{\fontsize{8.5}{10}\selectfont ((( personal.phone | default('+1 (555) 555-555', true) ))) \space \color{teal-pri}\faPhone}\\[4pt]
+{\fontsize{8.5}{10}\selectfont ((( personal.email | default('rahul.kumar@resumegemini.com', true) ))) \space \color{teal-pri}\faEnvelope}\\[4pt]
+{\fontsize{8.5}{10}\selectfont ((( personal.portfolio or personal.website | default('https://resumegemini.com', true) | replace('https://', '') | replace('http://', '') ))) \space \color{teal-pri}\faGlobe}\\[4pt]
+{\fontsize{8.5}{10}\selectfont ((( personal.location | default('Pune, MH, 411001', true) ))) \space \color{teal-pri}\faMapMarker*}
+\end{minipage}
+
+\vspace{25pt}
+
+% ── Summary ──
+{\fontsize{9}{14}\selectfont\color{body!90} ((( personal.summary | default('Summary goes here...', true) )))}
+
+\vspace{30pt}
+
+% ── Main Content Grid ──
+\begin{minipage}[t]{0.28\textwidth}
+\vspace{0pt}
+
+% ── Skills ──
+{\color{teal-pri}\rule{\linewidth}{1.5pt}}\\[2pt]
+{\fontsize{10}{12}\selectfont\color{teal-pri}\bfseries SKILLS}\\[10pt]
+\begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=0pt]
+((* for skill in skills *))
+\item {\fontsize{8.5}{10}\selectfont ((( skill.name )))}
+((* endfor *))
+\end{itemize}
+\vspace{20pt}
+
+% ── Awards ──
+{\color{teal-pri}\rule{\linewidth}{1.5pt}}\\[2pt]
+{\fontsize{10}{12}\selectfont\color{teal-pri}\bfseries AWARDS}\\[10pt]
+\begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=0pt]
+((* for award in awards *))
+\item {\fontsize{8.5}{10}\selectfont ((( award.name or award )))}
+((* endfor *))
+\end{itemize}
+\vspace{20pt}
+
+% ── Language ──
+{\color{teal-pri}\rule{\linewidth}{1.5pt}}\\[2pt]
+{\fontsize{10}{12}\selectfont\color{teal-pri}\bfseries LANGUAGE}\\[10pt]
+\begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=0pt]
+((* for lang in languages *))
+\item {\fontsize{8.5}{10}\selectfont ((( lang.name or lang )))}
+((* endfor *))
+\end{itemize}
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.68\textwidth}
+\vspace{0pt}
+
+% ── Education ──
+{\color{teal-pri}\rule{\linewidth}{1.5pt}}\\[2pt]
+{\fontsize{10}{12}\selectfont\color{teal-pri}\bfseries EDUCATION}\\[15pt]
+
+((* for edu in education *))
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[teal-pri, fill=teal-pri] (0,0.4) circle (4pt);
+  \draw[teal-pri, thick] (0,0.3) -- (0,-1);
+\end{tikzpicture}
+\hspace{15pt}
+\begin{minipage}{0.9\linewidth}
+{\scriptsize\color{white}\setbox0=\hbox{\textbf{((( edu.end_date )))}} \begin{tikzpicture}[baseline=(char.base)]\node[fill=teal-pri, rounded corners=6pt, inner sep=3pt] (char) {\copy0};\end{tikzpicture}}\\[4pt]
+{\fontsize{10}{12}\selectfont\bfseries ((( edu.institution )))} \hfill {\scriptsize\color{teal-pri}\textit{((( edu.location )))}} \\
+{\fontsize{9}{11}\selectfont\bfseries ((( edu.degree )))((* if edu.field_of_study *)) \textbar\ ((( edu.field_of_study )))((* endif *))}
+\end{minipage}
+\vspace{15pt}
+((* endfor *))
+
+\vspace{10pt}
+
+% ── Experience ──
+{\color{teal-pri}\rule{\linewidth}{1.5pt}}\\[2pt]
+{\fontsize{10}{12}\selectfont\color{teal-pri}\bfseries EXPERIENCE}\\[15pt]
+
+((* for exp in experience *))
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[teal-pri, fill=teal-pri] (0,0.4) circle (4pt);
+  \draw[teal-pri, thick] (0,0.3) -- (0,-4); % Extend as needed or use conditional check
+\end{tikzpicture}
+\hspace{15pt}
+\begin{minipage}{0.92\linewidth}
+{\scriptsize\color{white}\setbox0=\hbox{\textbf{((( exp.start_date ))) --- ((( exp.end_date | default('Present', true) )))}} \begin{tikzpicture}[baseline=(char.base)]\node[fill=teal-pri, rounded corners=6pt, inner sep=3pt] (char) {\copy0};\end{tikzpicture}}\\[4pt]
+{\fontsize{10}{12}\selectfont\bfseries ((( exp.company )))} \hfill {\scriptsize\color{teal-pri}\textit{((( exp.location )))}} \\
+{\fontsize{9}{11}\selectfont\bfseries ((( exp.title )))}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* endfor *))
+\end{itemize}
+((* endif *))
+\end{minipage}
+\vspace{15pt}
+((* endfor *))
+
+\end{minipage}
+
+\end{minipage}
+\end{minipage}
+
+\end{document}

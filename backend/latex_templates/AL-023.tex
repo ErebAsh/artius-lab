@@ -1,0 +1,211 @@
+%% AL-023 — Premium Dark Purple (LaTeX)
+%% Dark theme with purple accents and vertical section markers
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0in]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{letterspace}
+\usepackage{tikz}
+\usepackage{calc}
+\usepackage{anyfontsize}
+
+% ── Colors ──
+\definecolor{bg}{HTML}{1C1C1C}
+\definecolor{accent}{HTML}{9D70FF}
+\definecolor{textbody}{HTML}{BBBBBB}
+\definecolor{texthead}{HTML}{FFFFFF}
+\definecolor{line}{HTML}{3D3D45}
+
+\pagecolor{bg}
+\color{textbody}
+
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+% ── Custom Fonts (Fallback to Sans) ──
+\renewcommand{\familydefault}{\sfdefault}
+
+% ── Helpers ──
+\newcommand{\dotmarker}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[accent] (-0.28cm, 0.15cm) circle (2.5pt);
+  \end{tikzpicture}%
+}
+
+\newcommand{\skillcircle}[1]{%
+  \begin{tikzpicture}[baseline=(char.base)]
+    \fill[line] (0,0) circle (0.4cm);
+    \draw[accent, line width=2pt] (90:0.4cm) arc (90:90-(#1*3.6):0.4cm);
+    \fill[bg] (0,0) circle (0.33cm);
+  \end{tikzpicture}%
+}
+
+\begin{document}
+
+% ── Background Text ──
+\begin{tikzpicture}[remember picture, overlay]
+  % Corner Decorations
+  \fill[accent] (current page.north west) rectangle ++(2cm, -1.2cm);
+  \fill[accent] (current page.south east) rectangle ++(-1.5cm, 1cm);
+\end{tikzpicture}
+
+\vspace*{1.5cm}
+
+% ═══════════ HEADER ═══════════
+\noindent\begin{minipage}[t]{0.58\textwidth}
+  \vspace{0pt}
+  {\fontsize{48}{48}\selectfont\color{accent}\bfseries ((( personal.full_name.split(' ')[0] | default('John', true) )))}\\[2pt]
+  {\fontsize{48}{48}\selectfont\color{texthead}\bfseries ((( personal.full_name.split(' ')[1:] | join(' ') | default('Smith', true) )))}\\[15pt]
+  {\fontsize{13}{13}\selectfont\color{texthead}\lsstyle\MakeUppercase{((( personal.title | default('IT Project Manager', true) )))}}
+\end{minipage}%
+\begin{minipage}[t]{0.42\textwidth}
+  \vspace{25pt}
+  \raggedright
+  {\small\color{accent}\bfseries Mobile}\\
+  {\small ((( personal.phone | default('774-987-4009', true) )))}\\[8pt]
+  {\small\color{accent}\bfseries E-mail}\\
+  {\small ((( personal.email | default('j.smith@upwork.com', true) )))}\\[8pt]
+  ((* if personal.linkedin *))
+  {\small\color{accent}\bfseries Linkedin}\\
+  {\small ((( personal.linkedin | replace('https://', '') | replace('www.', '') )))}\\[8pt]
+  ((* endif *))
+  ((* if personal.twitter *))
+  {\small\color{accent}\bfseries Twitter}\\
+  {\small ((( personal.twitter | replace('https://', '') | replace('www.', '') )))}\\
+  ((* endif *))
+\end{minipage}
+
+\vspace{1.2cm}
+
+% ═══════════ MAIN CONTENT ═══════════
+\noindent\begin{minipage}[t]{0.35\textwidth}
+  \vspace{0pt}
+  
+  % --- PROFILE ---
+  ((* if personal.summary *))
+  {\large\color{texthead}\bfseries\lsstyle PROFILE}\\[10pt]
+  \dotmarker
+  \hspace{0.4cm}\begin{minipage}[t]{0.85\textwidth}
+    \vspace{-12pt}
+    \color{line}\rule[-45pt]{1.5pt}{45pt} % Rough line height
+    \hspace{0.2cm}\begin{minipage}[t]{\textwidth}
+      \vspace{0pt}
+      {\footnotesize ((( personal.summary )))}
+    \end{minipage}
+  \end{minipage}
+  \vspace{1cm}
+  ((* endif *))
+
+  % --- EDUCATION ---
+  ((* if education *))
+  {\large\color{texthead}\bfseries\lsstyle EDUCATION}\\[10pt]
+  \dotmarker
+  \hspace{0.4cm}\begin{minipage}[t]{0.85\textwidth}
+    \vspace{-12pt}
+    \color{line}\rule[-60pt]{1.5pt}{60pt}
+    \hspace{0.2cm}\begin{minipage}[t]{\textwidth}
+      \vspace{0pt}
+      ((* for edu in education *))
+        {\fontsize{7}{8}\selectfont\color{accent}\bfseries ((( edu.degree )))}\\[1pt]
+        {\tiny\color{texthead} ((( edu.institution )))}\\[1pt]
+        {\fontsize{5}{6}\selectfont ((( edu.start_date ))) --- ((( edu.end_date )))}\\[4pt]
+      ((* endfor *))
+    \end{minipage}
+  \end{minipage}
+  \vspace{1cm}
+  ((* endif *))
+
+  % --- SKILLS ---
+  ((* if skills *))
+  {\large\color{texthead}\bfseries\lsstyle SKILLS}\\[10pt]
+  \dotmarker
+  \hspace{0.4cm}\begin{minipage}[t]{0.85\textwidth}
+    \vspace{-12pt}
+    \color{line}\rule[-60pt]{1.5pt}{60pt}
+    \hspace{0.2cm}\begin{minipage}[t]{\textwidth}
+      \vspace{0pt}
+      {\footnotesize
+      ((* for skill in skills *))
+        ((( skill.name )))(* if not loop.last *), (* endif *)
+      ((* endfor *))
+      }
+    \end{minipage}
+  \end{minipage}
+  \vspace{1.2cm}
+  ((* endif *))
+
+  % --- CERTIFICATION ---
+  ((* if certifications *))
+  {\large\color{texthead}\bfseries\lsstyle CERTIFICATION}\\[10pt]
+  \dotmarker
+  \hspace{0.4cm}\begin{minipage}[t]{0.85\textwidth}
+    \vspace{-12pt}
+    \color{line}\rule[-60pt]{1.5pt}{60pt}
+    \hspace{0.2cm}\begin{minipage}[t]{\textwidth}
+      \vspace{0pt}
+      ((* for cert in certifications[:3] *))
+        {\footnotesize\color{accent}\bfseries ((( cert.year or cert.date )))}\\[1pt]
+        {\footnotesize\color{texthead} ((( cert.name )))}\\[8pt]
+      ((* endfor *))
+    \end{minipage}
+  \end{minipage}
+  ((* endif *))
+
+\end{minipage}%
+\begin{minipage}[t]{0.65\textwidth}
+  \vspace{0pt}
+  \hspace{0.5cm}
+  \begin{minipage}[t]{0.95\textwidth}
+    
+    % --- EXPERIENCE ---
+    ((* if experience *))
+    {\large\color{texthead}\bfseries\lsstyle EXPERIENCE}\\[10pt]
+    \dotmarker
+    \hspace{0.4cm}\begin{minipage}[t]{\textwidth-0.5cm}
+      \vspace{-12pt}
+      \color{line}\rule[-240pt]{1.5pt}{240pt}
+      \hspace{0.2cm}\begin{minipage}[t]{\textwidth-0.4cm}
+        \vspace{0pt}
+        ((* for exp in experience *))
+          \noindent{\footnotesize\color{accent}\bfseries ((( exp.title )))} \hfill {\tiny ((( exp.start_date ))) --- ((( exp.end_date or 'Present' )))}\\[1pt]
+          {\footnotesize\color{texthead}\bfseries ((( exp.company )))((* if exp.location *)), ((( exp.location )))((* endif *))}\\[4pt]
+          ((* if exp.description *)){\fontsize{8}{10}\selectfont ((( exp.description )))}\\[4pt]((* endif *))
+          ((* if exp.highlights *))
+          \begin{itemize}[leftmargin=10pt, itemsep=0pt, parsep=2pt, topsep=0pt]
+            ((* for hl in exp.highlights *))\item {\fontsize{8}{10}\selectfont ((( hl )))}((* endfor *))
+          \end{itemize}
+          ((* endif *))
+          \vspace{10pt}
+        ((* endfor *))
+      \end{minipage}
+    \end{minipage}
+    \vspace{0.8cm}
+    ((* endif *))
+
+    % --- PROJECTS ---
+    ((* if projects *))
+    {\large\color{texthead}\bfseries\lsstyle PROJECTS}\\[10pt]
+    \dotmarker
+    \hspace{0.4cm}\begin{minipage}[t]{\textwidth-0.5cm}
+      \vspace{-12pt}
+      \color{line}\rule[-80pt]{1.5pt}{80pt}
+      \hspace{0.2cm}\begin{minipage}[t]{\textwidth-0.4cm}
+        \vspace{0pt}
+        ((* for project in projects *))
+          \noindent{\footnotesize\color{accent}\bfseries ((( project.name )))} 
+          ((* if project.link *)) \hfill {\tiny\url{((( project.link )))}} ((* endif *))\\[1pt]
+          ((* if project.technologies *)){\fontsize{6}{7}\selectfont\color{textbody}\textit{((( project.technologies | join(' | ') )))}} \\[3pt] ((* endif *))
+          {\fontsize{8}{10}\selectfont ((( project.description )))}\\[8pt]
+        ((* endfor *))
+      \end{minipage}
+    \end{minipage}
+    ((* endif *))
+
+  \end{minipage}
+\end{minipage}
+
+\end{document}

@@ -1,0 +1,194 @@
+%% AL-004 — Navy Gold Corporate (LaTeX)
+%% Two-column layout, navy + gold, serif headers
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0pt]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{tabularx}
+\usepackage{multicol}
+
+% ── Colors ──
+\definecolor{navy}{HTML}{1E2538}
+\definecolor{gold}{HTML}{D1B897}
+\definecolor{darkgold}{HTML}{A49176}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{666666}
+
+\hypersetup{colorlinks=true,urlcolor=navy,linkcolor=navy,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+% ── Section formatting ──
+\newcommand{\sectiontitle}[1]{%
+  {\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{#1}}\\[-2pt]
+  \rule{\linewidth}{0.4pt}\vspace{4pt}
+}
+
+\newcommand{\leftsectiontitle}[1]{%
+  {\fontsize{10}{12}\selectfont\bfseries\color{navy}\MakeUppercase{#1}}\\[-2pt]
+  \rule{0.28\textwidth}{0.4pt}\vspace{4pt}
+}
+
+\begin{document}
+
+% ═══════════ HEADER BAR ═══════════
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[navy] (current page.north west) rectangle ([yshift=-70pt]current page.north east);
+  \node[anchor=center, text=gold] at ([yshift=-30pt]current page.north) {%
+    {\fontsize{28}{32}\selectfont\bfseries ((( personal.full_name | default('FULL NAME', true) | upper )))}}; 
+  \node[anchor=center, text=darkgold] at ([yshift=-52pt]current page.north) {%
+    {\fontsize{9}{11}\selectfont\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}};
+\end{tikzpicture}
+
+\vspace{60pt}
+
+% ═══════════ TWO-COLUMN BODY ═══════════
+\noindent
+\begin{minipage}[t]{0.30\textwidth}
+\hspace{8mm}
+\begin{minipage}[t]{0.85\textwidth}
+\vspace{0pt}
+
+% ── Contact ──
+\leftsectiontitle{Contact}
+
+((* if personal.phone *))
+\noindent{\small\faPhone\hspace{6pt}((( personal.phone )))}\\[6pt]
+((* endif *))
+((* if personal.email *))
+\noindent{\small\faEnvelope\hspace{6pt}((( personal.email )))}\\[6pt]
+((* endif *))
+((* if personal.location *))
+\noindent{\small\faMapMarker*\hspace{6pt}((( personal.location )))}\\[6pt]
+((* endif *))
+((* if personal.linkedin *))
+\noindent{\small\faLinkedin\hspace{6pt}\href{((* if 'http' not in personal.linkedin *))https://((* endif *))((( personal.linkedin )))}{((( personal.linkedin )))}}\\ 
+((* endif *))
+((* if personal.portfolio *))
+{\small\faGlobe\hspace{6pt}((( personal.portfolio )))}\\
+((* endif *))
+
+\vspace{9pt}
+
+% ── Education ──
+((* if education and education|length > 0 *))
+\leftsectiontitle{Education}
+((* for edu in education *))
+{\small\bfseries\MakeUppercase{((( edu.degree | default('Degree', true) )))((* if edu.field_of_study *)) / ((( edu.field_of_study )))((* endif *))}}\\
+{\small ((( edu.institution | default('University', true) )))}\\
+{\small\color{muted} ((( edu.start_date | default('', true) )))--((( edu.end_date | default('', true) )))}\\[8pt]
+((* if edu.gpa *))
+{\small GPA: ((( edu.gpa )))}\\
+((* endif *))
+((* if edu.achievements *))
+{\small\textit{((( edu.achievements )))}}\\
+((* endif *))
+((* endfor *))
+\vspace{6pt}
+((* endif *))
+
+% ── Skills ──
+((* if skills and skills|length > 0 *))
+\leftsectiontitle{Skills}
+\begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=0pt, label=\textbullet]
+((* for skill in skills *))
+\item {\small ((( skill.name )))}
+((* endfor *))
+\end{itemize}
+\vspace{6pt}
+((* endif *))
+
+% ── Expertise ──
+((* if expertise.technical or expertise.professional *))
+\leftsectiontitle{Expertise}
+((* if expertise.technical *))
+{\small\bfseries\color{muted}\MakeUppercase{Technical}}\\[2pt]
+\begin{itemize}[leftmargin=12pt, itemsep=1pt, parsep=0pt, topsep=0pt, label=\textbullet]
+((* for item in expertise.technical *))
+\item {\small ((( item )))}
+((* endfor *))
+\end{itemize}
+\vspace{6pt}
+((* endif *))
+((* if expertise.professional *))
+{\small\bfseries\color{muted}\MakeUppercase{Professional}}\\[2pt]
+\begin{itemize}[leftmargin=12pt, itemsep=1pt, parsep=0pt, topsep=0pt, label=\textbullet]
+((* for item in expertise.professional *))
+\item {\small ((( item )))}
+((* endfor *))
+\end{itemize}
+((* endif *))
+((* endif *))
+
+\end{minipage}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.65\textwidth}
+\hspace{2mm}
+\begin{minipage}[t]{0.92\textwidth}
+\vspace{0pt}
+
+% ── Profile ──
+((* if personal.summary *))
+\sectiontitle{Profile}
+{\small ((( personal.summary )))}
+\vspace{9pt}
+((* endif *))
+
+% ── Professional Experience ──
+((* if experience and experience|length > 0 *))
+\sectiontitle{Professional Experience}
+((* for exp in experience *))
+{\small\bfseries\MakeUppercase{((( exp.title | default('Role', true) )))}}\\
+{\small\color{muted} ((( exp.company | default('Company', true) ))) | ((( exp.location | default('', true) ))) | ((( exp.start_date | default('', true) ))) -- ((( exp.end_date | default('Present', true) )))}\\
+((* if exp.description *))
+{\small ((( exp.description )))}\\
+((* endif *))
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=16pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))
+((* if hl *))
+\item {\small ((( hl )))}
+((* endif *))
+((* endfor *))
+\end{itemize}
+((* endif *))
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+% ── Projects ──
+((* if projects and projects|length > 0 *))
+\sectiontitle{Projects}
+((* for project in projects *))
+{\small\bfseries\MakeUppercase{((( project.name )))}}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{[View Project]}}((* endif *))\\
+((* if project.description *))
+{\small\textit{((( project.description )))}}\\
+((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\small\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ── Certifications ──
+((* if certifications and certifications|length > 0 *))
+\sectiontitle{Certifications}
+((* for cert in certifications *))
+{\small\bfseries ((( cert.name )))}\\
+{\small\color{muted} ((( cert.issuer ))) | ((( cert.year )))}\\[6pt]
+((* endfor *))
+((* endif *))
+
+\end{minipage}
+\end{minipage}
+
+\end{document}

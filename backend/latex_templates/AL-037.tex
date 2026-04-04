@@ -1,0 +1,134 @@
+%% AL-037 — Neutral Grey Icon-Bar (LaTeX)
+%% Minimalist grey theme, contact icon bar, structured layout
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[top=20mm, bottom=20mm, left=22mm, right=22mm]{geometry}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{tikz}
+
+% ── Colors ──
+\definecolor{grey}{HTML}{666666}
+\definecolor{lightgrey}{HTML}{F0F0F0}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{888888}
+\definecolor{divider}{HTML}{CCCCCC}
+
+\hypersetup{colorlinks=true,urlcolor=grey,linkcolor=grey,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\newcommand{\greysection}[1]{%
+  \vspace{9pt}
+  \noindent\colorbox{lightgrey}{\makebox[\dimexpr\linewidth-2\fboxsep][l]{\fontsize{9}{11}\selectfont\bfseries\color{grey}\MakeUppercase{\hspace{4pt}#1}}}
+  \vspace{6pt}
+}
+
+\begin{document}
+
+% ═══════════ HEADER ═══════════
+\begin{center}
+  {\fontsize{28}{34}\selectfont\bfseries\color{body} ((( personal.full_name | default('Full Name', true) | upper )))}\\[6pt]
+  {\fontsize{10}{12}\selectfont\color{grey}\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}
+\end{center}
+
+\vspace{4pt}
+
+% ═══════════ ICON CONTACT BAR ═══════════
+\begin{center}
+\begin{tikzpicture}
+  \fill[lightgrey, rounded corners=4pt] (-0.5\linewidth, -0.5) rectangle (0.5\linewidth, 0.5);
+  \node[text=grey, font=\small] at (0, 0) {%
+    ((* set contact_parts = [] *))
+    ((* if personal.email *))((* set _ = contact_parts.append('\\faEnvelope\\hspace{4pt}' ~ personal.email) *))((* endif *))
+    ((* if personal.phone *))((* set _ = contact_parts.append('\\faPhone\\hspace{4pt}' ~ personal.phone) *))((* endif *))
+    ((* if personal.location *))((* set _ = contact_parts.append('\\faMapMarker*\\hspace{4pt}' ~ personal.location) *))((* endif *))
+    ((* if personal.linkedin *))((* set _ = contact_parts.append('\\faLinkedin\\hspace{4pt}' ~ personal.linkedin) *))((* endif *))
+((* if personal.portfolio *))((* set _ = contact_parts.append('\\faGlobe\\hspace{4pt}' ~ personal.portfolio) *))((* endif *))
+    ((( contact_parts | join('\\quad') )))
+  };
+\end{tikzpicture}
+\end{center}
+
+\vspace{6pt}
+
+% ═══════════ SUMMARY ═══════════
+((* if personal.summary *))
+\greysection{Summary}
+{\small ((( personal.summary )))}
+((* endif *))
+
+% ═══════════ EXPERIENCE ═══════════
+((* if experience and experience|length > 0 *))
+\greysection{Professional Experience}
+((* for exp in experience *))
+\noindent{\bfseries ((( exp.title | default('Role', true) )))} \hfill {\small\color{muted} ((( exp.start_date | default('', true) ))) --- ((( exp.end_date | default('Present', true) )))}\\
+{\small\color{muted} ((( exp.company | default('Company', true) )))((* if exp.location *)), ((( exp.location )))((* endif *))}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=14pt, itemsep=1pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\small ((( hl )))}((* endif *))
+((* endfor *))
+\end{itemize}
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ EDUCATION ═══════════
+((* if education and education|length > 0 *))
+\greysection{Education}
+((* for edu in education *))
+\noindent{\bfseries ((( edu.degree | default('Degree', true) )))((* if edu.field_of_study *)) in ((( edu.field_of_study )))((* endif *))} \hfill {\small\color{muted} ((( edu.end_date | default('', true) )))}\\
+{\small\color{muted} ((( edu.institution | default('University', true) )))}\\[6pt]
+((* if edu.gpa *))
+{\small GPA: ((( edu.gpa )))}\\
+((* endif *))
+((* if edu.achievements *))
+{\small\textit{((( edu.achievements )))}}\\ 
+((* endif *))
+((* endfor *))
+((* endif *))
+
+% ═══════════ SKILLS ═══════════
+((* if skills or expertise.technical or expertise.professional *))
+\greysection{Skills \& Competencies}
+((* if expertise.technical *))
+{\small\bfseries Technical:} {\small ((( expertise.technical | join(', ') )))}\\[3pt]
+((* endif *))
+((* if expertise.professional *))
+{\small\bfseries Professional:} {\small ((( expertise.professional | join(', ') )))}\\[3pt]
+((* endif *))
+((* if skills and skills|length > 0 *))
+{\small\bfseries Tools:}
+((* set skill_names = [] *))
+((* for s in skills *))((* set _ = skill_names.append(s.name) *))((* endfor *))
+{\small ((( skill_names | join(', ') )))}
+((* endif *))
+((* endif *))
+
+% ═══════════ PROJECTS ═══════════
+((* if projects and projects|length > 0 *))
+\greysection{Projects}
+((* for project in projects *))
+\noindent{\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{View}}((* endif *))\\
+((* if project.description *)){\small\color{muted}\textit{((( project.description )))}}\\((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\small\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{4pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ CERTIFICATIONS ═══════════
+((* if certifications and certifications|length > 0 *))
+\greysection{Certifications}
+((* for cert in certifications *))
+{\bfseries ((( cert.name )))} \hfill {\small\color{muted} ((( cert.issuer ))), ((( cert.year )))}\\[4pt]
+((* endfor *))
+((* endif *))
+
+\end{document}

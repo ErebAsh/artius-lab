@@ -1,0 +1,143 @@
+%% AL-035 — Deep Red Border Classic (LaTeX)
+%% Classic professional, deep red top/bottom borders, serif
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[top=20mm, bottom=20mm, left=20mm, right=20mm]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{multicol}
+
+% ── Colors ──
+\definecolor{deepred}{HTML}{8B0000}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{666666}
+\definecolor{light}{HTML}{BBBBBB}
+
+\hypersetup{colorlinks=true,urlcolor=deepred,linkcolor=deepred,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\newcommand{\redsection}[1]{%
+  \vspace{9pt}
+  {\fontsize{11}{13}\selectfont\bfseries\color{deepred}\MakeUppercase{#1}}\\[-1pt]
+  {\color{deepred}\rule{\linewidth}{0.5pt}}
+  \vspace{6pt}
+}
+
+\begin{document}
+
+% ═══════════ TOP BORDER ═══════════
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[deepred] (current page.north west) rectangle ([yshift=-8pt]current page.north east);
+  \fill[deepred] (current page.south west) rectangle ([yshift=8pt]current page.south east);
+\end{tikzpicture}
+
+% ═══════════ HEADER ═══════════
+\begin{center}
+  {\fontsize{30}{36}\selectfont\bfseries\color{deepred} ((( personal.full_name | default('Full Name', true) | upper )))}\\[8pt]
+  {\fontsize{10}{12}\selectfont\color{muted}\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}\\[10pt]
+  {\color{light}\rule{0.5\textwidth}{0.3pt}}\\[8pt]
+  {\fontsize{8}{10}\selectfont\color{muted}
+    ((* set contact = [] *))
+    ((* if personal.email *))((* set _ = contact.append(personal.email) *))((* endif *))
+    ((* if personal.phone *))((* set _ = contact.append(personal.phone) *))((* endif *))
+    ((* if personal.location *))((* set _ = contact.append(personal.location) *))((* endif *))
+    ((* if personal.linkedin *))((* set _ = contact.append(personal.linkedin) *))((* endif *))
+    ((* if personal.portfolio *))((* set _ = contact.append(personal.portfolio) *))((* endif *))
+    ((( contact | join(' \\quad\\textbar\\quad ') )))
+  }
+\end{center}
+
+% ═══════════ SUMMARY ═══════════
+((* if personal.summary *))
+\redsection{Professional Summary}
+{\small ((( personal.summary )))}
+((* endif *))
+
+% ═══════════ TWO-COLUMN BODY ═══════════
+\begin{multicols}{2}
+
+% ── Experience ──
+((* if experience and experience|length > 0 *))
+\redsection{Experience}
+((* for exp in experience *))
+\noindent{\bfseries ((( exp.title | default('Role', true) )))}\\
+{\small\color{muted} ((( exp.company | default('Company', true) )))}\\
+{\small\color{muted}\textit{((( exp.start_date | default('', true) ))) --- ((( exp.end_date | default('Present', true) )))}}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=12pt, itemsep=1pt, parsep=0pt, topsep=3pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\small ((( hl )))}((* endif *))
+((* endfor *))
+\end{itemize}
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ── Projects ──
+((* if projects and projects|length > 0 *))
+\redsection{Projects}
+((* for project in projects *))
+\noindent{\bfseries ((( project.name )))}((* if project.link *)) {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{[link]}}((* endif *))\\
+((* if project.description *)){\small\textit{((( project.description )))}}\\((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\small\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{4pt}
+((* endfor *))
+((* endif *))
+
+\columnbreak
+
+% ── Education ──
+((* if education and education|length > 0 *))
+\redsection{Education}
+((* for edu in education *))
+\noindent{\bfseries ((( edu.degree | default('Degree', true) )))((* if edu.field_of_study *)) in ((( edu.field_of_study )))((* endif *))}\\
+{\small\color{muted} ((( edu.institution | default('University', true) )))}\\
+{\small\color{muted}\textit{((( edu.start_date | default('', true) )))((* if edu.end_date *)) -- ((( edu.end_date )))((* endif *))}}\\[8pt]
+((* if edu.gpa *))
+{\small GPA: ((( edu.gpa )))}\\
+((* endif *))
+((* if edu.achievements *))
+{\small\textit{((( edu.achievements )))}}\\
+((* endif *))
+((* endfor *))
+((* endif *))
+
+% ── Skills ──
+((* if skills or expertise.technical or expertise.professional *))
+\redsection{Skills \& Expertise}
+((* if expertise.technical *))
+{\small\bfseries\color{deepred} Technical}\\[2pt]
+{\small ((( expertise.technical | join(', ') )))}\\[6pt]
+((* endif *))
+((* if expertise.professional *))
+{\small\bfseries\color{deepred} Professional}\\[2pt]
+{\small ((( expertise.professional | join(', ') )))}\\[6pt]
+((* endif *))
+((* if skills and skills|length > 0 *))
+{\small\bfseries\color{deepred} Tools}\\[2pt]
+((* set skill_names = [] *))
+((* for s in skills *))((* set _ = skill_names.append(s.name) *))((* endfor *))
+{\small ((( skill_names | join(', ') )))}
+((* endif *))
+((* endif *))
+
+% ── Certifications ──
+((* if certifications and certifications|length > 0 *))
+\redsection{Certifications}
+((* for cert in certifications *))
+{\bfseries ((( cert.name )))}\\
+{\small\color{muted} ((( cert.issuer ))), ((( cert.year )))}\\[6pt]
+((* endfor *))
+((* endif *))
+
+\end{multicols}
+
+\end{document}

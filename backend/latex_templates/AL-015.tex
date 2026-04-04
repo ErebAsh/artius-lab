@@ -1,0 +1,199 @@
+%% AL-015 — Black Banner Executive (LaTeX)
+%% High-impact black banner header, right-sidebar
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=0pt]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+% ── Colors ──
+\definecolor{banner}{HTML}{1A1A1A}
+\definecolor{white}{HTML}{FFFFFF}
+\definecolor{sidebar}{HTML}{F7F8FA}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{777777}
+\definecolor{divider}{HTML}{DDDDDD}
+\definecolor{accent}{HTML}{2D3436}
+
+\hypersetup{colorlinks=true,urlcolor=banner,linkcolor=banner,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\begin{document}
+
+% ═══════════ HEADER BANNER ═══════════
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[banner] (current page.north west) rectangle ([yshift=-90pt]current page.north east);
+  % Sidebar background
+  \fill[sidebar] ([xshift=-75mm]current page.north east) rectangle ([yshift=-90pt]current page.south east);
+  \fill[sidebar] ([xshift=-75mm, yshift=-90pt]current page.north east) rectangle (current page.south east);
+\end{tikzpicture}
+
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  \node[anchor=west, text=white] at ([yshift=-35pt, xshift=20mm]current page.north west) {%
+    {\fontsize{30}{36}\selectfont\bfseries\scshape ((( personal.full_name | default('Full Name', true) | upper )))}}; 
+  \node[anchor=west, text=white!60] at ([yshift=-64pt, xshift=20mm]current page.north west) {%
+    {\fontsize{10}{12}\selectfont\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}};
+  
+  % Photo in Header
+  \node[anchor=east] at ([yshift=-45pt, xshift=-25mm]current page.north east) {%
+    \begin{tikzpicture}
+      \draw[white!20, line width=1pt] (0,0) circle (14mm);
+      \node at (0,0) {%
+        ((* if personal.photo *))
+          {\fontsize{28}{34}\selectfont\color{white} ((( personal.full_name[0] | default('J', true) | upper )))}
+        ((* else *))
+          {\fontsize{28}{34}\selectfont\color{white!30} ((( personal.full_name[0] | default('J', true) | upper )))}
+        ((* endif *))
+      };
+    \end{tikzpicture}
+  };
+\end{tikzpicture}
+
+\vspace{75pt}
+
+% ═══════════ TWO-COLUMN BODY ═══════════
+\noindent
+\begin{minipage}[t]{0.60\textwidth}
+\color{body}
+\vspace{7mm}
+\hspace{12mm}
+\begin{minipage}[t]{0.85\textwidth}
+
+% ── Profile ──
+((* if personal.summary *))
+{\fontsize{11}{13}\selectfont\bfseries\color{banner}\MakeUppercase{Profile}}\\[2pt]
+{\color{divider}\rule{\linewidth}{1.5pt}}\\[8pt]
+{\fontsize{9}{12}\selectfont ((( personal.summary )))}
+\vspace{16pt}
+((* endif *))
+
+% ── Experience ──
+((* if experience and experience|length > 0 *))
+{\fontsize{11}{13}\selectfont\bfseries\color{banner}\MakeUppercase{Experience}}\\[2pt]
+{\color{divider}\rule{\linewidth}{1.5pt}}\\[10pt]
+((* for exp in experience *))
+\begin{minipage}{\linewidth}
+{\fontsize{10}{12}\selectfont\bfseries ((( exp.title )))} \hfill {\scriptsize\color{muted}\bfseries ((( exp.start_date | upper ))) --- ((( exp.end_date | default('Present', true) | upper )))}\\[2pt]
+{\fontsize{9}{11}\selectfont\color{accent}\bfseries ((( exp.company )))((* if exp.location *)) \textbar\ ((( exp.location )))((* endif *))}
+((* if exp.description *))\\[4pt] {\fontsize{8.5}{11.5}\selectfont ((( exp.description )))}((* endif *))
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* endfor *))
+\end{itemize}
+((* endif *))
+\end{minipage}
+\vspace{12pt}
+((* endfor *))
+((* endif *))
+
+% ── Projects ──
+((* if projects and projects|length > 0 *))
+{\fontsize{11}{13}\selectfont\bfseries\color{banner}\MakeUppercase{Recent Projects}}\\[2pt]
+{\color{divider}\rule{\linewidth}{1.5pt}}\\[8pt]
+((* for project in projects *))
+\begin{minipage}{\linewidth}
+{\fontsize{10}{12}\selectfont\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{\color{muted}VIEW \faExternalLinkAlt}}( (* endif *) )\\
+((* if project.description *)){\fontsize{8.5}{11.5}\selectfont ((( project.description )))}\\((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\fontsize{8}{10}\selectfont\color{muted}\textbf{Tech:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\end{minipage}
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+\end{minipage}
+\end{minipage}%
+\hfill
+% ═══════════ RIGHT SIDEBAR ═══════════
+\begin{minipage}[t]{0.35\textwidth}
+\color{body}
+\vspace{7mm}
+\hspace{5mm}
+\begin{minipage}[t]{0.82\textwidth}
+
+\vspace{2mm}
+
+% ── Contact ──
+{\fontsize{9}{11}\selectfont\bfseries\color{banner}\MakeUppercase{Contact Me}}\\[2pt]
+{\color{divider}\rule{\linewidth}{0.6pt}}\\[8pt]
+((* if personal.email *))
+{\fontsize{8}{10}\selectfont\faEnvelope\hspace{8pt}\href{mailto:((( personal.email )))}{((( personal.email ))) }}\\[10pt]
+((* endif *))
+((* if personal.phone *))
+{\fontsize{8}{10}\selectfont\faPhone\hspace{8pt}((( personal.phone )))}\\[10pt]
+((* endif *))
+((* if personal.location *))
+{\fontsize{8}{10}\selectfont\faMapMarker*\hspace{8pt}((( personal.location )))}\\[10pt]
+((* endif *))
+((* if personal.linkedin *))
+{\fontsize{8}{10}\selectfont\faLinkedin\hspace{8pt}\href{((* if 'http' not in personal.linkedin *))https://((* endif *))((( personal.linkedin )))}{LinkedIn}}\\[10pt]
+((* endif *))
+((* if personal.portfolio *))
+{\fontsize{8}{10}\selectfont\faGlobe\hspace{8pt}\href{((* if 'http' not in personal.portfolio *))https://((* endif *))((( personal.portfolio )))}{Portfolio}}\\[10pt]
+((* endif *))
+
+\vspace{10pt}
+
+% ── Education ──
+((* if education and education|length > 0 *))
+{\fontsize{9}{11}\selectfont\bfseries\color{banner}\MakeUppercase{Education}}\\[2pt]
+{\color{divider}\rule{\linewidth}{0.6pt}}\\[8pt]
+((* for edu in education *))
+{\fontsize{8.5}{10.5}\selectfont\bfseries ((( edu.institution )))}\\[2pt]
+{\fontsize{8}{10}\selectfont ((( edu.degree )))}\\[2pt]
+{\scriptsize\color{muted} ((( edu.start_date ))) --- ((( edu.end_date )))}\\
+((* if edu.gpa *)){\scriptsize\color{muted} GPA: ((( edu.gpa )))}\\((* endif *))
+((* if edu.achievements *)){\scriptsize\textit{((( edu.achievements )))}}\\((* endif *))
+\vspace{7pt}
+((* endfor *))
+\vspace{5pt}
+((* endif *))
+
+% ── Core Skills ──
+((* if skills and skills|length > 0 *))
+{\fontsize{9}{11}\selectfont\bfseries\color{banner}\MakeUppercase{Technical Skills}}\\[2pt]
+{\color{divider}\rule{\linewidth}{0.6pt}}\\[8pt]
+((* for skill in skills *))
+\begin{minipage}{\linewidth}
+{\fontsize{7.5}{9}\selectfont\bfseries ((( skill.name | upper )))} \hfill {\scriptsize ((( skill.level )))}\\[3pt]
+\begin{tikzpicture}
+  \fill[divider] (0,0) rectangle (\linewidth, 0.1cm);
+  \fill[banner] (0,0) rectangle (0.8\linewidth, 0.1cm); % 80% default fill
+\end{tikzpicture}
+\end{minipage}
+\vspace{8pt}
+((* endfor *))
+\vspace{7pt}
+((* endif *))
+
+% ── Expertise ──
+((* if expertise.technical or expertise.professional *))
+{\fontsize{9}{11}\selectfont\bfseries\color{banner}\MakeUppercase{Expertise}}\\[2pt]
+{\color{divider}\rule{\linewidth}{0.6pt}}\\[8pt]
+((* if expertise.technical *))
+((* for item in expertise.technical *))
+{\scriptsize\faCheckCircle\hspace{6pt} ((( item )))}\\[4pt]
+((* endfor *))
+((* endif *))
+((* if expertise.professional *))
+\vspace{4pt}
+((* for item in expertise.professional *))
+{\scriptsize\faCheckCircle\hspace{6pt} ((( item )))}\\[4pt]
+((* endfor *))
+((* endif *))
+((* endif *))
+
+\end{minipage}
+\end{minipage}
+
+\end{document}

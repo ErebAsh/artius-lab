@@ -1,0 +1,142 @@
+%% AL-006 — Executive Pure White (LaTeX)
+%% Minimalist executive, serif, white sidebar concept
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=0pt]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+% ── Colors ──
+\definecolor{black}{HTML}{000000}
+\definecolor{sidebar}{HTML}{F8F8F8}
+\definecolor{body}{HTML}{333333}
+\definecolor{muted}{HTML}{777777}
+\definecolor{divider}{HTML}{DDDDDD}
+
+\hypersetup{colorlinks=true,urlcolor=black,linkcolor=black,pdfborder={0 0 0}}
+\pagestyle{empty}
+
+\newcommand{\sectionline}{\noindent\textcolor{divider}{\rule{\linewidth}{0.4pt}}\vspace{4pt}}
+
+\begin{document}
+
+% ═══════════ HEADER ═══════════
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[sidebar] (current page.north west) rectangle ([yshift=-85pt]current page.north east);
+  \node[anchor=center, text=black] at ([yshift=-35pt]current page.north) {%
+    {\fontsize{30}{36}\selectfont\scshape ((( personal.full_name | default('Full Name', true) | upper )))}}; 
+  \node[anchor=center, text=muted] at ([yshift=-58pt]current page.north) {%
+    {\fontsize{10}{12}\selectfont\MakeUppercase{((( personal.title | default('Professional Title', true) )))}}};
+  \draw[divider, line width=0.5pt] ([yshift=-72pt, xshift=60pt]current page.north west) -- ([yshift=-72pt, xshift=-60pt]current page.north east);
+  \node[anchor=center, text=muted] at ([yshift=-82pt]current page.north) {%
+    {\fontsize{8}{10}\selectfont
+    ((* set contact = [] *))
+    ((* if personal.email *))((* set _ = contact.append(personal.email) *))((* endif *))
+    ((* if personal.phone *))((* set _ = contact.append(personal.phone) *))((* endif *))
+    ((* if personal.location *))((* set _ = contact.append(personal.location) *))((* endif *))
+    ((* if personal.linkedin *))((* set _ = contact.append(personal.linkedin) *))((* endif *))
+    ((* if personal.portfolio *))((* set _ = contact.append(personal.portfolio) *))((* endif *))
+    ((( contact | join(' \\quad\\textbar\\quad ') )))
+    }};
+\end{tikzpicture}
+
+\vspace{80pt}
+
+\noindent
+\hspace{20mm}
+\begin{minipage}[t]{0.85\textwidth}
+
+% ═══════════ SUMMARY ═══════════
+((* if personal.summary *))
+{\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{Executive Summary}}\\[2pt]
+\sectionline
+{\small ((( personal.summary )))}
+\vspace{9pt}
+((* endif *))
+
+% ═══════════ EXPERIENCE ═══════════
+((* if experience and experience|length > 0 *))
+{\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{Professional Experience}}\\[2pt]
+\sectionline
+((* for exp in experience *))
+\noindent{\bfseries ((( exp.title | default('Role', true) )))} \hfill {\small\color{muted} ((( exp.start_date | default('', true) ))) --- ((( exp.end_date | default('Present', true) )))}\\
+{\small\color{muted} ((( exp.company | default('Company', true) ))) \textbar\ ((( exp.location | default('', true) )))}
+((* if exp.highlights and exp.highlights|length > 0 *))
+\begin{itemize}[leftmargin=14pt, itemsep=2pt, parsep=0pt, topsep=4pt]
+((* for hl in exp.highlights *))((* if hl *))\item {\small ((( hl )))}((* endif *))
+((* endfor *))
+\end{itemize}
+((* endif *))
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ EDUCATION ═══════════
+((* if education and education|length > 0 *))
+{\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{Education}}\\[2pt]
+\sectionline
+((* for edu in education *))
+\noindent{\bfseries ((( edu.degree | default('Degree', true) )))((* if edu.field_of_study *)) in ((( edu.field_of_study )))((* endif *))} \hfill {\small\color{muted} ((( edu.end_date | default('', true) )))}\\
+{\small\color{muted} ((( edu.institution | default('University', true) )))}\\
+((* if edu.gpa *))
+{\small GPA: ((( edu.gpa )))}\\
+((* endif *))
+((* if edu.achievements *))
+{\small\textit{((( edu.achievements )))}}\\ 
+((* endif *))
+\vspace{8pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ SKILLS ═══════════
+((* if skills or expertise.technical or expertise.professional *))
+{\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{Core Competencies}}\\[2pt]
+\sectionline
+((* if expertise.technical *))
+{\small\bfseries Technical:} {\small ((( expertise.technical | join(', ') )))}\\[2pt]
+((* endif *))
+((* if expertise.professional *))
+{\small\bfseries Professional:} {\small ((( expertise.professional | join(', ') )))}\\[2pt]
+((* endif *))
+((* if skills and skills|length > 0 *))
+{\small\bfseries Tools \& Skills:}
+((* set skill_names = [] *))
+((* for s in skills *))((* set _ = skill_names.append(s.name) *))((* endfor *))
+{\small ((( skill_names | join(', ') )))}
+((* endif *))
+\vspace{8pt}
+((* endif *))
+
+% ═══════════ PROJECTS ═══════════
+((* if projects and projects|length > 0 *))
+{\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{Key Projects}}\\[2pt]
+\sectionline
+((* for project in projects *))
+\noindent{\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{View Project}}((* endif *))\\
+((* if project.description *)){\small\textit{((( project.description )))}}\\((* endif *))
+((* if project.technologies and project.technologies|length > 0 *))
+{\small\textbf{Technologies:} ((( project.technologies | join(', ') )))}
+((* endif *))
+\vspace{6pt}
+((* endfor *))
+((* endif *))
+
+% ═══════════ CERTIFICATIONS ═══════════
+((* if certifications and certifications|length > 0 *))
+{\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{Certifications}}\\[2pt]
+\sectionline
+((* for cert in certifications *))
+\noindent{\bfseries ((( cert.name )))} \hfill {\small\color{muted} ((( cert.issuer ))), ((( cert.year )))}\\[6pt]
+((* endfor *))
+((* endif *))
+
+\end{minipage}
+
+\end{document}
