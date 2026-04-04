@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Susan Williams', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.4;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px 45px;
+            position: relative;
+        }
+
+        /* ── Header ── */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        .header-left .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28pt;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+        }
+        .header-left .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11pt;
+            font-weight: 500;
+            color: #1aa094;
+            margin-top: 5px;
+        }
+        .header-right {
+            text-align: right;
+            font-size: 9pt;
+            color: #555;
+        }
+        .contact-item {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .contact-item i {
+            color: #1aa094;
+            font-size: 10pt;
+            width: 14px;
+            text-align: center;
+        }
+
+        /* ── Summary Banner ── */
+        .summary-banner {
+            background-color: #1aa094;
+            color: #ffffff;
+            padding: 25px 35px;
+            margin: 0 -45px 35px -45px;
+            font-size: 9.5pt;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* ── Layout ── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.7fr 1fr;
+            gap: 50px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        /* Timeline line */
+        .section-timeline-line {
+            position: absolute;
+            left: 5px;
+            top: 25px;
+            bottom: -25px;
+            width: 1px;
+            border-left: 1px dotted #1aa094;
+            z-index: 0;
+        }
+        .section:last-child .section-timeline-line {
+            display: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+        .section-dot {
+            width: 11px;
+            height: 11px;
+            background-color: #1aa094;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12pt;
+            font-weight: 700;
+            color: #1aa094;
+            text-transform: capitalize;
+            margin: 0;
+        }
+
+        /* ── Content Items ── */
+        .content-item {
+            padding-left: 25px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+        .item-main-title {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #222;
+        }
+        .item-sub-title {
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 3px;
+        }
+        .item-date {
+            background-color: #1aa094;
+            color: #fff;
+            font-size: 8pt;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .item-location {
+            font-size: 9pt;
+            color: #1aa094;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        .item-highlights {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .item-highlights li {
+            font-size: 9pt;
+            color: #444;
+            margin-bottom: 6px;
+            position: relative;
+            padding-left: 15px;
+            line-height: 1.5;
+        }
+        .item-highlights li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* ── Sidebar Style ── */
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-list li {
+            font-size: 9pt;
+            color: #444;
+            margin-bottom: 7px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .sidebar-list li::before {
+            content: "•";
+            color: #222;
+            font-weight: bold;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { padding: 30px 35px; width: 210mm; height: 297mm; }
+            .summary-banner { margin: 0 -35px 25px -35px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <h1 class="name">{{ personal.full_name | default('Susan Williams', true) }}</h1>
+                <div class="title">{{ personal.title | default('Software Development Head', true) }}</div>
+            </div>
+            <div class="header-right">
+                <div class="contact-item">
+                    <span>{{ personal.phone | default('+1 (555) 555-555', true) }}</span>
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="contact-item">
+                    <span>{{ personal.email | default('susan.williams@resumegemini.com', true) }}</span>
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                {% if personal.linkedin %}
+                <div class="contact-item">
+                    <span>{{ personal.linkedin | replace('https://', '') | replace('http://', '') | default('linkedin.com/company/resumegemini', true) }}</span>
+                    <i class="fa-brands fa-linkedin"></i>
+                </div>
+                {% endif %}
+                <div class="contact-item">
+                    <span>{{ personal.location | default('Atlanta, GA, 30301', true) }}</span>
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Banner -->
+        <div class="summary-banner">
+            {{ personal.summary | default('Highly motivated and result-oriented Software Development Manager with over 10 years of experience in the full software development lifecycle (SDLC). Proven track record of designing and building highly scalable, secure, and performant software systems. Passionate about leading and mentoring high-performing development teams to deliver innovative and high-quality software solutions.', true) }}
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div class="left-col">
+                <!-- Experience -->
+                <section class="section">
+                    <div class="section-timeline-line"></div>
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Experience</h2>
+                    </div>
+
+                    {% for exp in experience %}
+                    <div class="content-item">
+                        <div class="item-header">
+                            <div class="item-main-title">{{ exp.company }}</div>
+                            <div class="item-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                        </div>
+                        <div class="item-sub-title">{{ exp.title }}</div>
+                        <div class="item-location">{{ exp.location }}</div>
+                        <ul class="item-highlights">
+                            {% for hl in exp.highlights %}
+                                <li>{{ hl }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% else %}
+                    <div class="content-item">
+                        <div class="item-header">
+                            <div class="item-main-title">Accenture Services</div>
+                            <div class="item-date">Jun 2018 - Jan 2024</div>
+                        </div>
+                        <div class="item-sub-title">Software Development Manager</div>
+                        <div class="item-location">San Francisco, California</div>
+                        <ul class="item-highlights">
+                            <li>Delivered critical $5 million project on time and within budget, exceeding stakeholder expectations.</li>
+                            <li>Successfully led a cross-functional team of developers, designers, and stakeholders to achieve key project milestones.</li>
+                            <li>Identified and implemented cloud cost-saving strategies, resulting in $50,000 annual savings.</li>
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </section>
+
+                <!-- Education -->
+                <section class="section">
+                    <div class="section-timeline-line"></div>
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Education</h2>
+                    </div>
+
+                    {% for edu in education %}
+                    <div class="content-item">
+                        <div class="item-header">
+                            <div class="item-main-title">{{ edu.institution }}</div>
+                            <div class="item-date">{{ edu.end_date }}</div>
+                        </div>
+                        <div class="item-sub-title">{{ edu.degree }}{% if edu.field_of_study %}, {{ edu.field_of_study }}{% endif %}</div>
+                        <div class="item-location">{{ edu.location }}</div>
+                    </div>
+                    {% else %}
+                    <div class="content-item">
+                        <div class="item-header">
+                            <div class="item-main-title">The University of Chicago</div>
+                            <div class="item-date">Jun 2012</div>
+                        </div>
+                        <div class="item-sub-title">MS - Computer Science, CGPA: 9.0</div>
+                        <div class="item-location">San Francisco, California</div>
+                    </div>
+                    {% endfor %}
+                </section>
+
+                <!-- Awards -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Awards</h2>
+                    </div>
+                    <div class="content-item">
+                        <ul class="item-highlights">
+                            {% for award in awards %}
+                                <li>{{ award.name or award }}</li>
+                            {% else %}
+                                <li>CEO's Choice Award, 2023</li>
+                                <li>Excellence in Customer Partnership Award, 2021</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-col">
+                <!-- Skills -->
+                <section class="section">
+                    <div class="section-timeline-line"></div>
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Skills</h2>
+                    </div>
+                    <div class="content-item">
+                        <ul class="sidebar-list">
+                            {% for skill in skills %}
+                                <li>{{ skill.name }}</li>
+                            {% else %}
+                                <li>Apache Solr</li>
+                                <li>Apache Maven</li>
+                                <li>Apache Hadoop</li>
+                                <li>NoSQL</li>
+                                <li>PostgreSQL</li>
+                                <li>Oracle Java</li>
+                                <li>Python</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Language -->
+                <section class="section">
+                    <div class="section-timeline-line"></div>
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Language</h2>
+                    </div>
+                    <div class="content-item">
+                        <ul class="sidebar-list">
+                            {% for lang in languages %}
+                                <li>{{ lang.name or lang }}</li>
+                            {% else %}
+                                <li>English</li>
+                                <li>French</li>
+                                <li>German</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Certifications -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Certifications</h2>
+                    </div>
+                    <div class="content-item">
+                        <ul class="sidebar-list">
+                            {% for cert in certifications %}
+                                <li>{{ cert.name or cert }}</li>
+                            {% else %}
+                                <li>PMI Agile Certified Practitioner</li>
+                                <li>Certified Information Systems Auditor</li>
+                                <li>Certified Cloud Security Professional</li>
+                                <li>CompTIA Security+ ce</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

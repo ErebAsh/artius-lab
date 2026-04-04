@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- has_photo -->
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal.full_name | default('Priya Rao', true) }} | Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.4;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* ── Geometric Background ── */
+        .page-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.04;
+            pointer-events: none;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M0 0 L100 100 M100 0 L0 100 M50 0 L50 100 M0 50 L100 50" stroke="blue" stroke-width="0.5" fill="none"/></svg>');
+            background-size: 150px 150px;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 32%;
+            background-color: #ffffff;
+            /* border-right: 1px solid #eeeeee; */
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+
+        .photo-container {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 0 auto 25px;
+            background-color: #eee;
+            flex-shrink: 0;
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: #3b6bb0;
+            background: #f0f7ff;
+            font-weight: 700;
+        }
+
+        .name-box {
+            background-color: #3b6bb0;
+            color: #ffffff;
+            padding: 20px 15px;
+            margin: 0 -25px 25px -25px;
+            text-align: center;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24pt;
+            font-weight: 700;
+            margin: 0;
+            text-transform: none;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        .sidebar-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            color: #3b6bb0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #3b6bb0;
+            padding-bottom: 5px;
+        }
+        .sidebar-title i {
+            font-size: 12pt;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 9pt;
+            color: #555;
+        }
+        .contact-item i {
+            color: #3b6bb0;
+            width: 16px;
+            text-align: center;
+        }
+        .contact-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skill-list li {
+            font-size: 9pt;
+            margin-bottom: 6px;
+            color: #444;
+            display: flex;
+            align-items: top;
+            gap: 8px;
+        }
+        .skill-list li::before {
+            content: "•";
+            color: #3b6bb0;
+            font-weight: bold;
+            font-size: 12pt;
+            line-height: 1;
+        }
+
+        /* ── Main Content ── */
+        .main {
+            width: 68%;
+            background-color: #ffffff;
+            padding: 40px 35px;
+            z-index: 1;
+        }
+
+        .summary-box {
+            background-color: #3b6bb0;
+            border-radius: 8px;
+            padding: 1px; /* Border effect */
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(59, 107, 176, 0.15);
+        }
+        .summary-header {
+            background-color: #3b6bb0;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .summary-header i {
+            font-size: 14pt;
+        }
+        .summary-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13pt;
+            font-weight: 700;
+            margin: 0;
+        }
+        .summary-content {
+            background-color: #fff;
+            padding: 15px 20px;
+            font-size: 9.5pt;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .section-header i {
+            color: #3b6bb0;
+            font-size: 16pt;
+        }
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            color: #3b6bb0;
+            margin: 0;
+            white-space: nowrap;
+        }
+        .section-line {
+            height: 2px;
+            background-color: #eeeeee;
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .experience-item, .education-item {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+        .item-title {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #222;
+        }
+        .item-company {
+            font-weight: 600;
+            color: #333;
+            font-size: 10pt;
+        }
+        .item-subtitle {
+            font-size: 9.5pt;
+            font-style: italic;
+            color: #3b6bb0;
+            margin-bottom: 3px;
+        }
+        .item-date {
+            background-color: #3b6bb0;
+            color: #fff;
+            font-size: 8pt;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .item-location {
+            font-size: 9pt;
+            color: #777;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        .item-description {
+            font-size: 9.5pt;
+            line-height: 1.5;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        .highlights-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .highlights-list li {
+            font-size: 9pt;
+            color: #444;
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+        .highlights-list li::before {
+            content: "•";
+            color: #3b6bb0;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .awards-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .awards-list li {
+            font-size: 9pt;
+            color: #444;
+            margin-bottom: 5px;
+            display: flex;
+            gap: 8px;
+        }
+        .awards-list li::before {
+            content: "•";
+            color: #3b6bb0;
+            font-weight: bold;
+        }
+
+        @media print {
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; }
+            .summary-box { box-shadow: none; border: 1px solid #3b6bb0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-bg"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="photo-container">
+                {% if personal.photo_url %}
+                    <img src="{{ personal.photo_url }}" alt="Profile Photo">
+                {% else %}
+                    <div class="photo-placeholder">
+                        {{ (personal.full_name | default('PR', true))[0] }}{{ (personal.full_name | default('PR', true)).split(' ')[1][0] if (personal.full_name | default('PR', true)).split(' ')|length > 1 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="name-box">
+                <h1 class="name">{{ personal.full_name | default('Priya Rao', true) }}</h1>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="sidebar-section">
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>{{ personal.phone | default('+1 (555) 555-555', true) }}</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <a href="mailto:{{ personal.email }}">{{ personal.email | default('priya.rao@resumegemini.com', true) }}</a>
+                </div>
+                {% if personal.portfolio or personal.website %}
+                <div class="contact-item">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>{{ personal.portfolio or personal.website | default('https://resumegemini.com', true) }}</span>
+                </div>
+                {% endif %}
+                {% if personal.location %}
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>{{ personal.location | default('Bengaluru, KA, 560001', true) }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Skills -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title"><i class="fa-solid fa-chart-simple"></i> Skills</h3>
+                <ul class="skill-list">
+                    {% for skill in skills %}
+                        <li>{{ skill.name }}</li>
+                    {% else %}
+                        <li>Agile Product Lifecycle Management</li>
+                        <li>PLM</li>
+                        <li>Apache Solr</li>
+                        <li>Apache Maven</li>
+                        <li>Apache Hadoop</li>
+                        <li>NoSQL</li>
+                        <li>PostgreSQL</li>
+                        <li>Oracle Java</li>
+                        <li>Python</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Languages -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title"><i class="fa-solid fa-language"></i> Language</h3>
+                <ul class="skill-list">
+                    {% for lang in languages %}
+                        <li>{{ lang.name or lang }}</li>
+                    {% else %}
+                        <li>English</li>
+                        <li>French</li>
+                        <li>German</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Professional Summary -->
+            <div class="summary-box">
+                <div class="summary-header">
+                    <i class="fa-solid fa-user"></i>
+                    <h2>Professional Summary</h2>
+                </div>
+                <div class="summary-content">
+                    {{ personal.summary | default('Highly motivated and result-oriented Software Development Manager with over 10 years of experience in the full software development lifecycle (SDLC). Proven track record of designing and building highly scalable, secure, and performant software systems. Passionate about leading and mentoring high-performing development teams to deliver innovative and high-quality software solutions.', true) }}
+                </div>
+            </div>
+
+            <!-- Education -->
+            {% if education or not education %}
+            <section class="section">
+                <div class="section-header">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <h2 class="section-title">Education</h2>
+                    <div class="section-line"></div>
+                </div>
+                
+                {% for edu in education %}
+                <div class="education-item">
+                    <div class="item-header">
+                        <div class="item-company">{{ edu.institution }}</div>
+                        <div class="item-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                    </div>
+                    <div class="item-subtitle">{{ edu.degree }}{% if edu.field_of_study %}, {{ edu.field_of_study }}{% endif %}</div>
+                    <div class="item-location">{{ edu.location }}</div>
+                </div>
+                {% else %}
+                <div class="education-item">
+                    <div class="item-header">
+                        <div class="item-company">IIT Kanpur</div>
+                        <div class="item-date">Jun 2012</div>
+                    </div>
+                    <div class="item-subtitle">MS - Computer Science, CGPA: 9.0</div>
+                    <div class="item-location">Kanpur, UP</div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            <!-- Experience -->
+            {% if experience or not experience %}
+            <section class="section">
+                <div class="section-header">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <h2 class="section-title">Experience</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                {% for exp in experience %}
+                <div class="experience-item">
+                    <div class="item-header">
+                        <div class="item-company">{{ exp.company }}</div>
+                        <div class="item-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                    </div>
+                    <div class="item-subtitle">{{ exp.title }}</div>
+                    <div class="item-location">{{ exp.location }}</div>
+                    {% if exp.description %}
+                        <div class="item-description">{{ exp.description }}</div>
+                    {% endif %}
+                    {% if exp.highlights %}
+                        <ul class="highlights-list">
+                            {% for hl in exp.highlights %}
+                                <li>{{ hl }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="experience-item">
+                    <div class="item-header">
+                        <div class="item-company">Accenture Services</div>
+                        <div class="item-date">Jun 2018 - Jan 2024</div>
+                    </div>
+                    <div class="item-subtitle">Software Development Manager</div>
+                    <div class="item-location">San Francisco, California</div>
+                    <ul class="highlights-list">
+                        <li>Delivered critical $5 million project on time and within budget, exceeding stakeholder expectations.</li>
+                        <li>Successfully led a cross-functional team of developers, designers, and stakeholders to achieve key project milestones.</li>
+                        <li>Identified and implemented cloud cost-saving strategies, resulting in $50,000 annual savings.</li>
+                    </ul>
+                </div>
+                <div class="experience-item">
+                    <div class="item-header">
+                        <div class="item-company">PieSoft Technologies</div>
+                        <div class="item-date">Aug 2012 - May 2018</div>
+                    </div>
+                    <div class="item-subtitle">Senior Software Development Engineer</div>
+                    <div class="item-location">San Jose, California</div>
+                    <ul class="highlights-list">
+                        <li>Design or develop software systems, using scientific analysis and mathematical models to predict and measure outcome and consequences of design.</li>
+                        <li>Optimized and improved the performance of my application by 50% and uplifted conversion numbers by 10%.</li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            <!-- Awards -->
+            {% if awards or not awards %}
+            <section class="section">
+                <div class="section-header">
+                    <i class="fa-solid fa-trophy"></i>
+                    <h2 class="section-title">Awards</h2>
+                    <div class="section-line"></div>
+                </div>
+                <ul class="awards-list">
+                    {% for award in awards %}
+                        <li>{{ award.name or award }}</li>
+                    {% else %}
+                        <li>CEO's Choice Award, 2023</li>
+                        <li>Excellence in Customer Partnership Award, 2021</li>
+                        <li>Growth Mindset Pioneer Award, 2017</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>
