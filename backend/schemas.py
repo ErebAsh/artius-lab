@@ -38,6 +38,13 @@ class Skill(BaseModel):
     level: Optional[str] = "Intermediate"  # Beginner, Intermediate, Advanced, Expert
 
 
+class Certification(BaseModel):
+    name: str
+    issuer: str
+    year: Optional[str] = None
+    date: Optional[str] = None
+
+
 class Project(BaseModel):
     name: str
     description: str
@@ -57,6 +64,7 @@ class ResumeData(BaseModel):
     experience: list[Experience] = []
     skills: list[Skill] = []
     projects: list[Project] = []
+    certifications: list[Certification] = []
     expertise: Optional[Expertise] = None
 
 
@@ -66,6 +74,7 @@ class EnhancedResumeData(BaseModel):
     experience: list[Experience] = []
     skills: list[Skill] = []
     projects: list[Project] = []
+    certifications: list[Certification] = []
     expertise: Optional[Expertise] = None
 
 

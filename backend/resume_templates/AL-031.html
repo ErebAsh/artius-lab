@@ -32,35 +32,45 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        /* Sidebar - 1/3 width */
+        /* ── Sidebar ── */
         .sidebar {
             width: 35%;
             background-color: #111111;
             color: #ffffff;
-            padding: 60px 30px;
+            padding: 55px 32px 40px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
+            align-items: flex-start;
         }
 
         .name {
             font-family: 'Playfair Display', serif;
-            font-size: 32pt;
+            font-size: 26pt;
             color: #c59d5f;
-            margin: 0 0 40px 0;
+            margin: 0 0 8px 0;
             line-height: 1.1;
             font-weight: 700;
+            text-align: left;
+        }
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8.5pt;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: rgba(197,157,95,0.7);
+            margin-bottom: 35px;
+            text-align: left;
         }
 
         .photo-container {
-            width: 160px;
-            height: 160px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            border: 3px solid #ffffff;
+            border: 3px solid #c59d5f;
             overflow: hidden;
-            margin-bottom: 50px;
+            margin-bottom: 15px;
             background-color: #333;
+            flex-shrink: 0;
         }
         .photo-container img {
             width: 100%;
@@ -73,36 +83,52 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            color: #555;
-            background-color: #222;
+            font-size: 52px;
+            color: #c59d5f;
+            background: linear-gradient(135deg, #222 0%, #111 100%);
+            font-family: 'Playfair Display', serif;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .sidebar-section {
             width: 100%;
             text-align: left;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
         }
 
         .sidebar-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 11pt;
+            font-size: 9pt;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
             color: #ffffff;
-            position: relative;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(197,157,95,0.3);
         }
 
         .contact-info {
-            font-size: 9pt;
-            color: #c59d5f;
-            line-height: 1.8;
+            font-size: 8.5pt;
+            color: rgba(255,255,255,0.7);
+            line-height: 2;
         }
         .contact-info a {
             color: #c59d5f;
             text-decoration: none;
+        }
+        .contact-label {
+            font-size: 7pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            display: block;
+            margin-top: 4px;
+        }
+        .contact-value {
+            color: rgba(255,255,255,0.85);
+            display: block;
+            margin-bottom: 2px;
         }
 
         .skill-list {
@@ -111,103 +137,155 @@
             margin: 0;
         }
         .skill-list li {
-            font-size: 8.5pt;
-            margin-bottom: 8px;
-            color: rgba(255,255,255,0.8);
+            font-size: 8pt;
+            margin-bottom: 6px;
+            color: rgba(255,255,255,0.75);
             display: flex;
-            align-items: baseline;
+            align-items: center;
+            gap: 8px;
         }
-        .skill-list li::before {
-            content: "•";
-            color: #c59d5f;
-            margin-right: 10px;
-            font-size: 14px;
+        .skill-dot {
+            width: 5px;
+            height: 5px;
+            background: #c59d5f;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
 
         .sidebar-edu-item {
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
         .sidebar-edu-degree {
-            font-size: 9pt;
-            font-style: italic;
+            font-size: 8.5pt;
+            font-weight: 600;
             color: #ffffff;
             display: block;
         }
-        .sidebar-edu-inst {
-            font-size: 8pt;
-            color: rgba(255,255,255,0.7);
+        .sidebar-edu-field {
+            font-size: 7.5pt;
+            font-style: italic;
+            color: #c59d5f;
             display: block;
         }
-        .sidebar-edu-date {
-            font-size: 8pt;
+        .sidebar-edu-inst {
+            font-size: 7.5pt;
             color: rgba(255,255,255,0.6);
+            display: block;
+            margin-top: 2px;
+        }
+        .sidebar-edu-date {
+            font-size: 7pt;
+            color: rgba(255,255,255,0.45);
+        }
+        .sidebar-edu-meta {
+            font-size: 7pt;
+            color: rgba(255,255,255,0.5);
+            margin-top: 2px;
         }
 
-        /* Main Content - 2/3 width */
+        /* ── Main Content ── */
         .main {
             width: 65%;
             background-color: #ffffff;
-            padding: 60px 45px;
+            padding: 48px 40px;
         }
 
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 19px;
         }
 
         .section-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 14pt;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12pt;
             font-weight: 700;
-            color: #000000;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #000;
-            display: inline-block;
+            color: #111;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #111;
         }
 
         .summary-text {
-            font-size: 9.5pt;
-            line-height: 1.6;
+            font-size: 9pt;
+            line-height: 1.65;
             color: #444;
             text-align: justify;
         }
 
         .exp-item {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #eee;
         }
-        .exp-company {
-            font-size: 9.5pt;
-            font-weight: 600;
-            color: #666;
+        .exp-item:last-child {
+            border-bottom: none;
+        }
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
             margin-bottom: 3px;
         }
         .exp-role {
             font-size: 10pt;
             font-weight: 700;
             color: #111;
-            margin-bottom: 8px;
-            font-style: italic;
+        }
+        .exp-date {
+            font-size: 8pt;
+            color: #888;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .exp-company {
+            font-size: 8.5pt;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 500;
         }
         .exp-desc {
-            font-size: 9pt;
+            font-size: 8.5pt;
             line-height: 1.5;
-            color: #444;
-        }
-        .exp-desc ul {
-            padding-left: 15px;
-            margin: 10px 0;
-        }
-        .exp-desc li {
+            color: #555;
             margin-bottom: 6px;
         }
+        .exp-highlights {
+            padding-left: 16px;
+            margin: 6px 0 0 0;
+        }
+        .exp-highlights li {
+            font-size: 8.5pt;
+            color: #444;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
 
-        .duties-label {
-            font-size: 9pt;
+        .project-item {
+            margin-bottom: 16px;
+        }
+        .project-name {
+            font-size: 9.5pt;
             font-weight: 700;
-            text-decoration: underline;
-            margin-top: 10px;
-            display: block;
-            color: #333;
+            color: #111;
+        }
+        .project-link {
+            font-size: 7.5pt;
+            color: #c59d5f;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .project-desc {
+            font-size: 8.5pt;
+            color: #555;
+            line-height: 1.5;
+            margin-top: 3px;
+        }
+        .project-tech {
+            font-size: 7.5pt;
+            color: #888;
+            margin-top: 4px;
+            font-style: italic;
         }
 
         @media print {
@@ -228,123 +306,161 @@
                     {{ personal.full_name }}
                 {% endif %}
             </h1>
+            {% if personal.title %}
+            <div class="title">{{ personal.title }}</div>
+            {% endif %}
 
-            <div class="photo-container">
-                {% if personal.photo %}
-                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
-                {% else %}
-                <div class="photo-placeholder">{{ personal.full_name[0] | default('S', true) | upper }}</div>
-                {% endif %}
-            </div>
 
             <!-- Contact -->
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Contact</h3>
                 <div class="contact-info">
-                    {{ personal.phone | default('+1 123-555-1234', true) }}<br>
-                    <a href="mailto:{{ personal.email | default('email@domain.com', true) }}">{{ personal.email | default('email@domain.com', true) }}</a><br>
-                    {{ personal.website | default('www.website.com', true) }}<br>
-                    {{ personal.location | default('my location', true) }}
+                    {% if personal.phone %}
+                    <span class="contact-value">{{ personal.phone }}</span>
+                    {% endif %}
+                    {% if personal.email %}
+                    <span class="contact-value"><a href="mailto:{{ personal.email }}">{{ personal.email }}</a></span>
+                    {% endif %}
+                    {% if personal.linkedin %}
+                    <span class="contact-value"><a href="{% if 'http' not in personal.linkedin %}https://{% endif %}{{ personal.linkedin }}">{{ personal.linkedin | replace('https://', '') | replace('http://', '') }}</a></span>
+                    {% endif %}
+                    {% if personal.portfolio %}
+                    <span class="contact-value"><a href="{% if 'http' not in personal.portfolio %}https://{% endif %}{{ personal.portfolio }}">{{ personal.portfolio | replace('https://', '') | replace('http://', '') }}</a></span>
+                    {% endif %}
+                    {% if personal.location %}
+                    <span class="contact-value">{{ personal.location }}</span>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- Hard Skills -->
+            <!-- Skills -->
+            {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
-                <h3 class="sidebar-title">Hard Skills</h3>
+                <h3 class="sidebar-title">Skills</h3>
                 <ul class="skill-list">
-                    {% if skills %}
                     {% for skill in skills %}
-                    <li>{{ skill.name }}</li>
+                    <li><span class="skill-dot"></span>{{ skill.name }}</li>
                     {% endfor %}
-                    {% else %}
-                    <li>Word Processing</li>
-                    <li>Computer Programming</li>
-                    <li>Spanish Fluency</li>
-                    <li>Advanced Bookkeeping</li>
-                    <li>Schedule Management</li>
-                    <li>Systems Analysis</li>
-                    <li>Environmental Cleanup</li>
-                    {% endif %}
                 </ul>
             </div>
+            {% endif %}
 
             <!-- Education -->
+            {% if education and education|length > 0 %}
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Education</h3>
-                {% if education %}
                 {% for edu in education %}
                 <div class="sidebar-edu-item">
                     <span class="sidebar-edu-degree">{{ edu.degree }}</span>
+                    {% if edu.field_of_study %}
+                    <span class="sidebar-edu-field">{{ edu.field_of_study }}</span>
+                    {% endif %}
                     <span class="sidebar-edu-inst">{{ edu.institution }}</span>
-                    <span class="sidebar-edu-date">{{ edu.start_date }} - {{ edu.end_date }}</span>
+                    <span class="sidebar-edu-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
+                    {% if edu.gpa %}
+                    <div class="sidebar-edu-meta">GPA: {{ edu.gpa }}</div>
+                    {% endif %}
+                    {% if edu.achievements %}
+                    <div class="sidebar-edu-meta">{{ edu.achievements }}</div>
+                    {% endif %}
                 </div>
                 {% endfor %}
-                {% else %}
-                <div class="sidebar-edu-item">
-                    <span class="sidebar-edu-degree">Bachelor of Design (BDes)</span>
-                    <span class="sidebar-edu-inst">School of Design and Art</span>
-                    <span class="sidebar-edu-date">2015-2017</span>
-                </div>
-                <div class="sidebar-edu-item">
-                    <span class="sidebar-edu-degree">Bachelor of Science</span>
-                    <span class="sidebar-edu-inst">School of Commerce and Business</span>
-                    <span class="sidebar-edu-date">2012-2016</span>
-                </div>
+            </div>
+            {% endif %}
+
+            <!-- Expertise -->
+            {% if expertise.technical or expertise.professional %}
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Expertise</h3>
+                {% if expertise.technical %}
+                <ul class="skill-list">
+                    {% for item in expertise.technical %}
+                    <li><span class="skill-dot"></span>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if expertise.professional %}
+                <ul class="skill-list" style="margin-top: 8px;">
+                    {% for item in expertise.professional %}
+                    <li><span class="skill-dot"></span>{{ item }}</li>
+                    {% endfor %}
+                </ul>
                 {% endif %}
             </div>
+            {% endif %}
         </aside>
 
         <!-- Main Content -->
         <main class="main">
             <!-- Professional Profile -->
+            {% if personal.summary %}
             <section class="section">
                 <h2 class="section-title">Professional Profile</h2>
                 <div class="summary-text">
-                    {{ personal.summary | default('A quick synopsis of your profile - quidellenet ratisi utae pelenda voluptaquis it ipsae. Xere volesti aut est, tem fugitem quidi ad qui re, volo vendani sanctem que pe aut facipsae. Ro quatintis corum quo illitiatur, conet fuga. Dolor autem ut inus il molecer uptatur accum nosintia corum quo illitiatur, conet fuga. Dolor autem ut inus il molecer uptatur accum nosintia corum quo', true) }}
+                    {{ personal.summary }}
                 </div>
             </section>
+            {% endif %}
 
             <!-- Experience -->
+            {% if experience and experience|length > 0 %}
             <section class="section">
                 <h2 class="section-title">Experience</h2>
-                {% if experience %}
                 {% for exp in experience %}
                 <div class="exp-item">
-                    <div class="exp-company">{{ exp.company }} / {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
-                    <div class="exp-role">{{ exp.title }}</div>
-                    <div class="exp-desc">
-                        {{ exp.description | safe }}
+                    <div class="exp-header">
+                        <span class="exp-role">{{ exp.title }}</span>
+                        <span class="exp-date">{{ exp.start_date }} — {{ exp.end_date | default('Present', true) }}</span>
                     </div>
+                    <div class="exp-company">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</div>
+                    {% if exp.description %}
+                    <div class="exp-desc">{{ exp.description }}</div>
+                    {% endif %}
+                    {% if exp.highlights and exp.highlights|length > 0 %}
+                    <ul class="exp-highlights">
+                        {% for hl in exp.highlights %}
+                        {% if hl %}<li>{{ hl }}</li>{% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                 </div>
                 {% endfor %}
-                {% else %}
-                <div class="exp-item">
-                    <div class="exp-company">Company Name / Date Range</div>
-                    <div class="exp-role">Position Title Name</div>
-                    <div class="exp-desc">
-                        Describe your position here - quidellenet ratisi utae pelenda voluptaquis it ipsae. Xere volesti aut est, tem fugitem quidi ad qui re, volo vendani sanctem que pe aut facipsae.
-                        <span class="duties-label">Duties / Skills</span>
-                        <ul>
-                            <li>Responsible corum quo illitiatur, conet fuga. Inus il molecer uptatur accum nosintis corum quo illitiatur</li>
-                            <li>Operated corum quo illitiatur, conet fuga. Dolor autem ut inus il molecer uptatur accum nosintia corum</li>
-                            <li>Achieved quatintis corum quo illitiatur, fuga. Dolor autem ut inus il molecer uptatur accum nosintia.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="exp-item">
-                    <div class="exp-company">Company Name / Date Range</div>
-                    <div class="exp-role">Position Title Name</div>
-                    <div class="exp-desc">
-                        Describe your position here - quidellenet ratisi utae pelenda voluptaquis it ipsae. Xere volesti aut est, tem fugitem quidi ad qui re, volo vendani sanctem que pe aut facipsae.
-                        <span class="duties-label">Duties / Skills</span>
-                        <ul>
-                            <li>Responsible corum quo illitiatur, conet fuga. Inus il molecer uptatur accum nosintis corum quo illitiatur</li>
-                            <li>Operated corum quo illitiatur, conet fuga. Dolor autem ut inus il molecer uptatur accum nosintia corum</li>
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
             </section>
+            {% endif %}
+
+            <!-- Projects -->
+            {% if projects and projects|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Projects</h2>
+                {% for project in projects %}
+                <div class="project-item">
+                    <span class="project-name">{{ project.name }}</span>
+                    {% if project.link %}
+                    <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="project-link">View Project →</a>
+                    {% endif %}
+                    {% if project.description %}
+                    <div class="project-desc">{{ project.description }}</div>
+                    {% endif %}
+                    {% if project.technologies and project.technologies|length > 0 %}
+                    <div class="project-tech">Technologies: {{ project.technologies | join(', ') }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            <!-- Certifications -->
+            {% if certifications and certifications|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Certifications</h2>
+                {% for cert in certifications %}
+                <div style="margin-bottom: 10px;">
+                    <span style="font-size: 9.5pt; font-weight: 700; color: #111;">{{ cert.name }}</span><br>
+                    <span style="font-size: 8pt; color: #888;">{{ cert.issuer }} · {{ cert.year }}</span>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
         </main>
     </div>
 </body>

@@ -3,6 +3,7 @@ import os
 from typing import List, Dict, Any
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "resume_templates")
+LATEX_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "latex_templates")
 
 RESUME_TEMPLATES: List[Dict[str, Any]] = [
     {
@@ -37,7 +38,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A sophisticated two-column template perfect for experienced professionals. Features a sharp navy header with gold typography, and clean multi-column sections.",
         "accent_color": "#1e2538",
         "features": ["Two-column layout", "ATS-friendly", "Projects & Certifications", "Expertise Section"],
-        "category": "Professional"
+        "category": "Professional",
+        "has_latex": True
     },
     {
         "id": "AL-005",
@@ -53,7 +55,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A clean, minimalist template with a crisp white sidebar and sophisticated typography. Perfect for corporate and executive roles.",
         "accent_color": "#000000",
         "features": ["White Sidebar", "Clean Divider", "Executive Typography", "Professional Layout"],
-        "category": "Executive"
+        "category": "Executive",
+        "has_latex": True
     },
     {
         "id": "AL-007",
@@ -61,7 +64,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A bold contrast template with a dark sidebar and elegant header. Features high-impact layout for marketing and consultant positions.",
         "accent_color": "#333333",
         "features": ["Dark Sidebar", "Contrast Header", "Modern Skills Bar", "High Impact"],
-        "category": "Creative"
+        "category": "Creative",
+        "has_latex": True
     },
     {
         "id": "AL-008",
@@ -94,7 +98,8 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A powerful high-contrast design with a deep navy sidebar and timeline-based experience tracking. Perfect for technical leaders and engineers.",
         "accent_color": "#002d44",
         "features": ["Navy Sidebar", "Timeline Experience", "Language Proficiency Bars", "Technical Focus"],
-        "category": "Technical"
+        "category": "Technical",
+        "has_latex": True
     },
     {
         "id": "AL-012",
@@ -130,7 +135,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#212121",
         "features": ["Black Header Banner", "Right Sidebar", "Serif Typography", "Horizontal Skill Bars"],
         "category": "Executive",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-016",
@@ -139,7 +144,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#666666",
         "features": ["Minimalist Design", "Clean Typography", "Subtle Dividers", "Whitespace Focused"],
         "category": "Minimalist",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-017",
@@ -197,12 +202,12 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
     },
     {
         "id": "AL-023",
-        "name": "Refined Typography Minimal",
-        "description": "A minimalist, elegant layout with a focus on typography and whitespace. Perfect for creative and corporate professionals seeking a refined look.",
-        "accent_color": "#1a1a1a",
-        "features": ["Minimalist Style", "Clean Typography", "Sidebar Layout", "Letter-spaced Headings"],
+        "name": "Premium Dark Purple",
+        "description": "A striking dark-themed template with purple accents, featuring a bold two-column layout, background typography, and structured projects. Ideal for tech leads and creative managers.",
+        "accent_color": "#9d70ff",
+        "features": ["Dark Theme", "Purple Accents", "Simplified Skill Tags", "Dedicated Projects Section"],
         "category": "Minimalist",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-024",
@@ -265,7 +270,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#b49e85",
         "features": ["Dark Sidebar", "Gold Accents", "Architectural Layout", "Professional Typography"],
         "category": "Executive",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-031",
@@ -274,7 +279,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#c59d5f",
         "features": ["Black Sidebar", "Gold Name Branding", "Circular Photo", "Elegant Serif Typography"],
         "category": "Executive",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-032",
@@ -310,7 +315,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#8B0000",
         "features": ["Deep Red Borders", "Serif Typography", "Two-column Layout", "Professional Design"],
         "category": "Professional",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-036",
@@ -328,7 +333,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#666666",
         "features": ["Minimalist Grey Theme", "Contact Icon Bar", "Multi-section Sidebar", "Clean Architecture"],
         "category": "Minimalist",
-        "has_latex": False
+        "has_latex": True
     },
     {
         "id": "AL-038",
@@ -338,6 +343,33 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "features": ["Circular Profile Photo", "Horizontal Sidebar Bars", "Prefix-based Headings", "Dual-column Skills"],
         "category": "Modern",
         "has_latex": False
+    },
+    {
+        "id": "AL-039",
+        "name": "Geometric Network Pro",
+        "description": "A premium professional template with a geometric network background, blue accent headers, and a structured sidebar. Features a bold blue name box and clean project-based layout.",
+        "accent_color": "#3b6bb0",
+        "features": ["Geometric Pattern Header", "Blue Name Box", "Circular Profile Photo", "Accent Section Headers"],
+        "category": "Professional",
+        "has_latex": True
+    },
+    {
+        "id": "AL-040",
+        "name": "Teal Vertical Timeline",
+        "description": "A sophisticated teal-themed template featuring a bold summary banner and vertical timeline connectors. Ideal for experienced leaders and managers.",
+        "accent_color": "#1aa094",
+        "features": ["Teal Summary Banner", "Vertical Timeline", "Contact Icon Bar", "Two-column Structure"],
+        "category": "Executive",
+        "has_latex": True
+    },
+    {
+        "id": "AL-041",
+        "name": "Soft Bubble Modern",
+        "description": "A clean modern design featuring soft background orbs and a structured two-column timeline. Perfect for modern professionals seeking a tech-focused layout.",
+        "accent_color": "#66cccc",
+        "features": ["Background Orbs", "Timeline Layout", "Modern Typography", "Two-column Structure"],
+        "category": "Modern",
+        "has_latex": True
     },
 ]
 

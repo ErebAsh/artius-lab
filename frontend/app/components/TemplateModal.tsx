@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useTheme } from "./ThemeProvider";
 
 interface Template {
   id: string;
@@ -8,6 +9,7 @@ interface Template {
   accent_color: string;
   features: string[];
   category: string;
+  has_latex?: boolean;
 }
 
 interface TemplateModalProps {
@@ -17,10 +19,22 @@ interface TemplateModalProps {
 
 export default function TemplateModal({ template, onClose }: TemplateModalProps) {
   const router = useRouter();
+  const { settings } = useTheme();
+  const isLatexMode = settings.renderMode === "latex";
 
   const handleContinue = () => {
     router.push(`/builder?template=${template.id}`);
   };
+
+  const accentGradient = isLatexMode && template.has_latex
+    ? "linear-gradient(90deg, #89b4fa, #cba6f7)"
+    : `linear-gradient(90deg, ${template.accent_color}, ${template.accent_color}80)`;
+
+  const accentSolid = isLatexMode && template.has_latex
+    ? "linear-gradient(135deg, #89b4fa, #cba6f7)"
+    : `linear-gradient(135deg, ${template.accent_color}, ${template.accent_color}cc)`;
+
+  const featureAccent = isLatexMode && template.has_latex ? "#89b4fa" : template.accent_color;
 
   return (
     <div
@@ -52,25 +66,81 @@ export default function TemplateModal({ template, onClose }: TemplateModalProps)
         <div
           style={{
             height: 6,
-            background: `linear-gradient(90deg, ${template.accent_color}, ${template.accent_color}80)`,
+            background: accentGradient,
           }}
         />
 
         <div style={{ padding: "28px 32px 32px" }}>
           {/* Title */}
           <div style={{ marginBottom: 20 }}>
-            <span
-              style={{
-                fontSize: 11,
-                padding: "4px 12px",
-                borderRadius: 20,
-                background: `${template.accent_color}15`,
-                color: template.accent_color,
-                fontWeight: 500,
-              }}
-            >
-              {template.category}
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {/* 1. Mode Badge (First) */}
+              {isLatexMode && template.has_latex ? (
+                <span
+                  style={{
+                    fontSize: 10,
+                    padding: "4px 10px",
+                    borderRadius: 20,
+                    background: "linear-gradient(135deg, rgba(137, 180, 250, 0.15), rgba(203, 166, 247, 0.15))",
+                    color: "#89b4fa",
+                    fontWeight: 700,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    border: "1px solid rgba(137, 180, 250, 0.2)",
+                  }}
+                >
+                  ✦ LATEX
+                </span>
+              ) : (
+                <span
+                  style={{
+                    fontSize: 10,
+                    padding: "4px 10px",
+                    borderRadius: 20,
+                    background: `${featureAccent}15`,
+                    color: featureAccent,
+                    fontWeight: 700,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    border: `1px solid ${featureAccent}30`,
+                  }}
+                >
+                  ✦ HTML
+                </span>
+              )}
+
+              {/* 2. Category Badge */}
+              <span
+                style={{
+                  fontSize: 11,
+                  padding: "4px 12px",
+                  borderRadius: 20,
+                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "rgba(255, 255, 255, 0.8)",
+                  fontWeight: 500,
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                }}
+              >
+                {template.category}
+              </span>
+
+              {/* 3. Template ID Badge (Last) */}
+              <span
+                style={{
+                  fontSize: 10,
+                  padding: "4px 10px",
+                  borderRadius: 20,
+                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "rgba(255, 255, 255, 0.4)",
+                  fontWeight: 600,
+                  fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                {template.id}
+              </span>
+            </div>
             <h2
               style={{
                 fontSize: 26,
@@ -124,12 +194,12 @@ export default function TemplateModal({ template, onClose }: TemplateModalProps)
                       width: 20,
                       height: 20,
                       borderRadius: 6,
-                      background: `${template.accent_color}20`,
+                      background: `${featureAccent}20`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: 11,
-                      color: template.accent_color,
+                      color: featureAccent,
                       flexShrink: 0,
                     }}
                   >
@@ -138,6 +208,66 @@ export default function TemplateModal({ template, onClose }: TemplateModalProps)
                   {feature}
                 </div>
               ))}
+
+              {/* Extra LaTeX-specific features */}
+              {isLatexMode && template.has_latex && (
+                <>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      fontSize: 14,
+                      color: "var(--foreground)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: 6,
+                        background: "rgba(137, 180, 250, 0.15)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        color: "#89b4fa",
+                        flexShrink: 0,
+                      }}
+                    >
+                      ✦
+                    </span>
+                    LaTeX Source Export
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      fontSize: 14,
+                      color: "var(--foreground)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: 6,
+                        background: "rgba(203, 166, 247, 0.15)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        color: "#cba6f7",
+                        flexShrink: 0,
+                      }}
+                    >
+                      ✦
+                    </span>
+                    Overleaf / TeX Live Compatible
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -149,7 +279,7 @@ export default function TemplateModal({ template, onClose }: TemplateModalProps)
               id="continue-with-template-btn"
               style={{
                 flex: 1,
-                background: `linear-gradient(135deg, ${template.accent_color}, ${template.accent_color}cc)`,
+                background: accentSolid,
               }}
             >
               Continue with this template →

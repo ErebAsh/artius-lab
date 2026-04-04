@@ -38,7 +38,7 @@
         /* Header Section */
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -49,7 +49,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 3px solid #666;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .header-photo-container img {
             width: 100%;
@@ -78,18 +78,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 25px;
-            padding: 15px 0;
+            gap: 12px;
+            padding: 12px 0;
             border-top: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
         }
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 8.5pt;
+            gap: 6px;
+            font-size: 8pt;
             color: #555;
+            white-space: nowrap;
         }
         .contact-icon {
             width: 22px;
@@ -126,13 +127,13 @@
 
         /* Section Styling */
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 15px;
         }
         .section-header {
             background-color: #f7f7f7;
             padding: 8px 10px;
             text-align: left;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .section-title {
             font-size: 9pt;
@@ -144,7 +145,7 @@
 
         /* Projects */
         .project-item {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         .project-header {
             display: flex;
@@ -171,7 +172,7 @@
         /* Educational Items */
         .edu-item {
             text-align: left;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         .edu-title {
             font-size: 9.5pt;
@@ -212,7 +213,7 @@
         }
 
         .experience-item {
-            margin-bottom: 30px;
+            margin-bottom: 18px;
         }
         .exp-header {
             display: flex;
@@ -347,6 +348,19 @@
                             <li>Budgeting & Planning</li>
                         {% endif %}
                     </ul>
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Certifications</span>
+                    </div>
+                    {% if certifications and certifications|length > 0 %}
+                        {% for cert in certifications %}
+                        <div class="edu-item" style="margin-bottom: 12px;">
+                            <div class="edu-title" style="font-size: 8.5pt;">{{ cert.name }}</div>
+                            <div class="edu-subtitle" style="font-size: 8pt;">{{ cert.issuer }}</div>
+                            <div class="edu-date" style="font-size: 8pt;">{{ cert.year or cert.date }}</div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
 
             </aside>

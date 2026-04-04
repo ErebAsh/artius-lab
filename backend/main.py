@@ -9,7 +9,7 @@ import PyPDF2
 from schemas import ResumeData, HTMLData, UserRegister, UserLogin
 from templates import RESUME_TEMPLATES, get_template_by_id, get_all_templates
 from ai_service import enhance_resume, check_ats_score, parse_resume_text, modify_resume_with_ai
-from pdf_service import generate_pdf, generate_html, generate_pdf_from_html
+from pdf_service import generate_pdf, generate_html, generate_pdf_from_html, generate_latex, has_latex_template
 from auth import hash_password, verify_password, create_access_token, get_current_user, get_optional_user
 from database import (
     init_db,
@@ -156,6 +156,7 @@ def preview_template(template_id: str):
             "phone": "+1 123-456-7890",
             "location": "New York, USA",
             "linkedin": "linkedin.com/in/emmawatson",
+            "portfolio": "emmawatson.dev",
             "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience."
         },
 
@@ -252,6 +253,119 @@ def preview_template(template_id: str):
         from pdf_service import generate_html
         html_content = generate_html(dummy_data, template_id)
         return Response(content=html_content, media_type="text/html")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/templates/{template_id}/latex-preview")
+def preview_latex_template(template_id: str):
+    """Return a LaTeX source preview of the template loaded with dummy data."""
+    template = get_template_by_id(template_id)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    if not has_latex_template(template_id):
+        raise HTTPException(status_code=404, detail="No LaTeX template available for this template.")
+
+    dummy_data = {
+        "personal_info": {
+            "full_name": "EMMA WATSON",
+            "title": "SOFTWARE ENGINEER",
+            "email": "emma.watson@gmail.com",
+            "phone": "+1 123-456-7890",
+            "location": "New York, USA",
+            "linkedin": "linkedin.com/in/emmawatson",
+            "portfolio": "emmawatson.dev",
+            "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience."
+        },
+        "experience": [
+            {
+                "company": "Tech Solutions Inc.",
+                "title": "Software Engineer",
+                "location": "New York, USA",
+                "start_date": "Jan 2022",
+                "end_date": "Present",
+                "description": "Developing scalable web applications and improving backend performance.",
+                "highlights": [
+                    "Built full-stack applications using React and FastAPI.",
+                    "Improved system performance by 30 percent through optimization.",
+                    "Collaborated with designers and product teams."
+                ]
+            },
+            {
+                "company": "Innovate Labs",
+                "title": "Junior Developer",
+                "location": "Boston, USA",
+                "start_date": "Jun 2020",
+                "end_date": "Dec 2021",
+                "description": "Worked on backend systems and API integrations.",
+                "highlights": [
+                    "Developed REST APIs using Python and Flask.",
+                    "Integrated third-party services and APIs.",
+                    "Maintained code quality with unit testing."
+                ]
+            }
+        ],
+        "education": [
+            {
+                "institution": "Stanford University",
+                "degree": "Bachelor of Science",
+                "field_of_study": "Computer Science",
+                "start_date": "2016",
+                "end_date": "2020"
+            }
+        ],
+        "skills": [
+            {"name": "Python"},
+            {"name": "JavaScript"},
+            {"name": "React"},
+            {"name": "FastAPI"},
+            {"name": "Docker"},
+            {"name": "Git"}
+        ],
+        "expertise": {
+            "professional": [
+                "Leadership",
+                "Team Collaboration",
+                "Problem Solving",
+                "Agile Development"
+            ],
+            "technical": [
+                "Web Development",
+                "API Design",
+                "Database Management",
+                "Cloud Deployment"
+            ]
+        },
+        "certifications": [
+            {
+                "name": "AWS Certified Developer",
+                "issuer": "Amazon",
+                "year": "2023"
+            },
+            {
+                "name": "Full Stack Web Development",
+                "issuer": "Coursera",
+                "year": "2022"
+            }
+        ],
+        "projects": [
+            {
+                "name": "AI Resume Builder",
+                "description": "An AI-powered platform using FastAPI and Next.js to generate optimized resumes and analyze ATS compatibility.",
+                "link": "github.com/emmawatson/resumebuilder"
+            },
+            {
+                "name": "E-commerce Microservices",
+                "description": "Designed a scalable e-commerce architecture using Docker and Kubernetes, resulting in 40 percent faster deployment cycles.",
+                "link": "github.com/emmawatson/ecommerce"
+            }
+        ]
+    }
+
+    try:
+        latex_source = generate_latex(dummy_data, template_id)
+        return Response(content=latex_source, media_type="text/plain; charset=utf-8")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -364,6 +478,32 @@ async def generate_resume_html(data: ResumeData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"HTML generation failed: {str(e)}")
 
+
+@app.post("/api/generate/latex")
+async def generate_resume_latex(data: ResumeData):
+    """
+    Accept resume data, enhance with AI, and generate LaTeX source.
+    Returns the LaTeX source string for download or preview.
+    """
+    template = get_template_by_id(data.template_id)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    if not has_latex_template(data.template_id):
+        raise HTTPException(status_code=404, detail="No LaTeX template available for this template.")
+
+    # AI-powered resume building/completion
+    ai_result = await enhance_resume(data)
+    enhanced_data = ai_result.get("enhanced_data", ai_result)
+
+    try:
+        latex_source = generate_latex(enhanced_data, data.template_id)
+        return {
+            "latex": latex_source,
+            "template_id": data.template_id,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"LaTeX generation failed: {str(e)}")
 
 @app.post("/api/generate/pdf")
 async def generate_resume_pdf(data: HTMLData):

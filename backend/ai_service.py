@@ -3,7 +3,7 @@ import json
 import asyncio
 import google.generativeai as genai
 from dotenv import load_dotenv
-from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project
+from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project, Certification
 
 load_dotenv()
 
@@ -19,12 +19,13 @@ Rules for Completion:
 5. For SKILLS: If no skills are provided, suggest at least 3-5 relevant skills. If some are provided, retain all provided skills; if fewer than 3 are provided, add enough to represent a well-rounded skill set.
 6. For EXPERTISE: For both "technical" and "professional", if the user provides items, RETAIN THEM ALL. If fewer than 3 are provided or none, suggest enough items to reach at least 3 for each sub-section.
 7. For PROJECTS: Enhance descriptions to be technical and outcome-oriented.
-8. Maintain the truth of provided facts (dates, titles, names) while professionalizing the phrasing.
-9. OPTIMAL LAYOUT: YOU MUST also generate a `layout_settings` object based on the content density:
-    - If very little content exists: Wider margins (28-32mm), larger font (11.5-12pt), higher section gaps (35-45px).
-    - If average content exists: Standard set (24mm margins, 11pt font, 24px section gaps).
-    - If content is very dense: Tighter margins (18-20mm), smaller font (10-10pt), lower line height (1.4), and smaller gaps (15-18px).
-10. RETURN EXACT JSON with keys: "enhanced_data" (matching input resume structure) and "layout_settings" (keys: margin, fontSize, lineHeight, sectionGap, columnGap). No markdown, no conversational text.
+8. For CERTIFICATIONS: Ensure the `name` and `issuer` are professionally formatted.
+9. Maintain the truth of provided facts (dates, titles, names) while professionalizing the phrasing.
+10. OPTIMAL LAYOUT: YOU MUST also generate a `layout_settings` object based on the content density:
+    - If very little content exists: Moderate margins (20-22mm), larger font (11pt), moderate section gaps (25-30px).
+    - If average content exists: Standard set (18mm margins, 10.5pt font, 18px section gaps).
+    - If content is very dense: Tighter margins (12-15mm), smaller font (9.5-10pt), lower line height (1.3), and smaller gaps (10-12px).
+11. RETURN EXACT JSON with keys: "enhanced_data" (matching input resume structure) and "layout_settings" (keys: margin, fontSize, lineHeight, sectionGap, columnGap). No markdown, no conversational text.
 """
 
 

@@ -41,7 +41,8 @@ export default function TemplatesPage() {
             description: "A sophisticated two-column template perfect for experienced professionals. Features a sharp navy header with gold typography, and clean multi-column sections.",
             accent_color: "#1e293b",
             features: ["Two-column layout", "ATS-friendly", "Elegant typography", "Professional Header"],
-            category: "Professional"
+            category: "Professional",
+            has_latex: true
           },
           {
             id: "AL-006",
@@ -49,7 +50,8 @@ export default function TemplatesPage() {
             description: "A clean, minimalist template with a crisp white sidebar and sophisticated typography. Perfect for corporate and executive roles.",
             accent_color: "#000000",
             features: ["White Sidebar", "Clean Divider", "Executive Typography", "Professional Layout"],
-            category: "Executive"
+            category: "Executive",
+            has_latex: true
           },
           {
             id: "AL-007",
@@ -57,7 +59,8 @@ export default function TemplatesPage() {
             description: "A bold contrast template with a dark sidebar and elegant header. Features high-impact layout for marketing and consultant positions.",
             accent_color: "#333333",
             features: ["Dark Sidebar", "Contrast Header", "Modern Skills Bar", "High Impact"],
-            category: "Creative"
+            category: "Creative",
+            has_latex: true
           },
           {
             id: "AL-008",
@@ -89,7 +92,8 @@ export default function TemplatesPage() {
             description: "A powerful high-contrast design with a deep navy sidebar and timeline-based experience tracking. Perfect for technical leaders and engineers.",
             accent_color: "#002d44",
             features: ["Navy Sidebar", "Timeline Experience", "Language Proficiency Bars", "Technical Focus"],
-            category: "Technical"
+            category: "Technical",
+            has_latex: true
           },
           {
             id: "AL-012",
@@ -121,7 +125,8 @@ export default function TemplatesPage() {
             description: "A high-impact black-banner design with a clean right sidebar and elegant serif typography. Ideal for managers and creative directors.",
             accent_color: "#212121",
             features: ["Black Header Banner", "Right Sidebar", "Serif Typography", "Horizontal Skill Bars"],
-            category: "Executive"
+            category: "Executive",
+            has_latex: true
           },
           {
             id: "AL-016",
@@ -129,7 +134,8 @@ export default function TemplatesPage() {
             description: "A minimalist, hyper-clean template with generous whitespace and subtle dividers. Perfect for modern, sleek professional profiles.",
             accent_color: "#666666",
             features: ["Minimalist Design", "Clean Typography", "Subtle Dividers", "Whitespace Focused"],
-            category: "Minimalist"
+            category: "Minimalist",
+            has_latex: true
           },
           {
             id: "AL-017",
@@ -169,7 +175,8 @@ export default function TemplatesPage() {
             description: "A minimalist, elegant layout with a focus on typography and whitespace. Perfect for creative and corporate professionals seeking a refined look.",
             accent_color: "#1a1a1a",
             features: ["Minimalist Style", "Clean Typography", "Sidebar Layout", "Letter-spaced Headings"],
-            category: "Minimalist"
+            category: "Minimalist",
+            has_latex: true
           },
           {
             id: "AL-024",
@@ -241,7 +248,8 @@ export default function TemplatesPage() {
             description: "A premium two-column template with a dark navy sidebar and elegant gold accents. Features a clean architectural layout for high-level professionals.",
             accent_color: "#b49e85",
             features: ["Dark Sidebar", "Gold Accents", "Architectural Layout", "Professional Typography"],
-            category: "Executive"
+            category: "Executive",
+            has_latex: true
           },
           {
             id: "AL-031",
@@ -249,7 +257,8 @@ export default function TemplatesPage() {
             description: "A sophisticated high-contrast template with a black sidebar and stunning gold serif typography. Features a circular profile photo and structured profile summary.",
             accent_color: "#c59d5f",
             features: ["Black Sidebar", "Gold Name Branding", "Circular Photo", "Elegant Serif Typography"],
-            category: "Executive"
+            category: "Executive",
+            has_latex: true
           },
           {
             id: "AL-032",
@@ -281,7 +290,8 @@ export default function TemplatesPage() {
             description: "A classic professional template with deep red top and bottom borders, featuring a clean two-column layout and elegant serif typography. Perfect for corporate and executive roles.",
             accent_color: "#8B0000",
             features: ["Deep Red Borders", "Serif Typography", "Two-column Layout", "Professional Design"],
-            category: "Professional"
+            category: "Professional",
+            has_latex: true
           },
           {
             id: "AL-036",
@@ -297,7 +307,8 @@ export default function TemplatesPage() {
             description: "A minimalist, hyper-clean template with a neutral grey theme and integrated contact icon bar. Features a structured multi-section layout for experienced professionals.",
             accent_color: "#666666",
             features: ["Minimalist Grey Theme", "Contact Icon Bar", "Multi-section Sidebar", "Clean Architecture"],
-            category: "Minimalist"
+            category: "Minimalist",
+            has_latex: true
           },
           {
             id: "AL-038",

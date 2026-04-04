@@ -15,7 +15,8 @@ const STEPS = [
   { id: 2, label: "Experience", icon: "💼" },
   { id: 3, label: "Skills & Expertise", icon: "⚡" },
   { id: 4, label: "Projects", icon: "🚀" },
-  { id: 5, label: "Layout & Style", icon: "📐" },
+  { id: 5, label: "Certifications", icon: "🏆" },
+  { id: 6, label: "Layout & Style", icon: "📐" },
 ];
 
 interface Education {
@@ -47,6 +48,13 @@ interface Project {
   description: string;
   technologies: string[];
   link: string;
+}
+
+interface Certification {
+  name: string;
+  issuer: string;
+  year: string;
+  date: string;
 }
 
 function BuilderContent() {
@@ -129,6 +137,10 @@ function BuilderContent() {
   const [projects, setProjects] = useState<Project[]>([
     { name: "", description: "", technologies: [""], link: "" },
   ]);
+
+  const [certifications, setCertifications] = useState<Certification[]>([
+    { name: "", issuer: "", year: "", date: "" },
+  ]);
   
   const [expertise, setExpertise] = useState({
     enabled: false,
@@ -149,6 +161,7 @@ function BuilderContent() {
       if (rd.experience?.length) setExperience(rd.experience);
       if (rd.skills?.length) setSkills(rd.skills);
       if (rd.projects?.length) setProjects(rd.projects);
+      if (rd.certifications?.length) setCertifications(rd.certifications);
       if (rd.expertise) {
         setExpertise({
           enabled: true,
@@ -252,7 +265,7 @@ function BuilderContent() {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [personal, education, experience, skills, projects, expertise, layout, token, generating, enhancing, handleSaveDraft]);
+  }, [personal, education, experience, skills, projects, certifications, expertise, layout, token, generating, enhancing, handleSaveDraft]);
 
   const handleAIAutoComplete = async () => {
     setEnhancing(true);
@@ -269,6 +282,7 @@ function BuilderContent() {
       projects: projects
         .filter((p) => p.name.trim() !== "")
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
+      certifications: certifications.filter((c) => c.name.trim() !== ""),
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -305,6 +319,9 @@ function BuilderContent() {
       }
       if (enhanced.projects && enhanced.projects.length > 0) {
         setProjects(enhanced.projects);
+      }
+      if (enhanced.certifications && enhanced.certifications.length > 0) {
+        setCertifications(enhanced.certifications);
       }
       if (enhanced.expertise) {
         setExpertise({
@@ -350,6 +367,7 @@ function BuilderContent() {
       projects: projects
         .filter((p) => p.name.trim() !== "")
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
+      certifications: certifications.filter((c) => c.name.trim() !== ""),
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -978,6 +996,41 @@ function BuilderContent() {
         )}
 
         {currentStep === 5 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Certifications</h2>
+            {certifications.map((cert, idx) => (
+              <div key={idx} style={{ padding: 20, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--border)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "var(--accent-light)" }}>Certification #{idx + 1}</span>
+                  {certifications.length > 1 && (
+                    <button style={removeBtnStyle} onClick={() => setCertifications(certifications.filter((_, i) => i !== idx))}>Remove</button>
+                  )}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                  <div>
+                    <label style={labelStyle}>Certification Name *</label>
+                    <input style={inputStyle} placeholder="AWS Solutions Architect" value={cert.name} onChange={(e) => { const u = [...certifications]; u[idx].name = e.target.value; setCertifications(u); }} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Issuing Organization *</label>
+                    <input style={inputStyle} placeholder="Amazon Web Services" value={cert.issuer} onChange={(e) => { const u = [...certifications]; u[idx].issuer = e.target.value; setCertifications(u); }} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Year</label>
+                    <input style={inputStyle} placeholder="2023" value={cert.year} onChange={(e) => { const u = [...certifications]; u[idx].year = e.target.value; setCertifications(u); }} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Full Date (Ex: May 2023)</label>
+                    <input style={inputStyle} placeholder="May 2023" value={cert.date} onChange={(e) => { const u = [...certifications]; u[idx].date = e.target.value; setCertifications(u); }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button style={addBtnStyle} onClick={() => setCertifications([...certifications, { name: "", issuer: "", year: "", date: "" }])}>+ Add Certification</button>
+          </div>
+        )}
+
+        {currentStep === 6 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Layout & Style Fine-Tuning</h2>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
@@ -1050,8 +1103,8 @@ function BuilderContent() {
 
             <button className="btn-secondary" onClick={handleAIAutoComplete} disabled={enhancing || generating} style={{ background: "linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2))", borderColor: "rgba(99, 102, 241, 0.4)", color: "#e0e7ff", display: "flex", alignItems: "center", gap: 8 }}>
               {enhancing 
-                ? (currentStep === 5 ? "Optimizing..." : "Building...") 
-                : (currentStep === 5 ? "✦ AI Auto-Layout" : "✦ AI Auto-Complete")}
+                ? (currentStep === 6 ? "Optimizing..." : "Building...") 
+                : (currentStep === 6 ? "✦ AI Auto-Layout" : "✦ AI Auto-Complete")}
             </button>
             {currentStep < STEPS.length - 1 ? (
               <button className="btn-primary" onClick={() => setCurrentStep((s) => s + 1)}>Next →</button>

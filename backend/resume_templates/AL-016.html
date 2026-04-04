@@ -31,17 +31,17 @@
             margin: 0 auto;
             background: #fff;
             position: relative;
-            padding: 60px 50px;
+            padding: 50px 60px;
         }
 
         /* ── Left Sidebar (30%) ── */
         .sidebar {
-            width: 30%;
-            padding-right: 40px;
-            border-right: 1px solid #eee;
+            width: 32%;
+            padding-right: 45px;
+            border-right: 1px solid #f0f0f0;
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 35px;
         }
 
         .photo-section {
@@ -73,20 +73,20 @@
             border-bottom: 1px solid #000;
         }
 
-        .edu-item {
-            margin-bottom: 25px;
+        .item {
+            margin-bottom: 15px;
         }
-        .edu-degree {
+        .item-main {
             font-weight: 700;
             font-size: 9.5pt;
             color: #222;
         }
-        .edu-school {
+        .item-sub {
             font-size: 8.5pt;
             color: #666;
             margin-top: 3px;
         }
-        .edu-year {
+        .item-meta {
             font-size: 8.5pt;
             color: #888;
             margin-top: 2px;
@@ -106,11 +106,11 @@
 
         /* ── Right Column (70%) ── */
         .main-column {
-            width: 70%;
-            padding-left: 50px;
+            width: 68%;
+            padding-left: 60px;
             display: flex;
             flex-direction: column;
-            gap: 45px;
+            gap: 35px;
         }
 
         .header {
@@ -182,7 +182,7 @@
         }
 
         .exp-item {
-            margin-bottom: 35px;
+            margin-bottom: 25px;
         }
         .exp-title {
             font-family: 'Montserrat', sans-serif;
@@ -216,14 +216,18 @@
             color: #555;
         }
         .highlights li::before {
-            content: "•";
+            content: "→";
             position: absolute;
             left: 0;
-            color: #aaa;
+            color: #ccc;
+            font-size: 8pt;
         }
 
+        .proj-item { margin-bottom: 15px; }
+        .proj-name { font-weight: 700; font-size: 10.5pt; color: #222; }
+
         @media print {
-            .container { width: 210mm; height: 297mm; padding: 60px 50px; }
+            .container { width: 210mm; height: 297mm; padding: 60px 40px; }
         }
     </style>
 </head>
@@ -236,20 +240,34 @@
                     {% if personal.photo %}
                     <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Chloe Henderson', true) }}">
                     {% else %}
-                    <div style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 40px;">{{ personal.full_name[0] | default('C', true) | upper }}</div>
+                    <div style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 40px;">{{ (personal.full_name or 'C')[0] | upper }}</div>
                     {% endif %}
                 </div>
             </div>
 
             <!-- Education -->
-            {% if education and education|length > 0 %}
+            {% if education %}
             <div class="sidebar-section">
                 <h2>Education</h2>
                 {% for edu in education %}
-                <div class="edu-item">
-                    <div class="edu-degree">{{ edu.degree }}</div>
-                    <div class="edu-school">{{ edu.institution }}</div>
-                    <div class="edu-year">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                <div class="item">
+                    <div class="item-main">{{ edu.degree }}</div>
+                    <div class="item-sub">{{ edu.institution }}</div>
+                    <div class="item-meta">{{ edu.start_date }} - {{ edu.end_date }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Certifications -->
+            {% if certifications %}
+            <div class="sidebar-section">
+                <h2>Certifications</h2>
+                {% for cert in certifications %}
+                <div class="item">
+                    <div class="item-main">{{ cert.name }}</div>
+                    <div class="item-sub">{{ cert.issuer }}</div>
+                    <div class="item-meta">{{ cert.year or cert.date }}</div>
                 </div>
                 {% endfor %}
             </div>
@@ -259,16 +277,20 @@
             <div class="sidebar-section">
                 <h2>Skills</h2>
                 <ul class="skill-list">
+                    {% if skills %}
+                        {% for skill in skills %}
+                        <li class="skill-item">{{ skill.name }}</li>
+                        {% endfor %}
+                    {% endif %}
+                    {% if expertise.technical %}
+                        {% for item in expertise.technical %}
+                        <li class="skill-item">{{ item }}</li>
+                        {% endfor %}
+                    {% endif %}
                     {% if expertise.professional %}
                         {% for item in expertise.professional %}
                         <li class="skill-item">{{ item }}</li>
                         {% endfor %}
-                    {% else %}
-                        <li class="skill-item">Editing</li>
-                        <li class="skill-item">Team leadership</li>
-                        <li class="skill-item">Project Management</li>
-                        <li class="skill-item">Photography</li>
-                        <li class="skill-item">Writing</li>
                     {% endif %}
                 </ul>
             </div>
@@ -292,6 +314,9 @@
                     {% if personal.location %}
                     <div>{{ personal.location }} <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
                     {% endif %}
+                    {% if personal.linkedin %}
+                    <div>{{ personal.linkedin | replace('https://', '') | replace('www.', '') }} <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg></div>
+                    {% endif %}
                 </div>
             </header>
 
@@ -304,13 +329,13 @@
             {% endif %}
 
             <!-- Work Experience -->
-            {% if experience and experience|length > 0 %}
+            {% if experience %}
             <div class="main-section">
                 <h2>Work Experience</h2>
                 {% for exp in experience %}
                 <div class="exp-item">
                     <div class="exp-title">{{ exp.title }}</div>
-                    <div class="exp-meta">{{ exp.company }} | {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                    <div class="exp-meta">{{ exp.company }}{% if exp.location %} | {{ exp.location }}{% endif %} | {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
                     <div class="exp-desc">{{ exp.description }}</div>
                     {% if exp.highlights %}
                     <ul class="highlights">
@@ -319,6 +344,20 @@
                         {% endfor %}
                     </ul>
                     {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Projects -->
+            {% if projects %}
+            <div class="main-section">
+                <h2>Projects</h2>
+                {% for project in projects %}
+                <div class="proj-item">
+                    <div class="proj-name">{{ project.name }} {% if project.link %}<span style="font-weight: 400; font-size: 8pt; color: #888; margin-left: 10px;">{{ project.link }}</span>{% endif %}</div>
+                    <div style="font-size: 8.5pt; color: #666; margin: 4px 0;">{{ project.technologies | join(' | ') }}</div>
+                    <div class="profile-text" style="font-size: 9pt;">{{ project.description }}</div>
                 </div>
                 {% endfor %}
             </div>
