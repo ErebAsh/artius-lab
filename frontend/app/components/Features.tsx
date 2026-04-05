@@ -133,7 +133,7 @@ export default function Features() {
                         fontSize: 18,
                         lineHeight: 1.7,
                     }}>
-                        We've dismantled the traditional resume builder and rebuilt it with
+                        We&apos;ve dismantled the traditional resume builder and rebuilt it with
                         neural intelligence and precision design.
                     </p>
                 </div>

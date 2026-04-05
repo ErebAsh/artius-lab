@@ -1,0 +1,249 @@
+{
+  "fallback": "I'm currently in high-precision offline mode. I can help you with almost anything regarding Artius Lab—from AI resume enhancement and ATS optimization to template selection and PDF/LaTeX exporting. Could you try rephrasing or asking about a specific feature?",
+  "intents": [
+    {
+      "pattern": "\\b(hi|hello|hey|greetings|morning|afternoon|evening|yo|hey there|typing|anyone there)\\b",
+      "response": "Hello! I'm Aura, your Artius Lab assistant. I can guide you through building a high-impact resume, using our AI tools, or resolving formatting issues. What's on your mind today?"
+    },
+    {
+      "pattern": "\\b(bye|goodbye|exit|close|thanks|thank you|thx|awesome|cool|great|chat later|see ya)\\b",
+      "response": "You're very welcome! I'm glad I could help. If you have more questions later while perfecting your resume, I'll be right here. Good luck with your career journey!"
+    },
+    {
+      "pattern": "\\b(support|help|stuck|lost|guide|tutorial|manual|how to start|get started|walkthrough)\\b",
+      "response": "The best way to start is by filling out your 'Personal Info' and then 'Experience'. Once you have some data, head to the 'Templates' tab in the right sidebar to see it come to life. If you need a specific guide, just ask me about 'AI enhancement' or 'PDF exporting'!"
+    },
+    {
+      "pattern": "\\b(create|make|build|generate|write|compose|develop|start|new|how to|guide me through|walk me through|steps to|process for)\\s+(a\\s+)?(resume|cv|profile)\\b",
+      "response": "To create a top-tier resume in Artius Lab: 1. Fill in your 'Personal Info'. 2. Add your 'Experience' and 'Education'. 3. Use our 'AI Enhancement' to polish your bullet points. 4. Select a professional design from the 'Templates' sidebar. 5. Click 'Download' to get your PDF/LaTeX file!"
+    },
+    {
+      "pattern": "\\b(credit|token|limit|quota|points|how many times|ai usage)\\b",
+      "response": "We currently offer a generous free-tier allocation for AI enhancements! While there's a daily soft-limit to ensure fair usage for everyone, most users can fully polish an entire resume without any issues."
+    },
+    {
+      "pattern": "\\b(share|link|send to recruiter|public url|online resume|link to cv)\\b",
+      "response": "You can generate a 'Public Share Link' from the dashboard to send your live resume to recruiters! They'll see a high-end web version that looks just as sharp as your downloaded PDF."
+    },
+    {
+      "pattern": "\\b(login|signup|account|why join|save resume|register)\\b",
+      "response": "Creating an account is free and lets you save your progress! You can come back at any time, switch templates, and keep your career data synchronized across all your devices."
+    },
+    {
+      "pattern": "\\b(security|ssl|aes|encrypted|hacker|safe|protection|authentication)\\b",
+      "response": "We use bank-grade AES-256 encryption and SSL protocols to protect your data. Your professional identity is safe with us—we never sell your details or track your resume contents."
+    },
+    {
+      "pattern": "\\b(custom section|add field|new part|missing section|extra info|hobby|interest)\\b",
+      "response": "Need to add research, hobbies, or volunteering? Just click the '+ Add Section' button at the bottom of the builder. You can tailor your resume structure to show off your unique personality!"
+    },
+    {
+      "pattern": "\\b(print|paper|ink|printer settings|a4|us letter|printing pdf)\\b",
+      "response": "For the best look, we recommend printing on high-quality 24lb or 32lb white paper. All our exports are pre-formatted for both A4 and US Letter sizes automatically."
+    },
+    {
+      "pattern": "\\b(language|spanish|french|german|hindi|translation|multi-language|other languages)\\b",
+      "response": "Artius Lab supports content in almost any language! While the builder UI is currently in English, you can write your resume in Spanish, French, or any other language—our PDF renderer supports full Unicode characters."
+    },
+    {
+      "pattern": "\\b(latex vs pdf|why latex|difference|which format|best export)\\b",
+      "response": "PDF is universal for quick applications. LaTeX is the 'gold standard' for academic and deep engineering roles because it offers mathematical precision and flawless typography that recruiters love."
+    },
+    {
+      "pattern": "\\b(export|download|pdf|latex|print|save|get resume|obtain file|file format)\\b",
+      "response": "To get your resume, click the 'Download' button in the top right corner of the builder. You can choose between a standard professional PDF or a high-quality LaTeX file. Both formats are generated instantly in your browser."
+    },
+    {
+      "pattern": "\\b(latex|tex|mathematical|scientific|academic|bibtex|overleaf)\\b",
+      "response": "Artius Lab is one of the few platforms that offers native LaTeX support. You can export your resume as a .tex file, which is perfect for academic, research, or engineering roles where high-precision typesetting is expected."
+    },
+    {
+      "pattern": "\\b(template|design|theme|look|change style|layout|format|aesthetic|sidebar|library|switch templates)\\b",
+      "response": "Our Template Library is in the right sidebar. You can switch between dozens of professional designs—from Minimalist and Creative to Modern and Executive. All your data stays perfectly intact when you switch."
+    },
+    {
+      "pattern": "\\b(ats|parse|friendly|guidelines|score|tracking system|readable|compliance|checker|analyzer)\\b",
+      "response": "Every template in our library is 'ATS-Ready'. We use semantic HTML and standard structures that modern Applicant Tracking Systems (like Workday, Greenhouse, and Lever) prefer. You can also use our 'ATS Score' tool in the builder to get specific feedback on your content."
+    },
+    {
+      "pattern": "\\b(ai|enhance|generate|rewrite|improve|grammar|spell|neural|intelligence|magic|autofill)\\b",
+      "response": "Our AI Enhancement tool is your secret weapon. After writing a basic summary or experience bullet point, click 'Enhance with AI'. Aura will rewrite your text to be more results-oriented, using strong action verbs and professional metrics."
+    },
+    {
+      "pattern": "\\b(privacy|data|offline|secure|tracking|save data|where is my data|gdpr|security|encryption|local)\\b",
+      "response": "We take privacy seriously. Your resume data is primarily handled in your browser session. We don't sell your data, and we don't track your content. You are the sole owner of your professional identity."
+    },
+    {
+      "pattern": "\\b(margin|spacing|font|size|width|height|one page|pages|line height|gap|padding|fit to page)\\b",
+      "response": "Fitting a resume to one page is an art. Our 'Intelligent Layout' engine automatically adjusts margins and font sizes to ensure your content fits perfectly. You can also manually adjust these in the 'Layout Settings' tab in the sidebar."
+    },
+    {
+      "pattern": "\\b(personal info|contact|phone|email|linkedin|portfolio|profile|website|address|location)\\b",
+      "response": "Keep your contact info clean! In the Personal Info section, you can add your LinkedIn, Portfolio, and even a custom personal website. We recommend keeping your address limited to 'City, State' for privacy."
+    },
+    {
+      "pattern": "\\b(experience|work|history|job|company|employment|role|title|career|bullet points|achievements)\\b",
+      "response": "Experience is the core of your resume. Focus on 'Achievements' rather than just 'Responsibilities'. Instead of saying 'Managed a team', try 'Led a cross-functional team of 5 to increase project delivery speed by 20%'."
+    },
+    {
+      "pattern": "\\b(education|university|college|degree|gpa|major|minor|school|study|graduated|academic)\\b",
+      "response": "In the Education section, list your most recent degree first. If you have been out of school for more than 2-3 years, you can move Education below your Experience and remove your GPA unless it's exceptionally high."
+    },
+    {
+      "pattern": "\\b(skills|expertise|technical|soft skills|tools|software|languages|hard skills|frameworks|coding)\\b",
+      "response": "We divide skills into 'Technical' (languages, tools, software) and 'Professional' (leadership, communication, agility). This helps ATS systems identify your core competencies more quickly."
+    },
+    {
+      "pattern": "\\b(projects|side project|portfolio project|github|demo|contribution|personal work)\\b",
+      "response": "Projects are great for showing initiative, especially if you're a student or changing careers. Describe the technology stack you used and the problem you solved. Linking to a live demo or GitHub repo is a major plus!"
+    },
+    {
+      "pattern": "\\b(certifications|certs|license|awards|honor|recognition|diploma|course|certificate)\\b",
+      "response": "Certifications add credibility. Add your AWS, PMP, or Coursera certs in the dedicated section. Be sure to include the issuing body and the year of completion."
+    },
+    {
+      "pattern": "\\b(pricing|free|premium|cost|subscription|pay|money|billing|upgrade)\\b",
+      "response": "Artius Lab is currently designed to be highly accessible. You can build, enhance, and export your resume for free. We prioritize giving developers and job seekers the best tools without paywalls."
+    },
+    {
+      "pattern": "\\b(dark mode|theme|color|accent|ui|look|custom appearance|glassmorphism)\\b",
+      "response": "You're looking at our glassmorphism design system right now! You can toggle between different accent colors (like Emerald, Indigo, and Violet) to customize your builder workspace."
+    },
+    {
+      "pattern": "\\b(mobile|phone app|tablet|ipad|responsive|screen|android|iphone|browser)\\b",
+      "response": "Artius Lab is fully responsive! While building a complex resume is usually easier on a desktop, you can make quick edits and even download your resume directly from your smartphone or tablet."
+    },
+    {
+      "pattern": "\\b(industry|software|medical|finance|law|design|marketing|engineering|student|entry level|senior|executive)\\b",
+      "response": "We have templates tailored for every industry. For Software Engineers, we recommend 'AL-012' or 'AL-015'. For executives, 'AL-038' offers a sophisticated, multi-column approach."
+    },
+    {
+      "pattern": "\\b(photo|image|headshot|picture|profile pic|avatar|upload icon)\\b",
+      "response": "Some of our templates (like AL-015 and AL-022) support profile pictures. However, for most US and UK-based roles, we recommend excluding photos to maintain neutral ATS parsing and avoid unconscious bias."
+    },
+    {
+      "pattern": "\\b(error|bug|issue|broken|not working|crash|stuck|loading|spinning|fail|wrong)\\b",
+      "response": "I'm sorry to hear that! Try refreshing the page first—most minor UI desyncs are fixed with a quick reload. If the issue persists, check your internet connection or try clearing your browser cache."
+    },
+    {
+      "pattern": "\\b(contact|support email|founder|developer|author|maker|feedback|suggestion|feature request)\\b",
+      "response": "We love feedback! If you have a suggestion for a new template or a feature, feel free to reach out via the 'Feedback' link in the footer of our homepage."
+    },
+    {
+      "pattern": "\\b(artius lab|meaning|company|why use it|platform|builder name)\\b",
+      "response": "'Artius' is derived from the Latin word for 'complete' or 'expert'. Our mission is to provide the most complete, expert-level resume building experience available on the web."
+    },
+    {
+      "pattern": "\\b(better (than|vs)|why (choose|use|pick)|different|unique|benefit|advantage|alternative|stand out|vs (canva|novoresume|resume.io|zety))\\b",
+      "response": "Artius Lab is built differently for high-end job seekers. 1. **Neural AI:** We don't just fix grammar; we rewrite for results. 2. **LaTeX Native:** We offer the only high-precision LaTeX engine for engineers. 3. **Privacy First:** Your data is yours, not our product. 4. **ATS Guarantee:** Every pixel is optimized for modern tracking systems."
+    },
+    {
+      "pattern": "\\b(faang|google|meta|amazon|apple|microsoft|netflix|top company|tech giant|big tech|best template for)\\b",
+      "response": "For FAANG and top-tier tech roles, we recommend 'AL-012' or 'AL-038'. These templates balance clean typography with high-density content, allowing you to showcase complex technical impacts without overwhelming the recruiter."
+    },
+    {
+      "pattern": "\\b(roadmap|future|upcoming|next feature|what's next|new update|coming soon)\\b",
+      "response": "We are constantly evolving! Upcoming features include: 1. **AI Interviewer:** Practice calls based on your resume. 2. **Auto-Match:** Finding jobs that fit your profile. 3. **Interactive Portfolio:** A web-version of your resume with demo links."
+    },
+    {
+      "pattern": "\\b(delete|reset|clear|wipe|start over|remove data|empty resume)\\b",
+      "response": "You can reset your data at any time from the 'Settings' menu in the builder. This will wipe your current resume and let you start from scratch. Please be careful—this action is permanent!"
+    },
+    {
+      "pattern": "\\b(human review|expert check|feedback service|mentor|review my resume)\\b",
+      "response": "While we are fully AI-powered, our 'ATS Optimization Analysis' simulates exactly what a human recruiter looks for. We recommend using our AI tools to reach a 90+ score before sending it off to a human mentor."
+    },
+    {
+      "pattern": "\\b(keyword stuffing|white text|hacker|gaming ats|cheating ats)\\b",
+      "response": "Never use 'white text hacking'. Modern ATS systems can see through it. Instead, focus on naturally integrating the relevant keywords into your 'Experience' and 'Skills' sections. Aura's AI can help you with this natively!"
+    },
+    {
+      "pattern": "\\b(who (made|created|built|developed)|team|author|developer name|solo|founder)\\b",
+      "response": "Artius Lab is a passion project built by a solo developer who wanted to fix the clunky, paywalled world of resume builders. It's crafted with precision for developers, by a developer."
+    },
+    {
+      "pattern": "\\b(success|real jobs|hire|got a job|offers|testimonials|stories)\\b",
+      "response": "Since our launch, users have landed roles at Google, Meta, and various high-growth startups! Our templates are specifically designed to meet the high standards of top recruiters globally."
+    },
+    {
+      "pattern": "\\b(refer|share with friends|tell people|viral|invite|recommend)\\b",
+      "response": "The best way to support us is by sharing Artius Lab with your network on LinkedIn! We grow when you land your dream job."
+    },
+    {
+      "pattern": "\\b(resume vs cv|curriculum vitre|length|how many pages)\\b",
+      "response": "Generally, keep it to 1 page if you have less than 10 years of experience. For academic or medical roles, a multi-page CV is appropriate. For everything else, brevity is your friend!"
+    },
+    {
+      "pattern": "\\b(action verbs|words to use|vocabulary|phrasing|keywords)\\b",
+      "response": "Ditch words like 'responsible for'. Use powerful verbs like 'Orchestrated', 'Spearheaded', 'Optimized', and 'Surpassed'. Our AI Enhancer automatically suggests these for you!"
+    },
+    {
+      "pattern": "\\b(gpa|grades|score|university score|education score)\\b",
+      "response": "Only include your GPA if it is above 3.5/4.0. Once you have a few years of professional experience, your GPA becomes less relevant and can usually be removed to save space."
+    },
+    {
+      "pattern": "\\b(fonts|serif|sans|inter|roboto|tahoma|arial|professional fonts)\\b",
+      "response": "We use premium, high-readability fonts like Inter, Outfit, and Roboto. These are designed to look sharp on both screen and high-resolution prints, ensuring your resume always looks professional."
+    },
+    {
+      "pattern": "\\b(quantify|numbers|metrics|data|results|impact|percent|dollars|savings)\\b",
+      "response": "Numbers tell a story. Instead of 'improved sales', say 'increased quarterly sales by 15%, resulting in $50k additional revenue'. This is the quickest way to catch a recruiter's eye."
+    },
+    {
+      "pattern": "\\b(summary vs objective|intro|hook|about me|statement)\\b",
+      "response": "Objectives are outdated. Use a 'Professional Summary' instead. It should be a 3-sentence elevator pitch of your unique value and most impressive career win."
+    },
+    {
+      "pattern": "\\b(chronological|functional|hybrid|type of resume|structure)\\b",
+      "response": "We recommend the 'Reverse-Chronological' format (most recent job first). It's the standard industry preference and most ATS systems are optimized for it."
+    },
+    {
+      "pattern": "\\b(gap|missing time|unemployment|sabbatical|break in career|career gap)\\b",
+      "response": "Don't fear career gaps! If it was significant, you can add a one-line explanation like 'Career break for professional development' or 'Family leave'. Focus the focus on your relevant skills."
+    },
+    {
+      "pattern": "\\b(career change|new industry|pivot|transition|fresh start|entry level)\\b",
+      "response": "For career pivots, lead with a 'Functional' resume or a strong Skills section that highlights transferable skills. Show how your previous experience directly benefits your new target role."
+    },
+    {
+      "pattern": "\\b(linkedin|profile link|network|social media|online presence)\\b",
+      "response": "Optimize your LinkedIn! Your resume and LinkedIn should complement each other. Use your resume for deep details and your LinkedIn for broader networking and endorsements."
+    },
+    {
+      "pattern": "\\b(cover letter|application letter|matching|writing a letter)\\b",
+      "response": "A cover letter should never repeat your resume. It should tell the story of WHY you want THIS specific job and how your unique personality fits the company culture."
+    },
+    {
+      "pattern": "\\b(interview|prep|questions|answering|techniques|star method)\\b",
+      "response": "Prepare for interviews using the STAR method (Situation, Task, Action, Result). It helps you frame your resume achievements into compelling success stories during the call."
+    },
+    {
+      "pattern": "\\b(salary|negotiation|pay|compensation|offer)\\b",
+      "response": "While we focus on resumes, remember: your resume is your negotiation leverage. A high-quality, professional resume justifies a higher premium in the market. Know your worth!"
+    },
+    {
+      "pattern": "\\b(frontend|react|nextjs|tailwind|css|javascript|web development)\\b",
+      "response": "Building a frontend resume? Highlight your projects! Mention specific libraries like React, Next.js, and even the UI libraries like Tailwind. Recruiters look for technical depth here."
+    },
+    {
+      "pattern": "\\b(backend|python|node|java|golang|sql|database|api|architecture)\\b",
+      "response": "Backend resumes should focus on system efficiency and scaling. Use keywords like 'microservices', 'API integration', and 'distributed systems'. Be sure to mention your primary database stack."
+    },
+    {
+      "pattern": "\\b(devops|aws|docker|kubernetes|cloud|ci/cd|pipeline|infrastructure)\\b",
+      "response": "DevOps is all about automation. Mention your CI/CD pipelines, containerization (Docker/K8s), and cloud provider expertise (AWS/GCP/Azure). Focus on stability and deployment speed."
+    },
+    {
+      "pattern": "\\b(data|python|r|sql|machine learning|ml|ai|analytics|science|visualization)\\b",
+      "response": "Data roles require proof of insight. Mention your modeling techniques, data cleaning processes, and visualization tools. Quantifying how your analysis saved time or money is critical."
+    },
+    {
+      "pattern": "\\b(soft skills|communication|teamwork|leadership|agility|problem solving|critical thinking)\\b",
+      "response": "Soft skills are best shown through 'Experience'. Instead of listing 'Good communicator', describe a time you 'Successfully navigated a complex stakeholder meeting to align 3 different departments'."
+    },
+    {
+      "pattern": "\\b(student|fresher|new grad|entry level|no experience|internship|intern)\\b",
+      "response": "If you lack job experience, move your 'Education' and 'Projects' to the top. Highlight internships, volunteer work, and relevant coursework to show your potential and initiative."
+    }
+  ]
+}

@@ -28,6 +28,7 @@ import ThemeProvider from "./components/ThemeProvider";
 import ConditionalLayout from "./components/ConditionalLayout";
 import AuthProvider from "./components/AuthProvider";
 import AuthModal from "./components/AuthModal";
+import Chatbot from "./components/Chatbot";
 
 export default function RootLayout({
   children,
@@ -77,6 +78,9 @@ export default function RootLayout({
 
           {/* Global Auth Modal */}
           <AuthModal />
+          
+          {/* Global Support Chatbot */}
+          <Chatbot />
           </AuthProvider>
         </ThemeProvider>
       </body>
