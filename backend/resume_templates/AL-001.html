@@ -209,6 +209,24 @@
             {% endfor %}
         </div>
         {% endif %}
+        
+        <!-- Certifications -->
+        {% if certifications and certifications|length > 0 %}
+        <div class="section">
+            <div class="section-title">Certifications</div>
+            {% for cert in certifications %}
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span>{{ cert.name | default('Certification Name', true) }}</span>
+                    <span>{{ cert.year or cert.date }}</span>
+                </div>
+                <div class="edu-subheader">
+                    <span>{{ cert.issuer | default('Issuer', true) }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <!-- Skills -->
         {% if skills or expertise.technical or expertise.professional %}

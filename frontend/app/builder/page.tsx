@@ -149,6 +149,7 @@ function BuilderContent() {
   const [saveMessage, setSaveMessage] = useState("");
   const [resumeId, setResumeId] = useState<number | null>(resumeIdParam ? parseInt(resumeIdParam) : null);
   const [templateHasPhoto, setTemplateHasPhoto] = useState(false);
+  const [templateHasSkillLevels, setTemplateHasSkillLevels] = useState(false);
   const [rawPhoto, setRawPhoto] = useState("");  // original unedited photo for re-editing
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
 
@@ -170,7 +171,7 @@ function BuilderContent() {
   }, [previewHtml, showPhotoEditor]);
 
 
-  // ── Detect if the selected template supports photo ──
+  // ── Detect if the selected template supports photo & skill levels ──
   useEffect(() => {
     const fetchTemplateInfo = async () => {
       try {
@@ -178,6 +179,15 @@ function BuilderContent() {
         if (res.ok) {
           const data = await res.json();
           setTemplateHasPhoto(data.has_photo === true);
+          
+          // Detect skill levels support from properties or features
+          const hasSkillFeatures = data.features?.some((f: string) => 
+            f.toLowerCase().includes("skill bar") || 
+            f.toLowerCase().includes("progress bar") ||
+            f.toLowerCase().includes("proficiency") ||
+            f.toLowerCase().includes("rating")
+          );
+          setTemplateHasSkillLevels(data.has_skill_levels === true || hasSkillFeatures);
         }
       } catch (err) {
         console.error("Failed to fetch template info:", err);
@@ -1045,31 +1055,137 @@ function BuilderContent() {
               </div>
             </div>
             
-            <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h3 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--accent-light)", fontWeight: 800 }}>Essential Skills</h3>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {skills.map((skill, idx) => (
-                  <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={labelStyle}>Skill Name</label>
-                      <input style={inputStyle} placeholder="React, Python..." value={skill.name} onChange={(e) => { const u = [...skills]; u[idx].name = e.target.value; setSkills(u); }} />
-                    </div>
-                    {skills.length > 1 && (
-                      <button style={{ ...removeBtnStyle, padding: "10px 14px", marginBottom: 2 }} onClick={() => setSkills(skills.filter((_, i) => i !== idx))}>✕</button>
-                    )}
+            {templateHasSkillLevels ? (
+              <div style={{ padding: 28, background: "var(--surface)", borderRadius: 24, border: "1px solid var(--border)", boxShadow: "0 20px 40px -20px rgba(0,0,0,0.5)", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: "linear-gradient(to bottom, var(--accent), var(--accent-light))" }} />
+                
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                  <div>
+                    <h3 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 2, color: "var(--accent-light)", fontWeight: 900, marginBottom: 4 }}>Live Skill Preview</h3>
+                    <p style={{ fontSize: 11, color: "var(--text-muted)", margin: 0 }}>Adjust proficiency sliders to visualize your mastery level.</p>
                   </div>
-                ))}
-                <button 
-                  style={{ ...addBtnStyle, width: "100%", padding: "14px", marginTop: 8, background: "rgba(255,255,255,0.02)", borderStyle: "solid" }} 
-                  onClick={() => setSkills([...skills, { name: "", level: "Intermediate" }])}
-                  className="hover:bg-white/5"
-                >
-                  + Add New Skill
-                </button>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                  {skills.map((skill, idx) => (
+                    <div key={idx} className="animate-fade-in" style={{ animationDelay: `${idx * 0.05}s` }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1 }}>
+                          <input 
+                            style={{ ...inputStyle, border: "none", background: "transparent", padding: "4px 0", fontSize: 15, fontWeight: 700, width: "auto", minWidth: 120 }} 
+                            placeholder="Skill Name (e.g. React)" 
+                            value={skill.name} 
+                            onChange={(e) => { const u = [...skills]; u[idx].name = e.target.value; setSkills(u); }} 
+                          />
+                          <div style={{ height: 1, flex: 1, background: "var(--border)", opacity: 0.3 }} />
+                        </div>
+                        
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <span style={{ 
+                            fontSize: 10, 
+                            fontWeight: 800, 
+                            color: "var(--accent)", 
+                            background: "var(--glow)", 
+                            padding: "3px 10px", 
+                            borderRadius: 20,
+                            textTransform: "uppercase",
+                            letterSpacing: 0.5
+                          }}>
+                            {skill.level}
+                          </span>
+                          {skills.length > 1 && (
+                            <button 
+                              style={{ ...removeBtnStyle, padding: "6px", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" }} 
+                              onClick={() => setSkills(skills.filter((_, i) => i !== idx))}
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                        <div style={{ flex: 1, height: 8, background: "rgba(255,255,255,0.05)", borderRadius: 10, position: "relative", overflow: "hidden" }}>
+                          <div style={{ 
+                            position: "absolute", 
+                            top: 0, 
+                            left: 0, 
+                            height: "100%", 
+                            width: skill.level === "Beginner" ? "25%" : skill.level === "Intermediate" ? "50%" : skill.level === "Advanced" ? "75%" : "100%",
+                            background: "linear-gradient(90deg, var(--accent-dark), var(--accent))",
+                            transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+                            boxShadow: "0 0 15px var(--glow)"
+                          }} />
+                        </div>
+                        <input 
+                          type="range"
+                          min="1"
+                          max="4"
+                          step="1"
+                          value={skill.level === "Beginner" ? 1 : skill.level === "Intermediate" ? 2 : skill.level === "Advanced" ? 3 : 4}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value);
+                            const levels = ["Beginner", "Intermediate", "Advanced", "Expert"];
+                            const u = [...skills];
+                            u[idx].level = levels[val - 1];
+                            setSkills(u);
+                          }}
+                          style={{ width: 100, height: 4, cursor: "pointer", accentColor: "var(--accent)" }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <button 
+                    style={{ 
+                      ...addBtnStyle, 
+                      width: "100%", 
+                      padding: "16px", 
+                      marginTop: 12, 
+                      background: "rgba(255,255,255,0.02)", 
+                      border: "1px dashed var(--accent)",
+                      borderRadius: 16,
+                      color: "var(--accent-light)",
+                      fontSize: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8
+                    }} 
+                    onClick={() => setSkills([...skills, { name: "", level: "Intermediate" }])}
+                    className="hover:bg-accent/5 hover:scale-[1.01]"
+                  >
+                    <span style={{ fontSize: 18 }}>+</span> Add Another Proficiency
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--accent-light)", fontWeight: 800 }}>Skill List</h3>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {skills.map((skill, idx) => (
+                    <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={labelStyle}>Skill Name</label>
+                        <input style={inputStyle} placeholder="React, Python..." value={skill.name} onChange={(e) => { const u = [...skills]; u[idx].name = e.target.value; setSkills(u); }} />
+                      </div>
+                      {skills.length > 1 && (
+                        <button style={{ ...removeBtnStyle, padding: "10px 14px", marginBottom: 2 }} onClick={() => setSkills(skills.filter((_, i) => i !== idx))}>✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button 
+                    style={{ ...addBtnStyle, width: "100%", padding: "14px", marginTop: 8, background: "rgba(255,255,255,0.02)", borderStyle: "solid" }} 
+                    onClick={() => setSkills([...skills, { name: "", level: "Intermediate" }])}
+                    className="hover:bg-white/5"
+                  >
+                    + Add New Skill
+                  </button>
+                </div>
+              </div>
+            )}
 
             {expertise.enabled && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, animation: "fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>

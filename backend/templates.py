@@ -11,7 +11,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "ATS Standard Pro",
         "description": "A high-scoring ATS-optimized template focusing on clarity and single-column structure. Ideal for technical and corporate roles.",
         "accent_color": "#000000",
-        "features": ["Single-column layout", "Maximum ATS readability", "Clean structure", "Professional typography"],
+        "features": ["Single-column layout", "Maximum ATS readability", "Clean structure", "Professional typography", "Certifications Section"],
         "category": "Technical",
         "has_latex": True
     },
@@ -349,7 +349,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Geometric Network Pro",
         "description": "A premium professional template with a geometric network background, blue accent headers, and a structured sidebar. Features a bold blue name box and clean project-based layout.",
         "accent_color": "#3b6bb0",
-        "features": ["Geometric Pattern Header", "Blue Name Box", "Circular Profile Photo", "Accent Section Headers"],
+        "features": ["Geometric Pattern Header", "Blue Name Box", "Circular Profile Photo", "Accent Section Headers", "Projects Section"],
         "category": "Professional",
         "has_latex": True
     },
@@ -358,7 +358,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Teal Vertical Timeline",
         "description": "A sophisticated teal-themed template featuring a bold summary banner and vertical timeline connectors. Ideal for experienced leaders and managers.",
         "accent_color": "#1aa094",
-        "features": ["Teal Summary Banner", "Vertical Timeline", "Contact Icon Bar", "Two-column Structure"],
+        "features": ["Teal Summary Banner", "Vertical Timeline", "Contact Icon Bar", "Two-column Structure", "Projects Section"],
         "category": "Executive",
         "has_latex": True
     },
@@ -367,7 +367,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Soft Bubble Modern",
         "description": "A clean modern design featuring soft background orbs and a structured two-column timeline. Perfect for modern professionals seeking a tech-focused layout.",
         "accent_color": "#66cccc",
-        "features": ["Background Orbs", "Timeline Layout", "Modern Typography", "Two-column Structure"],
+        "features": ["Background Orbs", "Timeline Layout", "Modern Typography", "Two-column Structure", "Projects Section"],
         "category": "Modern",
         "has_latex": True
     },

@@ -503,6 +503,31 @@
             </section>
             {% endif %}
 
+            <!-- Projects -->
+            {% if projects %}
+            <section class="section">
+                <div class="section-header">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    <h2 class="section-title">Projects</h2>
+                    <div class="section-line"></div>
+                </div>
+                {% for project in projects %}
+                <div class="experience-item">
+                    <div class="item-header">
+                        <div class="item-company">{{ project.name }}</div>
+                        {% if project.link %}
+                        <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="item-date">View Project</a>
+                        {% endif %}
+                    </div>
+                    {% if project.technologies %}
+                    <div class="item-subtitle">{{ project.technologies | join(' | ') }}</div>
+                    {% endif %}
+                    <div class="item-description">{{ project.description }}</div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
             <!-- Awards -->
             {% if awards or not awards %}
             <section class="section">

@@ -364,16 +364,45 @@ export default function TemplatesPage() {
           <div style={{
             display: "flex",
             alignItems: "center",
-            gap: 8,
-            padding: "8px 16px 8px 12px",
+            gap: 10,
+            padding: "8px 18px 8px 14px",
             color: "var(--accent)",
             fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: "0.5px",
+            fontWeight: 800,
+            letterSpacing: "0.8px",
             textTransform: "uppercase",
             userSelect: "none"
           }}>
-            Premium Library
+            <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {/* Subtle background pulse aura */}
+              <div 
+                className="animate-pulse" 
+                style={{ 
+                  position: "absolute", 
+                  width: 20, 
+                  height: 20, 
+                  background: "var(--accent)", 
+                  opacity: 0.2, 
+                  borderRadius: "50%", 
+                  filter: "blur(8px)" 
+                }} 
+              />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)" style={{ filter: "drop-shadow(0 0 8px var(--glow))", position: "relative" }}>
+                <path d="M12 0L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 0Z" />
+              </svg>
+            </div>
+            
+            <span style={{ 
+              background: "linear-gradient(90deg, var(--accent), var(--accent-light), var(--accent))",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              display: "inline-block",
+              animation: "gradient-shift 4s linear infinite"
+            }}>
+              Premium Library
+            </span>
           </div>
 
           {/* Divider */}

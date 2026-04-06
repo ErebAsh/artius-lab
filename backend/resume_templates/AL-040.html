@@ -325,6 +325,33 @@
                     {% endfor %}
                 </section>
 
+                <!-- Projects -->
+                {% if projects %}
+                <section class="section">
+                    <div class="section-timeline-line"></div>
+                    <div class="section-header">
+                        <div class="section-dot"></div>
+                        <h2 class="section-title">Projects</h2>
+                    </div>
+                    {% for project in projects %}
+                    <div class="content-item">
+                        <div class="item-header">
+                            <div class="item-main-title">{{ project.name }}</div>
+                            {% if project.link %}
+                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="item-date">View Project</a>
+                            {% endif %}
+                        </div>
+                        {% if project.technologies %}
+                        <div class="item-location">{{ project.technologies | join(' | ') }}</div>
+                        {% endif %}
+                        <div class="item-highlights" style="margin-top: 5px;">
+                            <li>{{ project.description }}</li>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+
                 <!-- Awards -->
                 <section class="section">
                     <div class="section-header">

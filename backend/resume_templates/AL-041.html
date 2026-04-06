@@ -353,6 +353,29 @@
                         {% endfor %}
                     </section>
 
+                    <!-- Projects -->
+                    {% if projects %}
+                    <section class="section">
+                        <div class="section-header"><h2 class="section-title">Projects</h2></div>
+                        {% for project in projects %}
+                        <div class="timeline-item">
+                            {% if project.link %}
+                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="item-date">View Project</a>
+                            {% endif %}
+                            <div class="item-row">
+                                <div class="item-main-title">{{ project.name }}</div>
+                                {% if project.technologies %}
+                                <div class="item-location">{{ project.technologies | join(' | ') }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="item-highlights" style="margin-top: 5px;">
+                                <li>{{ project.description }}</li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </section>
+                    {% endif %}
+
                     <!-- Experience -->
                     <section class="section">
                         <div class="section-header"><h2 class="section-title">Experience</h2></div>
