@@ -10,13 +10,90 @@ import { useAuth } from "../components/AuthProvider";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const STEPS = [
-  { id: 0, label: "Personal Info", icon: "👤" },
-  { id: 1, label: "Education", icon: "🎓" },
-  { id: 2, label: "Experience", icon: "💼" },
-  { id: 3, label: "Skills & Expertise", icon: "⚡" },
-  { id: 4, label: "Projects", icon: "🚀" },
-  { id: 5, label: "Certifications", icon: "🏆" },
-  { id: 6, label: "Layout & Style", icon: "📐" },
+  { 
+    id: 0, 
+    label: "Personal Info", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>👤</span>
+    )
+  },
+  { 
+    id: 1, 
+    label: "Education", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>🎓</span>
+    )
+  },
+  { 
+    id: 2, 
+    label: "Experience", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>💼</span>
+    )
+  },
+  { 
+    id: 3, 
+    label: "Skills & Expertise", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2)) animate-pulse",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>⚡</span>
+    )
+  },
+  { 
+    id: 4, 
+    label: "Projects", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>🚀</span>
+    )
+  },
+  { 
+    id: 5, 
+    label: "Certifications", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>🏆</span>
+    )
+  },
+  { 
+    id: 6, 
+    label: "Layout & Style", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>🎨</span>
+    )
+  },
 ];
 
 interface Education {
@@ -204,6 +281,7 @@ function BuilderContent() {
       projects: projects
         .filter((p) => p.name.trim() !== "")
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
+      certifications: certifications.filter((c) => c.name.trim() !== ""),
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -520,16 +598,88 @@ function BuilderContent() {
         </div>
       </div>
 
-      {/* Progress Stepper */}
-      <div className="glass animate-fade-in-up" style={{ display: "flex", justifyContent: "space-between", padding: "16px 24px", borderRadius: 14, marginBottom: 32, animationDelay: "0.1s" }}>
+      {/* Dynamic Modern Stepper (Short UI Approach) */}
+      <div 
+        className="glass animate-fade-in-up" 
+        style={{ 
+          display: "flex", 
+          padding: "8px", 
+          borderRadius: 24, 
+          marginBottom: 44, 
+          animationDelay: "0.1s",
+          width: "fit-content",
+          margin: "0 auto 44px",
+          gap: 6,
+          boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.05) inset",
+          position: "sticky",
+          top: 100,
+          zIndex: 50,
+          backdropFilter: "blur(24px) saturate(180%)",
+        }}
+      >
         {STEPS.map((step) => (
           <button
             key={step.id}
             onClick={() => setCurrentStep(step.id)}
-            style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 10, border: "none", background: currentStep === step.id ? "rgba(99, 102, 241, 0.15)" : "transparent", color: currentStep === step.id ? "var(--accent-light)" : "var(--text-muted)", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: currentStep === step.id ? 600 : 400, transition: "all 0.3s" }}
+            title={step.label} 
+            style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              gap: currentStep === step.id ? 10 : 0, 
+              padding: currentStep === step.id ? "10px 24px" : "10px", 
+              minWidth: currentStep === step.id ? "auto" : 48, // Slightly wider to ensure no cropping
+              height: 48, // Slightly taller for breathing room
+              borderRadius: 22, 
+              border: "none", 
+              background: currentStep === step.id ? "linear-gradient(135deg, var(--accent), var(--accent-dark))" : "transparent", 
+              color: currentStep === step.id ? "#fff" : "var(--text-muted)", 
+              cursor: "pointer", 
+              fontFamily: "inherit", 
+              fontSize: 13, 
+              fontWeight: 700, 
+              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)", 
+              flexShrink: 0,
+              whiteSpace: "nowrap",
+              boxShadow: currentStep === step.id ? "0 8px 24px -6px var(--glow)" : "none",
+              position: "relative",
+            }}
+            onMouseEnter={(e) => {
+              if (currentStep !== step.id) {
+                e.currentTarget.style.background = "var(--surface-light-glass)";
+                e.currentTarget.style.color = "var(--accent-light)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentStep !== step.id) {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-muted)";
+              }
+            }}
           >
-            <span>{step.icon}</span>
-            <span className="hidden sm:inline">{step.label}</span>
+            <span style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: 20, 
+              height: 20,
+              transform: currentStep === step.id ? "scale(1.1)" : "scale(1)",
+              transition: "transform 0.4s ease",
+              flexShrink: 0
+            }}>
+              {step.icon}
+            </span>
+            
+            <span style={{ 
+              maxWidth: currentStep === step.id ? 200 : 0, // Use maxWidth for width transition
+              overflow: "hidden", // Move overflow:hidden here to prevent icon cropping
+              opacity: currentStep === step.id ? 1 : 0,
+              visibility: currentStep === step.id ? "visible" : "hidden",
+              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              letterSpacing: "0.4px"
+            }}>
+              {step.label}
+            </span>
           </button>
         ))}
       </div>
