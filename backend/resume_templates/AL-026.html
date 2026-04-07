@@ -401,6 +401,22 @@
                     {% endfor %}
                 </section>
                 {% endif %}
+
+                {% if projects and projects|length > 0 %}
+                <section class="main-section">
+                    <h2>Projects</h2>
+                    {% for project in projects %}
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <div class="exp-title">{{ project.name }}</div>
+                            <div class="exp-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                        </div>
+                        <div class="exp-company">{% if project.link %}<a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a>{% else %}Project Details{% endif %}</div>
+                        <div class="exp-desc">{{ project.description }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
             </div>
         </main>
     </div>

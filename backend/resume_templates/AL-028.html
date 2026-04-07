@@ -525,6 +525,29 @@
                 {% endfor %}
             </div>
             {% endif %}
+
+            {% if projects and projects|length > 0 %}
+            <div class="main-section">
+                <div class="section-header">
+                    <h2 style="color: #b9a38d;">Projects</h2>
+                    <div class="header-line"></div>
+                </div>
+                {% for project in projects %}
+                <div class="edu-item">
+                    <div class="edu-header">
+                        <span class="edu-degree">{{ project.name }}</span>
+                        <span class="edu-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</span>
+                    </div>
+                    {% if project.link %}
+                    <div class="edu-institution" style="color: #b9a38d; margin-bottom: 8px;"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
+                    {% endif %}
+                    <div class="edu-desc">
+                        {{ project.description }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </main>
     </div>
 </body>

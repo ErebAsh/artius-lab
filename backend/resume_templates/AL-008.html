@@ -311,6 +311,20 @@
                 </div>
             {% endif %}
 
+            {% if certifications and certifications|length > 0 %}
+            <div class="sidebar-section">
+                <span class="section-header">Certifications</span>
+                <div class="sidebar-divider"></div>
+                {% for cert in certifications %}
+                <div class="education-item">
+                    <div class="edu-degree">{{ cert.name }}</div>
+                    <div class="edu-institution">{{ cert.issuer }}</div>
+                    <div class="edu-date">{{ cert.year }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <!-- Expertise -->
             <div class="sidebar-section">
                 <span class="section-header">Expertise</span>

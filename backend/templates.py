@@ -89,7 +89,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Designer Soft Pink",
         "description": "A clean, modern layout with soft pink accents and a strong focus on skills visualization. Ideal for designers and fashion industry professionals.",
         "accent_color": "#f3e1e1",
-        "features": ["Soft Pink Sidebar", "Skill Progress Bars", "Modular Grid Header", "Elegant Layout"],
+        "features": ["Soft Pink Sidebar", "Skill Progress Bars", "Modular Grid Header", "Elegant Layout", "Projects Section"],
         "category": "Creative"
     },
     {
@@ -115,7 +115,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Angular High Contrast",
         "description": "A bold, angular design with high-contrast yellow and black themes. Perfect for creative directors and forward-thinking professionals.",
         "accent_color": "#ffc107",
-        "features": ["Angular Design", "High Contrast", "Yellow Sidebar", "Modern Typography"],
+        "features": ["Angular Design", "High Contrast", "Yellow Sidebar", "Modern Typography", "Projects Section"],
         "category": "Creative",
         "has_latex": False
     },
@@ -124,7 +124,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Grayscale Structural",
         "description": "A sophisticated grayscale layout with a strong structural sidebar and integrated expertise sections. Great for designers and UI/UX specialists.",
         "accent_color": "#444444",
-        "features": ["Grayscale Theme", "Structural Sidebar", "Skill Progress Bars", "Integrated Expertise"],
+        "features": ["Grayscale Theme", "Structural Sidebar", "Skill Progress Bars", "Integrated Expertise", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -151,7 +151,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Purple Capsule Sidebar",
         "description": "A striking dual-column design with a deep purple theme and capsule-shaped white sidebar. Features a bold and modern layout for freshes and professionals.",
         "accent_color": "#4b2c5e",
-        "features": ["Deep Purple Theme", "Capsule Sidebar", "High Contrast", "Modern Icons"],
+        "features": ["Deep Purple Theme", "Capsule Sidebar", "High Contrast", "Modern Icons", "Experience Section", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -160,7 +160,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Blue Logic Blocks",
         "description": "A clean, contemporary layout with professional blue accent blocks and a strong emphasis on profile and skills. Ideal for tech and design roles.",
         "accent_color": "#283593",
-        "features": ["Blue Accent Blocks", "Bold Header", "Two-column Layout", "Modern Typography"],
+        "features": ["Blue Accent Blocks", "Bold Header", "Two-column Layout", "Modern Typography", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -169,7 +169,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Forest Green Angular",
         "description": "A forest green design with beige accents and sharp angular section dividers. Excellent for candidates looking for a unique, nature-inspired professional look.",
         "accent_color": "#1b431c",
-        "features": ["Forest Green Theme", "Beige Accents", "Angular Dividers", "Structured Profile"],
+        "features": ["Forest Green Theme", "Beige Accents", "Angular Dividers", "Structured Profile", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -178,7 +178,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Earth Tone Rounded",
         "description": "A warm, sophisticated template with earthy brown tones and rounded card layouts. Perfect for artisanal and service-oriented professionals.",
         "accent_color": "#9b846b",
-        "features": ["Earth Tones", "Rounded Layout", "Star Skill Ratings", "Elegant Cards"],
+        "features": ["Earth Tones", "Rounded Layout", "Star Skill Ratings", "Elegant Cards", "Experience Section", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -286,7 +286,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Beige Minimalist Slash",
         "description": "A warm, modern template with a light beige sidebar and sharp minimalist typography. Features unique prefix-based headings and a clean structured layout.",
         "accent_color": "#e6d5c8",
-        "features": ["Beige Sidebar", "Minimalist Typography", "Slash Headings", "Circular Photo"],
+        "features": ["Beige Sidebar", "Minimalist Typography", "Slash Headings", "Circular Photo", "Education Section", "Skills Section", "Certifications Section"],
         "category": "Minimalist",
         "has_latex": False
     },

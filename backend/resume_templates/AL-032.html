@@ -34,12 +34,13 @@
 
         /* Sidebar */
         .sidebar {
-            width: 38%;
+            width: 32%;
             background-color: #e6d5c8;
-            padding: 40px 30px;
+            padding: 45px 35px;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            border-right: 1px solid rgba(0,0,0,0.05);
         }
 
         .photo-container {
@@ -74,39 +75,38 @@
 
         .sidebar-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 11pt;
+            font-size: 11.5pt;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
+            letter-spacing: 1.2px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            gap: 8px;
-            color: #444;
-        }
-        .sidebar-title::before {
-            content: "//";
-            color: #777;
-            font-weight: 400;
+            color: #3d2b1f;
+            border-bottom: 2px solid #dcd1c6;
+            padding-bottom: 6px;
+            width: 100%;
         }
 
         .contact-item {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-bottom: 15px;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
             text-align: left;
         }
-        .contact-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 8.5pt;
-            font-weight: 600;
-            margin-bottom: 2px;
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: #5d4037;
+            flex-shrink: 0;
         }
         .contact-value {
-            font-size: 9pt;
-            color: #555;
+            font-size: 8.5pt;
+            color: #3d2b1f;
+            word-break: break-all;
+            font-weight: 500;
         }
 
         .about-text {
@@ -118,14 +118,13 @@
 
         /* Main Content */
         .main {
-            width: 62%;
-            padding: 60px 45px;
+            width: 68%;
+            padding: 65px 50px 65px 55px;
         }
 
         .header {
             margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #e6d5c8;
         }
         .header h1 {
             font-family: 'Montserrat', sans-serif;
@@ -146,20 +145,16 @@
 
         .section-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 12pt;
+            font-size: 13pt;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
             color: #333;
-        }
-        .section-title::before {
-            content: "//";
-            color: #e6d5c8;
-            font-size: 14pt;
+            border-bottom: 2px solid #e6d5c8;
+            padding-bottom: 8px;
         }
 
         .exp-item {
@@ -179,8 +174,9 @@
         }
         .exp-desc {
             font-size: 9.5pt;
-            line-height: 1.5;
-            color: #555;
+            line-height: 1.6;
+            color: #444;
+            text-align: justify;
         }
         .exp-desc ul {
             padding-left: 18px;
@@ -211,31 +207,80 @@
             <!-- Contact -->
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Contact</h3>
+                {% if personal.location %}
                 <div class="contact-item">
-                    <span class="contact-label">Address</span>
-                    <span class="contact-value">{{ personal.location | default('Address line, City, Zipcode', true) }}</span>
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <span class="contact-value">{{ personal.location }}</span>
                 </div>
+                {% endif %}
+                {% if personal.phone %}
                 <div class="contact-item">
-                    <span class="contact-label">Phone</span>
-                    <span class="contact-value">{{ personal.phone | default('+1 55 23 45 67', true) }}</span>
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    <span class="contact-value">{{ personal.phone }}</span>
                 </div>
+                {% endif %}
+                {% if personal.email %}
                 <div class="contact-item">
-                    <span class="contact-label">Email</span>
-                    <span class="contact-value">{{ personal.email | default('youremail@email.com', true) }}</span>
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span class="contact-value">{{ personal.email }}</span>
                 </div>
+                {% endif %}
+                {% if personal.linkedin %}
                 <div class="contact-item">
-                    <span class="contact-label">LinkedIn</span>
-                    <span class="contact-value">{{ personal.linkedin | default('linkedin.com/in/profile', true) }}</span>
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                    <span class="contact-value">{{ personal.linkedin | replace('https://', '') | replace('http://', '') }}</span>
                 </div>
+                {% endif %}
+                {% if personal.portfolio %}
+                <div class="contact-item">
+                    <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                    <span class="contact-value">{{ personal.portfolio | replace('https://', '') | replace('http://', '') }}</span>
+                </div>
+                {% endif %}
             </div>
 
-            <!-- About Me -->
+            <!-- Skills -->
+            {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
-                <h3 class="sidebar-title">About Me</h3>
-                <div class="about-text">
-                    {{ personal.summary | default('Write here your personal profile or summary. Result-oriented and motivated professional with drive to bring any department to a new level of efficiency and expertise.', true) }}
+                <h3 class="sidebar-title">Skills</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    {% for skill in skills %}
+                    <span style="font-size: 8pt; background-color: #fcf8f5; color: #5d4037; padding: 4px 10px; border: 1px solid #d7ccc8; border-radius: 4px;">{{ skill.name }}</span>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
+
+            <!-- Expertise -->
+            {% if expertise.technical or expertise.professional %}
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Expertise</h3>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    {% if expertise.technical %}
+                    <div>
+                        <div style="font-size: 7.5pt; font-weight: 700; color: #8d6e63; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Technical</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            {% for item in expertise.technical %}
+                            <span style="font-size: 7.5pt; color: #5d4037;">• {{ item }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if expertise.professional %}
+                    <div>
+                        <div style="font-size: 7.5pt; font-weight: 700; color: #8d6e63; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Professional</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            {% for item in expertise.professional %}
+                            <span style="font-size: 7.5pt; color: #5d4037;">• {{ item }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+
         </aside>
 
         <!-- Main Content -->
@@ -244,6 +289,15 @@
                 <h1>{{ personal.full_name | default('Kathy Sinclair', true) }}</h1>
                 <p>{{ personal.title | default('Job title or headline', true) }}</p>
             </header>
+
+            {% if personal.summary %}
+            <section class="section">
+                <h2 class="section-title">Professional Summary</h2>
+                <div class="exp-desc">
+                    {{ personal.summary }}
+                </div>
+            </section>
+            {% endif %}
 
             <section class="section">
                 <h2 class="section-title">Professional Experience</h2>
@@ -282,6 +336,47 @@
                 </div>
                 {% endif %}
             </section>
+
+            {% if education and education|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                {% for edu in education %}
+                <div class="exp-item">
+                    <div class="exp-role">{{ edu.degree }}</div>
+                    <div class="exp-meta">{{ edu.institution }} | {{ edu.location }} | {{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if projects and projects|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Projects</h2>
+                {% for project in projects %}
+                <div class="exp-item">
+                    <div class="exp-role">{{ project.name }}</div>
+                    <div class="exp-meta">{% if project.link %}<a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a> | {% endif %}{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                    <div class="exp-desc">
+                        {{ project.description | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if certifications and certifications|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Certifications</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    {% for cert in certifications %}
+                    <div class="exp-item">
+                        <div class="exp-role" style="font-size: 10pt;">{{ cert.name }}</div>
+                        <div class="exp-meta" style="margin-bottom: 5px;">{{ cert.issuer }} | {{ cert.year }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
         </main>
     </div>
 </body>

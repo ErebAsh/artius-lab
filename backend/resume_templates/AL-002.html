@@ -119,11 +119,22 @@
         .award-item {
             font-size: 9.5pt;
             color: #555;
+            margin-bottom: 12px;
+        }
+        .award-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
         }
         .award-title {
             font-weight: 700;
             color: #333;
-            margin-bottom: 3px;
+            margin-bottom: 0;
+        }
+        .award-year {
+            font-size: 8.5pt;
+            color: #666;
+            font-weight: 400;
         }
         .award-subtitle {
             margin-bottom: 2px;
@@ -274,7 +285,7 @@
 
             {% if expertise.professional or expertise.technical %}
             <div class="sidebar-section">
-                <h2>EXPERTISE</h2>
+                <h2>SKILLS AND EXPERTISE</h2>
                 <ul class="expertise-list">
                     {% for item in expertise.professional %}
                     <li>{{ item }}</li>
@@ -291,9 +302,11 @@
                 <h2>AWARD</h2>
                 {% for cert in certifications %}
                 <div class="award-item">
-                    <div class="award-title">{{ cert.name }}</div>
+                    <div class="award-header">
+                        <div class="award-title">{{ cert.name }}</div>
+                        <div class="award-year">{{ cert.year }}</div>
+                    </div>
                     <div class="award-subtitle">{{ cert.issuer }}</div>
-                    <div>{{ cert.year }}</div>
                 </div>
                 {% endfor %}
             </div>

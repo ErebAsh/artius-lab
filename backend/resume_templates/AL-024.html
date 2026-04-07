@@ -329,6 +329,23 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+
+                {% if projects and projects|length > 0 %}
+                <div class="main-section">
+                    <h2>Projects</h2>
+                    {% for project in projects %}
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <div class="exp-company">{{ project.name }}, {{ project.start_date }} - {{ project.end_date | default('PRES', true) }}</div>
+                            {% if project.link %}
+                            <div class="exp-role"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
+                            {% endif %}
+                        </div>
+                        <div class="exp-desc">{{ project.description }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </main>
         </div>
     </div>

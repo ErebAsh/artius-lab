@@ -40,7 +40,7 @@
             padding-right: 35px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .photo-area {
@@ -68,7 +68,7 @@
         }
 
         .header-name {
-            text-align: center;
+            text-align: left;
             margin-bottom: 18px;
         }
         .header-name h1 {
@@ -226,11 +226,19 @@
         }
 
         .main-hr {
-            height: 4px;
-            background-color: #e5e5e5;
+            height: 1px;
+            background-color: #eee;
             width: 100%;
             border: none;
-            margin: 30px 0;
+            margin: 25px 0;
+        }
+        
+        .sidebar-hr {
+            height: 2px;
+            background-color: #ececec;
+            width: 100%;
+            border: none;
+            margin-bottom: 15px;
         }
 
         /* Core Skills Grid */
@@ -308,13 +316,7 @@
                 </div>
             </div>
 
-            <div class="sidebar-section">
-                <hr class="sidebar-hr">
-                <span class="sidebar-title">Professional Overview</span>
-                <div class="overview-text">
-                    {{ personal.summary | default('Write a summary about your qualifications. Things you can mention: Number of years of experience in the field or line of work, accomplishments directly relating to the job position, relevant credentials, training, or education. Use easy to read language.', true) }}
-                </div>
-            </div>
+            <!-- Professional Overview (Moved to main) -->
 
             <div class="sidebar-section">
                 <hr class="sidebar-hr">
@@ -343,12 +345,22 @@
 
         <!-- Main Content (Right) -->
         <main class="main-content">
+            {% if personal.summary %}
+            <div class="main-section" style="margin-bottom: 25px;">
+                <span class="section-title">Summary</span>
+                <div class="overview-text" style="font-size: 9.5pt; text-align: left; line-height: 1.7;">
+                    {{ personal.summary }}
+                </div>
+            </div>
+            <hr class="main-hr">
+            {% endif %}
+
             <span class="section-title">Professional Experience</span>
             
             {% if experience and experience|length > 0 %}
                 {% for exp in experience %}
                 <div class="experience-item">
-                    <div class="role-title">//{{ exp.title | upper | default('PROFESSIONAL TITLE', true) }}</div>
+                    <div class="role-title">{{ exp.title | upper | default('PROFESSIONAL TITLE', true) }}</div>
                     <div class="company-info">{{ exp.company | default('Company Name') }} — {{ exp.location | default('City, State') }} — {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
                     {% if exp.description %}
                     <div class="item-desc" style="font-size: 8.5pt; color: #555; margin-bottom: 8px;">
@@ -368,7 +380,7 @@
                 {% endfor %}
             {% else %}
                 <div class="experience-item">
-                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="role-title">PROFESSIONAL TITLE</div>
                     <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
                     <ul class="bullet-list">
                         <li>Keep your bullet points one sentence in length, brief, and concise, using simple-to-read language and removing all irrelevant jargon.</li>
@@ -378,7 +390,7 @@
                     </ul>
                 </div>
                 <div class="experience-item">
-                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="role-title">PROFESSIONAL TITLE</div>
                     <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
                     <ul class="bullet-list">
                         <li>To transfer old resume: (1) Remove bullet points (2) Copy the original text (CMD+C) (3) Select "filler" text (4) Right-click, select paste special > unformatted text.</li>
@@ -387,7 +399,7 @@
                     </ul>
                 </div>
                 <div class="experience-item">
-                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="role-title">PROFESSIONAL TITLE</div>
                     <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
                     <ul class="bullet-list">
                         <li>An accomplishment is a solution you created, an action you took, or a contribution you made that had a positive impact.</li>
@@ -396,7 +408,7 @@
                     </ul>
                 </div>
                 <div class="experience-item">
-                    <div class="role-title">//PROFESSIONAL TITLE</div>
+                    <div class="role-title">PROFESSIONAL TITLE</div>
                     <div class="company-info">Company Name — City, State, Country — YEAR-YEAR</div>
                     <ul class="bullet-list">
                         <li>Your resume must capture the employer's attention right away - you have roughly 15-20 seconds to make an impression.</li>
@@ -439,48 +451,44 @@
                 </li>
                 {% endfor %}
             </ul>
-            {% endif %}
-
             <hr class="main-hr">
+            {% endif %}
 
             <span class="section-title">Core Skills</span>
             <div class="skills-grid">
+                {% if expertise.professional or (not expertise.technical and skills) %}
                 <div class="skill-column">
-                    <h4>//PROFESSIONAL</h4>
+                    <h4>PROFESSIONAL</h4>
                     <ul class="skill-list">
-                        {% if skills and skills|length > 0 %}
-                            {% for skill in skills %}
-                                {% if loop.index <= (skills|length / 2) | round(0, 'ceil') %}
-                                <li>{{ skill.name }}</li>
-                                {% endif %}
-                            {% endfor %}
-                        {% elif expertise and expertise.professional %}
+                        {% if expertise.professional %}
                             {% for skill in expertise.professional %}
                             <li>{{ skill }}</li>
                             {% endfor %}
                         {% else %}
-                            <li>Time Management</li>
+                            {% for skill in skills[:(skills|length/2)|round(0, 'ceil')|int] %}
+                            <li>{{ skill.name }}</li>
+                            {% endfor %}
                         {% endif %}
                     </ul>
                 </div>
+                {% endif %}
+                
+                {% if expertise.technical or (not expertise.professional and skills) %}
                 <div class="skill-column">
-                    <h4>//TECHNICAL</h4>
+                    <h4>TECHNICAL</h4>
                     <ul class="skill-list">
-                        {% if skills and skills|length > 0 %}
-                            {% for skill in skills %}
-                                {% if loop.index > (skills|length / 2) | round(0, 'ceil') %}
-                                <li>{{ skill.name }}</li>
-                                {% endif %}
-                            {% endfor %}
-                        {% elif expertise and expertise.technical %}
+                        {% if expertise.technical %}
                             {% for skill in expertise.technical %}
                             <li>{{ skill }}</li>
                             {% endfor %}
                         {% else %}
-                            <li>Microsoft Word</li>
+                            {% for skill in skills[(skills|length/2)|round(0, 'ceil')|int:] %}
+                            <li>{{ skill.name }}</li>
+                            {% endfor %}
                         {% endif %}
                     </ul>
                 </div>
+                {% endif %}
             </div>
         </main>
     </div>

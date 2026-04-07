@@ -252,13 +252,26 @@
 
             <section>
                 <h2 class="section-title">Experience</h2>
-                {% for exp in experience %}
-                <div class="experience-item">
-                    <div class="exp-role">{{ exp.title }}</div>
-                    <div class="exp-detail">{{ exp.company }} {{ exp.start_date }}-{{ exp.end_date | default('Present', true) }}</div>
-                    <div class="exp-desc">{{ exp.description }}</div>
-                </div>
-                {% endfor %}
+                {% if experience and experience|length > 0 %}
+                    {% for exp in experience %}
+                    <div class="experience-item">
+                        <div class="exp-role">{{ exp.title }}</div>
+                        <div class="exp-detail">{{ exp.company }} | {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                        <div class="exp-desc">{{ exp.description }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="experience-item">
+                        <div class="exp-role">Lead Barista</div>
+                        <div class="exp-detail">Morning Brew | 2018 - 2022</div>
+                        <div class="exp-desc">Managed daily shop operations, trained new staff on premium brewing techniques, and maintained high customer satisfaction ratings.</div>
+                    </div>
+                    <div class="experience-item">
+                        <div class="exp-role">Junior Barista</div>
+                        <div class="exp-detail">Daily Cup | 2016 - 2018</div>
+                        <div class="exp-desc">Prepared specialty coffee drinks and provided exceptional service in a fast-paced environment.</div>
+                    </div>
+                {% endif %}
             </section>
 
             <section class="contact-section">
@@ -312,6 +325,27 @@
                     {% endfor %}
                 </section>
                 {% endif %}
+
+                <section>
+                    <h2 class="card-section-title">Projects</h2>
+                    {% if projects and projects|length > 0 %}
+                        {% for project in projects %}
+                        <div class="edu-item">
+                            <div class="edu-main">{{ project.name }} | {{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                            {% if project.link %}
+                            <div class="edu-sub"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
+                            {% endif %}
+                            <div class="card-text" style="font-size: 8.5pt; margin-top: 5px;">{{ project.description }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="edu-item">
+                            <div class="edu-main">Community Coffee Workshop</div>
+                            <div class="edu-sub">workshop.coffee.org</div>
+                            <div class="card-text" style="font-size: 8.5pt; margin-top: 5px;">Organized a series of community-focused workshops on home brewing methods and bean sourcing.</div>
+                        </div>
+                    {% endif %}
+                </section>
 
                 {% if skills and skills|length > 0 %}
                 <section>

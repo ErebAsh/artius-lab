@@ -460,6 +460,24 @@
                 </div>
                 {% endif %}
 
+                {% if certifications and certifications|length > 0 %}
+                <div class="pill-header">Certifications</div>
+                <div class="timeline">
+                    {% for cert in certifications %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-year">{{ cert.year }}</div>
+                            <div class="timeline-details">
+                                <div class="details-title" style="text-transform: uppercase;">{{ cert.name | upper }}</div>
+                                <div class="details-desc">{{ cert.issuer }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 {% if experience and experience|length > 0 %}
                 <div class="pill-header">Experience</div>
                 <div class="timeline">

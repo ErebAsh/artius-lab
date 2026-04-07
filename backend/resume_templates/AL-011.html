@@ -347,27 +347,33 @@
                 </div>
             </div>
 
-            <!-- Reference -->
+            {% if certifications and certifications|length > 0 %}
             <div class="sidebar-section">
-                <h2>Reference</h2>
-                <div style="font-size: 9pt; margin-bottom: 10px;">
-                    <div style="font-weight: 700; color: #fff;">Reference Full Name</div>
-                    <div style="font-size: 8pt; color: rgba(255,255,255,0.7);">Job Position Goes Here</div>
-                    <div style="font-size: 8pt; margin-top: 5px;">M: demo@gmail.com</div>
-                    <div style="font-size: 8pt;">P: + 00 123 456 789</div>
+                <h2>Certifications</h2>
+                {% for cert in certifications %}
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: 700; color: #fff; font-size: 9.5pt;">{{ cert.name }}</div>
+                    <div style="font-size: 8.5pt; color: rgba(255,255,255,0.7);">{{ cert.issuer }} | {{ cert.year }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Skills -->
+            <div class="sidebar-section">
+                <h2>Skills</h2>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    {% if expertise.technical %}
+                        {% for item in expertise.technical %}
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>{{ item }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Management</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Teamwork</div>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- Hobbies -->
-            <div class="sidebar-section">
-                <h2>Hobbies</h2>
-                <div class="hobby-grid">
-                    <div class="hobby-icon"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
-                    <div class="hobby-icon"><svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2z"/></svg></div>
-                    <div class="hobby-icon"><svg viewBox="0 0 24 24"><path d="M21 7L9 19l-5-5"/></svg></div>
-                    <div class="hobby-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-                </div>
-            </div>
         </aside>
 
         <!-- Main Column -->
@@ -432,22 +438,27 @@
             </div>
             {% endif %}
 
-            <!-- Skills -->
+            <!-- Projects -->
+            {% if projects and projects|length > 0 %}
             <div class="main-section">
-                <h2><svg viewBox="0 0 24 24"><path d="M13 10h-2V8h2v2zm0 4h-2v-2h2v2zm0 4h-2v-2h2v2zm-4-8H7V8h2v2zm0 4H7v-2h2v2zm0 4H7v-2h2v2zm8-8h-2V8h2v2zm0 4h-2v-2h2v2zm0 4h-2v-2h2v2z"/></svg>Skills</h2>
-                <div class="skills-grid">
-                    {% if expertise.technical %}
-                        {% for item in expertise.technical %}
-                        <div class="skill-list-item"><div class="skill-dot"></div>{{ item }}</div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="skill-list-item"><div class="skill-dot"></div>Management</div>
-                        <div class="skill-list-item"><div class="skill-dot"></div>Teamwork</div>
-                        <div class="skill-list-item"><div class="skill-dot"></div>Handling Customer</div>
-                        <div class="skill-list-item"><div class="skill-dot"></div>Problem Solving</div>
-                    {% endif %}
+                <h2><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>Projects</h2>
+                <div class="timeline">
+                    {% for project in projects %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-title">{{ project.name }}</div>
+                        {% if project.link %}
+                        <div class="timeline-subtitle" style="font-size: 8.5pt; color: #002d44; font-style: normal; margin-top: 2px;">{{ project.link }}</div>
+                        {% endif %}
+                        <div class="timeline-desc" style="margin-top: 5px;">{{ project.description }}</div>
+                        {% if project.technologies %}
+                        <div style="font-size: 8pt; color: #888; font-style: italic; margin-top: 5px;">Built with: {{ project.technologies | join(', ') }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
         </main>
     </div>
 </body>

@@ -360,6 +360,18 @@
                     <div class="skill-item"><div class="skill-marker"></div>Marketing</div>
                 {% endif %}
             </div>
+
+            {% if certifications and certifications|length > 0 %}
+            <div class="sidebar-section" style="margin-top: 10px;">
+                <h2 class="section-header-sidebar">Certifications</h2>
+                {% for cert in certifications %}
+                <div style="margin-bottom: 12px;">
+                    <div class="skill-item" style="margin-bottom: 3px; font-size: 10.5pt;"><div class="skill-marker"></div> {{ cert.name }}</div>
+                    <div style="padding-left: 25px; font-size: 8.5pt; color: #444; font-weight: 500;">{{ cert.issuer }} | {{ cert.year }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </aside>
 
         <!-- Main Content -->
@@ -411,6 +423,22 @@
                     </div>
                 </div>
                 {% endif %}
+
+                {% if projects and projects|length > 0 %}
+                <div class="main-section">
+                    <h2 class="main-section-header">Projects</h2>
+                    <div class="timeline">
+                        {% for project in projects %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-title">{{ project.name }}</div>
+                            <div class="timeline-subtitle">{{ project.technologies | join(', ') if project.technologies else '' }}</div>
+                            <div class="timeline-desc">{{ project.description }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
             
             <div class="footer-accents">
@@ -424,7 +452,6 @@
             </div>
             
             <div class="footer-info">
-                © WWW.HELPSHARED.COM
             </div>
         </main>
     </div>

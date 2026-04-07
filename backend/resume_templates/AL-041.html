@@ -334,21 +334,21 @@
                         <div class="section-header"><h2 class="section-title">Education</h2></div>
                         {% for edu in education %}
                         <div class="timeline-item">
-                            <span class="item-date">{{ edu.end_date }}</span>
                             <div class="item-row">
                                 <div class="item-main-title">{{ edu.institution }}</div>
-                                <div class="item-location">{{ edu.location }}</div>
+                                <span class="item-date">{{ edu.end_date }}</span>
                             </div>
                             <div class="item-sub-title">{{ edu.degree }}{% if edu.field_of_study %}, {{ edu.field_of_study }}{% endif %}</div>
+                            <div class="item-location">{{ edu.location }}</div>
                         </div>
                         {% else %}
                         <div class="timeline-item">
-                            <span class="item-date">Jun 2012</span>
                             <div class="item-row">
                                 <div class="item-main-title">IIT Kanpur</div>
-                                <div class="item-location">Kanpur, UP</div>
+                                <span class="item-date">Jun 2012</span>
                             </div>
                             <div class="item-sub-title">MS - Computer Science, CGPA: 9.0</div>
+                            <div class="item-location">Kanpur, UP</div>
                         </div>
                         {% endfor %}
                     </section>
@@ -359,15 +359,15 @@
                         <div class="section-header"><h2 class="section-title">Projects</h2></div>
                         {% for project in projects %}
                         <div class="timeline-item">
-                            {% if project.link %}
-                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="item-date">View Project</a>
-                            {% endif %}
                             <div class="item-row">
                                 <div class="item-main-title">{{ project.name }}</div>
-                                {% if project.technologies %}
-                                <div class="item-location">{{ project.technologies | join(' | ') }}</div>
+                                {% if project.link %}
+                                <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="item-date">View Project</a>
                                 {% endif %}
                             </div>
+                            {% if project.technologies %}
+                            <div class="item-sub-title">{{ project.technologies | join(' | ') }}</div>
+                            {% endif %}
                             <div class="item-highlights" style="margin-top: 5px;">
                                 <li>{{ project.description }}</li>
                             </div>
@@ -381,12 +381,12 @@
                         <div class="section-header"><h2 class="section-title">Experience</h2></div>
                         {% for exp in experience %}
                         <div class="timeline-item">
-                            <span class="item-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
                             <div class="item-row">
                                 <div class="item-main-title">{{ exp.company }}</div>
-                                <div class="item-location">{{ exp.location }}</div>
+                                <span class="item-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
                             </div>
                             <div class="item-sub-title">{{ exp.title }}</div>
+                            <div class="item-location">{{ exp.location }}</div>
                             <ul class="item-highlights">
                                 {% for hl in exp.highlights %}
                                     <li>{{ hl }}</li>
@@ -395,12 +395,12 @@
                         </div>
                         {% else %}
                         <div class="timeline-item">
-                            <span class="item-date">Jun 2018 - Jan 2024</span>
                             <div class="item-row">
                                 <div class="item-main-title">Accenture Services</div>
-                                <div class="item-location">San Francisco, California</div>
+                                <span class="item-date">Jun 2018 - Jan 2024</span>
                             </div>
                             <div class="item-sub-title">Software Development Manager</div>
+                            <div class="item-location">San Francisco, California</div>
                             <ul class="item-highlights">
                                 <li>Delivered critical $5 million project on time and within budget, exceeding stakeholder expectations.</li>
                                 <li>Successfully led a cross-functional team of developers, designers, and stakeholders to achieve key project milestones.</li>

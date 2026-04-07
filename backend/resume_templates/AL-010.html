@@ -241,29 +241,30 @@
             line-height: 1.5;
         }
 
-        .reference-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 21px;
-            margin-top: 15px;
+        .project-item {
+            margin-bottom: 20px;
         }
-        .ref-item {
-            font-size: 9pt;
-        }
-        .ref-name {
-            font-weight: 700;
-            color: #222;
-            font-size: 10pt;
-            margin-bottom: 3px;
-        }
-        .ref-title {
-            color: #666;
-            font-style: italic;
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
             margin-bottom: 5px;
         }
-        .ref-contact {
-            color: #555;
+        .project-name {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #222;
+        }
+        .project-link {
             font-size: 8.5pt;
+            color: #555;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .project-desc {
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.5;
         }
 
         @media print {
@@ -330,7 +331,7 @@
             <!-- Awards -->
             {% if certifications and certifications|length > 0 %}
             <div class="sidebar-section">
-                <h2 class="section-title">Awards</h2>
+                <h2 class="section-title">Certifications</h2>
                 {% for cert in certifications %}
                 <div class="award-item">
                     <div class="award-name">{{ cert.name }}</div>
@@ -411,24 +412,28 @@
             </div>
             {% endif %}
 
-            <!-- Reference -->
+            <!-- Projects -->
+            {% if projects and projects|length > 0 %}
             <div class="main-section">
-                <h2>Reference</h2>
-                <div class="reference-grid">
-                    <div class="ref-item">
-                        <div class="ref-name">Reference Name</div>
-                        <div class="ref-title">Position Title | Company Name</div>
-                        <div class="ref-contact">P : + 013 6547 4562</div>
-                        <div class="ref-contact">E : yourmailid@domain.com</div>
+                <h2>Projects</h2>
+                {% for project in projects %}
+                <div class="project-item">
+                    <div class="project-header">
+                        <span class="project-name">{{ project.name }}</span>
+                        {% if project.link %}
+                        <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="project-link">View Project</a>
+                        {% endif %}
                     </div>
-                    <div class="ref-item">
-                        <div class="ref-name">Reference Name</div>
-                        <div class="ref-title">Position Title | Company Name</div>
-                        <div class="ref-contact">P : + 013 6547 4562</div>
-                        <div class="ref-contact">E : yourmailid@domain.com</div>
-                    </div>
+                    {% if project.description %}
+                    <div class="project-desc">{{ project.description }}</div>
+                    {% endif %}
+                    {% if project.technologies and project.technologies|length > 0 %}
+                    <div class="project-desc" style="font-style: italic; font-size: 8.5pt; margin-top: 5px;">Technologies: {{ project.technologies | join(', ') }}</div>
+                    {% endif %}
                 </div>
+                {% endfor %}
             </div>
+            {% endif %}
         </main>
     </div>
 </body>

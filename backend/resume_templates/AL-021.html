@@ -126,20 +126,20 @@
             width: 38%;
             background: #222;
             color: #fff;
-            padding: 60px 40px;
+            padding: 40px 30px; /* Reduced from 60px 40px */
             border-bottom-right-radius: 150px;
             display: flex;
             flex-direction: column;
-            gap: 35px;
+            gap: 15px; /* Reduced from 20px */
             z-index: 2;
         }
         
         .content {
             flex: 1;
-            padding: 60px 40px;
+            padding: 40px; /* Reduced from 60px 40px */
             display: flex;
             flex-direction: column;
-            gap: 35px;
+            gap: 15px; /* Reduced from 20px */
             background: #fff;
         }
 
@@ -147,7 +147,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 8px; /* Reduced from 15px */
         }
         .icon-hex {
             width: 35px;
@@ -159,6 +159,11 @@
             justify-content: center;
             color: #e74c3c;
             font-size: 14pt;
+        }
+        .icon-hex svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
         }
         .sidebar .icon-hex {
             background: #e74c3c;
@@ -189,6 +194,15 @@
             color: #e74c3c;
             text-transform: uppercase;
             margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .item-year {
+            font-size: 9pt;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
         }
         .item-sub {
             font-weight: 700;
@@ -263,37 +277,47 @@
                 <!-- Contact -->
                 <section>
                     <div class="section-header">
-                        <div class="icon-hex">📞</div>
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </div>
                         <h2 class="section-title">CONTACT</h2>
                     </div>
                     <div class="item-list">
-                        <div class="item">
-                            <div class="item-text" style="color: #fff;">{{ personal.phone | default('+12345678910', true) }}</div>
-                            <div class="item-text" style="color: #fff;">{{ personal.email | default('user@email.com', true) }}</div>
-                            <div class="item-text" style="color: #fff;">{{ personal.location | default('your location here', true) }}</div>
+                        <div class="contact-row" style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px;">
+                            <div class="item-text" style="color: #fff;">{{ personal.phone | default('+123-456-7890', true) }}</div>
+                        </div>
+                        <div class="contact-row" style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px;">
+                            <div class="item-text" style="color: #fff; word-break: break-all;">{{ personal.email | default('emma.watson@gmail.com', true) }}</div>
+                        </div>
+                        <div class="contact-row" style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px;">
+                            <div class="item-text" style="color: #fff;">{{ personal.location | default('New York, USA', true) }}</div>
                         </div>
                     </div>
                 </section>
 
+                {% if education and education|length > 0 %}
                 <section>
                     <div class="section-header">
-                        <div class="icon-hex">👤</div>
-                        <h2 class="section-title">REFERENCE</h2>
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM3.85 9L12 4.55 20.15 9 12 13.45 3.85 9zM12 17c-3.31 0-6-2.69-6-6h2c0 2.21 1.79 4 4 4s4-1.79 4-4h2c0 3.31-2.69 6-6 6z"/></svg>
+                        </div>
+                        <h2 class="section-title">EDUCATION</h2>
                     </div>
-                    {% set refs = references | default([{'name': 'JHON SMITH JR', 'title': 'job position here', 'phone': 'phone number', 'email': 'address here'}], true) %}
-                    {% for ref in refs %}
+                    {% for edu in education %}
                     <div class="item">
-                        <div class="item-title" style="color: #e74c3c;">{{ ref.name }}</div>
-                        <div class="item-text" style="color: #fff;">{{ ref.title }}</div>
-                        <div class="item-text" style="color: #fff;">{{ ref.phone }}</div>
-                        <div class="item-text" style="color: #fff;">{{ ref.email }}</div>
+                        <div class="item-title" style="color: #e74c3c;">{{ edu.degree }}</div>
+                        <div class="item-text" style="color: #fff; font-weight: 700;">{{ edu.institution }}</div>
+                        <div class="item-text" style="color: #bbb;">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
                     </div>
                     {% endfor %}
                 </section>
+                {% endif %}
 
                 <section>
                     <div class="section-header">
-                        <div class="icon-hex">⚙️</div>
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        </div>
                         <h2 class="section-title">SKILLS</h2>
                     </div>
                     <div class="item-list">
@@ -316,7 +340,9 @@
                 {% if personal.summary %}
                 <section>
                     <div class="section-header">
-                        <div class="icon-hex">👤</div>
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
                         <h2 class="section-title">ABOUT ME</h2>
                     </div>
                     <div class="item-text">
@@ -325,33 +351,66 @@
                 </section>
                 {% endif %}
 
-                {% if education and education|length > 0 %}
+
+                {% if experience and experience|length > 0 %}
                 <section>
                     <div class="section-header">
-                        <div class="icon-hex">🎓</div>
-                        <h2 class="section-title">EDUCATION</h2>
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                        </div>
+                        <h2 class="section-title">EXPERIENCE</h2>
                     </div>
-                    {% for edu in education %}
+                    {% for exp in experience %}
                     <div class="item">
-                        <div class="item-title">{{ edu.degree }} : {{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
-                        <div class="item-sub" style="color: #e74c3c;">{{ edu.institution }}</div>
-                        <div class="item-text">{{ edu.description }}</div>
+                        <div class="item-title">
+                            <span>{{ exp.company }}</span>
+                            <span class="item-year">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
+                        </div>
+                        <div class="item-sub" style="color: #e74c3c;">{{ exp.title }}</div>
+                        <div class="item-text">{{ exp.description }}</div>
                     </div>
                     {% endfor %}
                 </section>
                 {% endif %}
 
-                {% if experience and experience|length > 0 %}
+                {% if certifications and certifications|length > 0 %}
                 <section>
                     <div class="section-header">
-                        <div class="icon-hex">💼</div>
-                        <h2 class="section-title">EXPERIENCE</h2>
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1c2.45-.39 4.39-2.47 4.39-4.94H19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+                        </div>
+                        <h2 class="section-title">CERTIFICATIONS</h2>
                     </div>
-                    {% for exp in experience %}
+                    {% for cert in certifications %}
                     <div class="item">
-                        <div class="item-title">{{ exp.company }} : {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
-                        <div class="item-sub" style="color: #e74c3c;">{{ exp.title }}</div>
-                        <div class="item-text">{{ exp.description }}</div>
+                        <div class="item-title">
+                            <span>{{ cert.name }}</span>
+                            <span class="item-year">{{ cert.year | default(cert.date, true) }}</span>
+                        </div>
+                        <div class="item-sub" style="color: #e74c3c;">{{ cert.issuer }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+
+                {% if projects and projects|length > 0 %}
+                <section>
+                    <div class="section-header">
+                        <div class="icon-hex">
+                            <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                        </div>
+                        <h2 class="section-title">PROJECTS</h2>
+                    </div>
+                    {% for project in projects %}
+                    <div class="item">
+                        <div class="item-title">
+                            <span>{{ project.name }}</span>
+                            <span class="item-year">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</span>
+                        </div>
+                        {% if project.link %}
+                        <div class="item-sub" style="color: #e74c3c;"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
+                        {% endif %}
+                        <div class="item-text">{{ project.description }}</div>
                     </div>
                     {% endfor %}
                 </section>

@@ -279,6 +279,20 @@
                 {% endfor %}
             </div>
             {% endif %}
+
+            {% if certifications and certifications|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Certifications</h2>
+                <ul class="expertise-list">
+                    {% for cert in certifications %}
+                    <li style="margin-bottom: 12px;">
+                        <div style="font-weight: 600; color: #000;">{{ cert.name }}</div>
+                        <div style="font-size: 8.5pt; color: #666;">{{ cert.issuer }} | {{ cert.year }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </aside>
 
         <!-- Main Content -->

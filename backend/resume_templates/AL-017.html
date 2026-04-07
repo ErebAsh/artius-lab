@@ -36,10 +36,10 @@
 
         /* ── Sidebar (Left) ── */
         .sidebar-capsule {
-            width: 320px;
+            width: 280px;
             background: #fff;
             border-radius: 170px;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -51,10 +51,10 @@
             margin-bottom: 18px;
         }
         .photo-circle {
-            width: 220px;
-            height: 220px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            border: 8px solid #4b2c5e;
+            border: 6px solid #4b2c5e;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -79,8 +79,8 @@
 
         .sidebar-section {
             width: 100%;
-            padding: 0 40px;
-            margin-bottom: 18px;
+            padding: 0 30px;
+            margin-bottom: 12px;
         }
         
         .section-header-sidebar {
@@ -90,7 +90,7 @@
             color: #4b2c5e;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             padding-bottom: 8px;
             border-bottom: 2px solid #4b2c5e;
             display: flex;
@@ -104,7 +104,7 @@
         }
 
         .contact-item {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             font-size: 9pt;
         }
         .contact-label {
@@ -159,7 +159,7 @@
         }
         .name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 42pt;
+            font-size: 36pt;
             font-weight: 800;
             margin: 0;
             line-height: 1;
@@ -168,7 +168,7 @@
         }
         .job-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 16pt;
+            font-size: 14pt;
             font-weight: 500;
             margin-top: 10px;
             text-transform: uppercase;
@@ -246,6 +246,23 @@
             left: 0;
         }
 
+        .item-desc {
+            font-size: 9.5pt;
+            margin-top: 8px;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+        .item-bullets {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+            list-style-type: disc;
+            font-size: 9.5pt;
+            opacity: 0.85;
+        }
+        .item-bullets li {
+            margin-bottom: 5px;
+        }
+
         @media print {
             .container { width: 210mm; height: 297mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
@@ -282,20 +299,22 @@
                 </div>
             </div>
 
-            <!-- Personal Skills -->
+            <!-- Skills -->
             <div class="sidebar-section">
-                <h2 class="section-header-sidebar">Personal Skills</h2>
+                <h2 class="section-header-sidebar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg> Skills</h2>
                 <ul class="skill-list">
+                    {% if expertise.technical %}
+                        {% for item in expertise.technical %}<li>{{ item }}</li>{% endfor %}
+                    {% endif %}
                     {% if expertise.professional %}
-                        {% for item in expertise.professional %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    {% else %}
+                        {% for item in expertise.professional %}<li>{{ item }}</li>{% endfor %}
+                    {% endif %}
+                    {% if not expertise.technical and not expertise.professional %}
                         <li>Communication Skills</li>
                         <li>Teamwork</li>
-                        <li>Adaptability</li>
                         <li>Problem Solving</li>
-                        <li>Leadership</li>
+                        <li>Adaptability</li>
+                        <li>Technical Proficiency</li>
                     {% endif %}
                 </ul>
             </div>
@@ -303,12 +322,26 @@
             <!-- Language -->
             <div class="sidebar-section">
                 <h2 class="section-header-sidebar">Language</h2>
-                <ul class="skill-list" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <ul class="skill-list">
                     <li>English</li>
                     <li>Hindi</li>
                     <li>French</li>
                 </ul>
             </div>
+
+            <!-- Education -->
+            {% if education and education|length > 0 %}
+            <div class="sidebar-section">
+                <h2 class="section-header-sidebar"><svg viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg> Education</h2>
+                {% for edu in education %}
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 700; font-size: 9.5pt; color: #4b2c5e;">{{ edu.degree }}</div>
+                    <div style="font-size: 8.5pt; color: #555; margin-top: 2px;">{{ edu.institution }}</div>
+                    <div style="font-size: 8pt; color: #888; font-style: italic; margin-top: 1px;">{{ edu.end_date | default('Present', true) }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </aside>
 
         <!-- Main Content (Right) -->
@@ -327,47 +360,100 @@
             </div>
             {% endif %}
 
-            {% if education and education|length > 0 %}
+            <!-- Experience -->
             <div class="main-section">
-                <h2 class="section-header-main"><svg viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg> Education</h2>
-                {% for edu in education %}
-                <div class="timeline-item">
-                    <div>
-                        <div class="item-title">{{ edu.degree }}</div>
-                        <div class="item-subtitle">{{ edu.institution }}</div>
+                <h2 class="section-header-main"><svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> Experience</h2>
+                {% if experience and experience|length > 0 %}
+                    {% for exp in experience %}
+                    <div style="margin-bottom: 20px;">
+                        <div class="timeline-item">
+                            <div>
+                                <div class="item-title">{{ exp.title }}</div>
+                                <div class="item-subtitle">{{ exp.company }} | {{ exp.location }}</div>
+                            </div>
+                            <div class="item-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                        </div>
+                        {% if exp.description %}
+                        <div class="item-desc">{{ exp.description }}</div>
+                        {% endif %}
+                        {% if exp.highlights %}
+                        <ul class="item-bullets">
+                            {% for hl in exp.highlights %}
+                            <li>{{ hl }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
-                    <div class="item-date">{{ edu.end_date | default('Present', true) }}</div>
-                </div>
-                {% endfor %}
-            {% endif %}
-
-            <!-- Technical Skills -->
-            <div class="main-section">
-                <h2 class="section-header-main"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg> Technical Skills</h2>
-                <ul class="main-skills-grid">
-                    {% if expertise.technical %}
-                        {% for item in expertise.technical %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    {% else %}
-                        <li>Computer Skills</li>
-                        <li>Internet Browsing</li>
-                        <li>Email Communication</li>
-                        <li>File Management</li>
-                    {% endif %}
-                </ul>
+                    {% endfor %}
+                {% else %}
+                    <div style="margin-bottom: 20px;">
+                        <div class="timeline-item">
+                            <div>
+                                <div class="item-title">General Manager Assistant</div>
+                                <div class="item-subtitle">Art Studio | New Delhi, India</div>
+                            </div>
+                            <div class="item-date">2020 - Present</div>
+                        </div>
+                        <div class="item-desc">Providing high-level support to the executive team, managing complex schedules, and coordinating studio operations.</div>
+                        <ul class="item-bullets">
+                            <li>Optimized office workflows, reducing administrative overhead by 15%.</li>
+                            <li>Coordinated with creative teams for major project deliveries and studio events.</li>
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
 
+            <!-- Projects -->
+            <div class="main-section">
+                <h2 class="section-header-main"><svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg> Projects</h2>
+                {% if projects and projects|length > 0 %}
+                    {% for project in projects %}
+                    <div style="margin-bottom: 15px;">
+                        <div class="timeline-item">
+                            <div>
+                                <div class="item-title">{{ project.name }}</div>
+                                {% if project.link %}
+                                <div class="item-subtitle" style="color: #4b2c5e; background: #fff; display: inline-block; padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 8pt; margin-top: 5px;">{{ project.link }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="item-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                        </div>
+                        {% if project.description %}
+                        <div class="item-desc">{{ project.description }}</div>
+                        {% endif %}
+                        {% if project.technologies %}
+                        <div class="item-desc" style="font-style: italic; font-size: 8.5pt;">Technologies: {{ project.technologies | join(', ') }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="margin-bottom: 15px;">
+                        <div class="timeline-item">
+                            <div>
+                                <div class="item-title">E-commerce UI Design</div>
+                                <div class="item-subtitle" style="color: #4b2c5e; background: #fff; display: inline-block; padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 8pt; margin-top: 5px;">View Case Study</div>
+                            </div>
+                            <div class="item-date">2023</div>
+                        </div>
+                        <div class="item-desc">Designed a full-scale e-commerce interface focusing on user experience and conversion optimization.</div>
+                        <div class="item-desc" style="font-style: italic; font-size: 8.5pt;">Technologies: Adobe XD, Figma, UI/UX Principles</div>
+                    </div>
+                {% endif %}
+            </div>
+
+
+
             <!-- Hobbies -->
+            {% if hobbies and hobbies|length > 0 %}
             <div class="main-section">
                 <h2 class="section-header-main"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.19 14.99L11 13V7h1.5v5.25l4.5 2.67-.81 1.07z"/></svg> Hobbies</h2>
                 <ul class="main-skills-grid">
-                    <li>Reading Books</li>
-                    <li>Sports and Fitness</li>
-                    <li>Music</li>
-                    <li>Cooking</li>
+                    {% for hobby in hobbies %}
+                    <li>{{ hobby }}</li>
+                    {% endfor %}
                 </ul>
             </div>
+            {% endif %}
         </main>
     </div>
 </body>

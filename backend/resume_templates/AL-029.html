@@ -468,6 +468,25 @@
                         </div>
                     {% endif %}
                 </section>
+
+                {% if projects and projects|length > 0 %}
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Projects</h2>
+                        <div class="line"></div>
+                    </div>
+                    {% for project in projects %}
+                    <div class="exp-item">
+                        <div class="item-header">
+                            <div class="item-title">{{ project.name }}</div>
+                            <div class="item-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                        </div>
+                        <div class="item-sub">{% if project.link %}<a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a>{% else %}Project Details{% endif %}</div>
+                        <div class="item-desc">{{ project.description }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
             </div>
         </div>
 

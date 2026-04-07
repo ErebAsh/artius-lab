@@ -72,7 +72,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-top: 25px;
+            margin-top: 15px;
         }
         .title-line::before {
             content: "";
@@ -158,17 +158,17 @@
         .main-content {
             width: 64%;
             background: var(--white);
-            margin-top: 240px; /* Push down to show dark header */
-            border-top-left-radius: 150px;
+            margin-top: 180px; /* Reduced to show less dark header */
+            border-top-left-radius: 120px; /* Adjusted radius for tighter look */
             position: relative;
-            padding: 60px 50px 40px 20px;
+            padding: 50px 50px 30px 20px;
             z-index: 1;
         }
 
         /* ── Photo ── */
         .photo-wrapper {
             position: absolute;
-            top: -150px;
+            top: -110px;
             right: 60px;
             z-index: 3;
         }
@@ -242,7 +242,7 @@
         }
 
         .item {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .item-header {
             display: flex;
@@ -283,7 +283,7 @@
         .divider {
             height: 1.5px;
             background: var(--dark-grey);
-            margin: 30px 0;
+            margin: 15px 0;
             width: 100%;
         }
 
@@ -428,6 +428,32 @@
                                     {% endfor %}
                                 </div>
                                 {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if projects and projects|length > 0 %}
+            <div class="divider"></div>
+            
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-title-vertical">Projects</div>
+                </div>
+                <div class="section-content">
+                    {% for project in projects %}
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-date">{{ project.start_date }} – {{ project.end_date | default('Present', true) }}</div>
+                            <div class="item-main">
+                                <div class="item-sub">{{ project.name | upper }}</div>
+                                {% if project.link %}
+                                <div class="item-desc" style="font-weight: 500; color: #B35C1E; margin-bottom: 5px;"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
+                                {% endif %}
+                                <div class="item-desc">{{ project.description }}</div>
                             </div>
                         </div>
                     </div>

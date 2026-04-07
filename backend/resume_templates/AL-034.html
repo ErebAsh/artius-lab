@@ -420,6 +420,24 @@
                 {% endif %}
             </section>
 
+            <!-- Projects -->
+            {% if projects and projects|length > 0 %}
+            <section class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Projects</h2>
+                </div>
+                {% for project in projects %}
+                <div class="exp-item">
+                    <div class="exp-role">{{ project.name }}</div>
+                    <div class="exp-meta">{% if project.link %}<a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a> | {% endif %}{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                    <div class="exp-desc">
+                        {{ project.description | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
             <!-- Professional Development -->
             <section class="content-section">
                 <div class="section-header">

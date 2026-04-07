@@ -370,6 +370,48 @@
                 </div>
                 {% endfor %}
                 {% endif %}
+
+                <!-- Projects -->
+                <div class="sidebar-section" style="margin-top: 20px;">
+                    <h2 class="section-title">Projects</h2>
+                </div>
+                {% if projects and projects|length > 0 %}
+                    {% for project in projects %}
+                    <div class="exp-item">
+                        <div class="exp-header-row">
+                            <span class="exp-title">{{ project.name }}</span>
+                            <span class="exp-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</span>
+                        </div>
+                        {% if project.link %}
+                        <div class="exp-company" style="font-size: 8.5pt; color: #283593; text-transform: none; margin-bottom: 5px;">
+                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a>
+                        </div>
+                        {% endif %}
+                        {% if project.description %}
+                        <p class="exp-description">{{ project.description }}</p>
+                        {% endif %}
+                        {% if project.technologies %}
+                        <ul class="exp-highlights">
+                            <li style="font-style: italic;">Technologies: {{ project.technologies | join(', ') }}</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="exp-item">
+                        <div class="exp-header-row">
+                            <span class="exp-title">Corporate Branding Identity</span>
+                            <span class="exp-date">2023 - 2024</span>
+                        </div>
+                        <div class="exp-company" style="font-size: 8.5pt; color: #283593; text-transform: none; margin-bottom: 5px;">
+                            <a href="#" style="color: inherit; text-decoration: none;">branding-portfolio.com</a>
+                        </div>
+                        <p class="exp-description">Developed a comprehensive visual identity for a tech startup, including logo design, color palette, and brand guidelines.</p>
+                        <ul class="exp-highlights">
+                            <li style="font-style: italic;">Technologies: Illustrator, Photoshop, Figma</li>
+                        </ul>
+                    </div>
+                {% endif %}
             </main>
         </div>
     </div>

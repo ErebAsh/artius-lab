@@ -296,6 +296,44 @@
             </div>
             {% endif %}
 
+            <!-- Projects -->
+            <div class="main-section">
+                <h2 class="section-header-main">Projects</h2>
+                {% if projects and projects|length > 0 %}
+                    {% for project in projects %}
+                    <div style="margin-bottom: 20px; opacity: 0.9;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="font-weight: 700; font-size: 11pt;">{{ project.name }}</span>
+                            <span style="font-weight: 600; font-size: 9pt;">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</span>
+                        </div>
+                        {% if project.link %}
+                        <div style="margin-top: 5px;">
+                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" style="color: #fdf5e6; text-decoration: none; font-size: 8.5pt; font-weight: 600; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ project.link }}</a>
+                        </div>
+                        {% endif %}
+                        {% if project.description %}
+                        <p style="font-size: 9.5pt; line-height: 1.5; margin-top: 10px; text-align: justify;">{{ project.description }}</p>
+                        {% endif %}
+                        {% if project.technologies %}
+                        <div style="font-size: 8.5pt; font-style: italic; margin-top: 8px;">Technologies: {{ project.technologies | join(', ') }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="margin-bottom: 20px; opacity: 0.9;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="font-weight: 700; font-size: 11pt;">Sustainability Campaign</span>
+                            <span style="font-weight: 600; font-size: 9pt;">2023 - 2024</span>
+                        </div>
+                        <div style="margin-top: 5px;">
+                            <a href="#" style="color: #fdf5e6; text-decoration: none; font-size: 8.5pt; font-weight: 600; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">green-project.com</a>
+                        </div>
+                        <p style="font-size: 9.5pt; line-height: 1.5; margin-top: 10px; text-align: justify;">Directed a comprehensive digital and print campaign focused on eco-friendly living and sustainable architecture.</p>
+                        <div style="font-size: 8.5pt; font-style: italic; margin-top: 8px;">Technologies: InDesign, Illustrator, Green-Print Methods</div>
+                    </div>
+                {% endif %}
+            </div>
+
             <div class="main-section">
                 <h2 class="section-header-main">Technical Skills</h2>
                 <ul class="skills-grid">
@@ -310,15 +348,16 @@
                 </ul>
             </div>
 
+            {% if hobbies and hobbies|length > 0 %}
             <div class="main-section">
                 <h2 class="section-header-main">Hobbies</h2>
                 <ul class="skills-grid">
-                    <li>Reading Books</li>
-                    <li>Sports and Fitness</li>
-                    <li>Music</li>
-                    <li>Cooking</li>
+                    {% for hobby in hobbies %}
+                    <li>{{ hobby }}</li>
+                    {% endfor %}
                 </ul>
             </div>
+            {% endif %}
         </main>
     </div>
 </body>
