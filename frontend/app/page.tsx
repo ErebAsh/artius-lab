@@ -3,7 +3,6 @@ import Hero from "./components/Hero";
 import Features from "./components/Features";
 import Steps from "./components/Steps";
 import FAQ from "./components/FAQ";
-import Testimonial from "./components/Testimonial";
 
 export default function Home() {
   return (
@@ -13,8 +12,6 @@ export default function Home() {
       <Features />
 
       <Steps />
-
-      <Testimonial />
 
       <FAQ />
 
