@@ -45,6 +45,11 @@ class Certification(BaseModel):
     date: Optional[str] = None
 
 
+class Language(BaseModel):
+    name: str
+    proficiency: Optional[str] = "Fluent"  # Native, Fluent, Conversational, Basic
+
+
 class Project(BaseModel):
     name: str
     description: str
@@ -65,6 +70,7 @@ class ResumeData(BaseModel):
     skills: list[Skill] = []
     projects: list[Project] = []
     certifications: list[Certification] = []
+    languages: list[Language] = []
     expertise: Optional[Expertise] = None
 
 
@@ -75,6 +81,7 @@ class EnhancedResumeData(BaseModel):
     skills: list[Skill] = []
     projects: list[Project] = []
     certifications: list[Certification] = []
+    languages: list[Language] = []
     expertise: Optional[Expertise] = None
 
 

@@ -374,6 +374,32 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
 ]
 
 
+def _detect_has_languages(template_id: str) -> bool:
+    """Auto-detect whether a template HTML contains a section for languages."""
+    template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        return "languages" in content or "<!-- has_languages -->" in content
+    except FileNotFoundError:
+        return False
+
+
+def _detect_has_language_proficiency(template_id: str) -> bool:
+    """Auto-detect whether a template HTML uses proficiency levels for languages."""
+    template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        # Look for proficiency usage in jinja or specific markers
+        return (".proficiency" in content or 
+                "lang-fill" in content or 
+                "lang-bar" in content or 
+                "<!-- has_language_proficiency -->" in content)
+    except FileNotFoundError:
+        return False
+
+
 def _detect_has_photo(template_id: str) -> bool:
     """Auto-detect whether a template HTML contains the <!-- has_photo --> marker."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
@@ -388,10 +414,23 @@ def _detect_has_photo(template_id: str) -> bool:
 def get_template_by_id(template_id: str):
     for t in RESUME_TEMPLATES:
         if t["id"] == template_id:
-            return {**t, "has_photo": _detect_has_photo(t["id"])}
+            return {
+                **t, 
+                "has_photo": _detect_has_photo(t["id"]),
+                "has_languages": _detect_has_languages(t["id"]),
+                "has_language_proficiency": _detect_has_language_proficiency(t["id"])
+            }
     return None
 
 
 def get_all_templates():
-    """Return all templates with has_photo flag auto-detected."""
-    return [{**t, "has_photo": _detect_has_photo(t["id"])} for t in RESUME_TEMPLATES]
+    """Return all templates with feature flags auto-detected."""
+    return [
+        {
+            **t, 
+            "has_photo": _detect_has_photo(t["id"]),
+            "has_languages": _detect_has_languages(t["id"]),
+            "has_language_proficiency": _detect_has_language_proficiency(t["id"])
+        } 
+        for t in RESUME_TEMPLATES
+    ]

@@ -84,6 +84,18 @@ const STEPS = [
   },
   { 
     id: 6, 
+    label: "Languages", 
+    icon: (
+      <span style={{ 
+        display: "flex", 
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+        fontSize: "22px",
+        transform: "perspective(100px) rotateX(10deg)"
+      }}>🌐</span>
+    )
+  },
+  { 
+    id: 7, 
     label: "Layout & Style", 
     icon: (
       <span style={{ 
@@ -134,6 +146,11 @@ interface Certification {
   date: string;
 }
 
+interface Language {
+  name: string;
+  proficiency: string;
+}
+
 function BuilderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -150,6 +167,8 @@ function BuilderContent() {
   const [resumeId, setResumeId] = useState<number | null>(resumeIdParam ? parseInt(resumeIdParam) : null);
   const [templateHasPhoto, setTemplateHasPhoto] = useState(false);
   const [templateHasSkillLevels, setTemplateHasSkillLevels] = useState(false);
+  const [templateHasLanguages, setTemplateHasLanguages] = useState(false);
+  const [templateHasLanguageProficiency, setTemplateHasLanguageProficiency] = useState(false);
   const [rawPhoto, setRawPhoto] = useState("");  // original unedited photo for re-editing
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
 
@@ -188,6 +207,8 @@ function BuilderContent() {
             f.toLowerCase().includes("rating")
           );
           setTemplateHasSkillLevels(data.has_skill_levels === true || hasSkillFeatures);
+          setTemplateHasLanguages(data.has_languages === true);
+          setTemplateHasLanguageProficiency(data.has_language_proficiency === true);
         }
       } catch (err) {
         console.error("Failed to fetch template info:", err);
@@ -228,6 +249,10 @@ function BuilderContent() {
   const [certifications, setCertifications] = useState<Certification[]>([
     { name: "", issuer: "", year: "", date: "" },
   ]);
+
+  const [languages, setLanguages] = useState<Language[]>([
+    { name: "", proficiency: "Native" },
+  ]);
   
   const [expertise, setExpertise] = useState({
     enabled: false,
@@ -249,6 +274,7 @@ function BuilderContent() {
       if (rd.skills?.length) setSkills(rd.skills);
       if (rd.projects?.length) setProjects(rd.projects);
       if (rd.certifications?.length) setCertifications(rd.certifications);
+      if (rd.languages?.length) setLanguages(rd.languages);
       if (rd.expertise) {
         setExpertise({
           enabled: true,
@@ -292,6 +318,7 @@ function BuilderContent() {
         .filter((p) => p.name.trim() !== "")
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
       certifications: certifications.filter((c) => c.name.trim() !== ""),
+      languages: languages.filter((l) => l.name.trim() !== ""),
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -371,6 +398,7 @@ function BuilderContent() {
         .filter((p) => p.name.trim() !== "")
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
       certifications: certifications.filter((c) => c.name.trim() !== ""),
+      languages: languages.filter((l) => l.name.trim() !== ""),
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -410,6 +438,9 @@ function BuilderContent() {
       }
       if (enhanced.certifications && enhanced.certifications.length > 0) {
         setCertifications(enhanced.certifications);
+      }
+      if (enhanced.languages && enhanced.languages.length > 0) {
+        setLanguages(enhanced.languages);
       }
       if (enhanced.expertise) {
         setExpertise({
@@ -456,6 +487,7 @@ function BuilderContent() {
         .filter((p) => p.name.trim() !== "")
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
       certifications: certifications.filter((c) => c.name.trim() !== ""),
+      languages: languages.filter((l) => l.name.trim() !== ""),
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -627,7 +659,7 @@ function BuilderContent() {
           backdropFilter: "blur(24px) saturate(180%)",
         }}
       >
-        {STEPS.map((step) => (
+        {STEPS.filter(step => step.id !== 6 || templateHasLanguages).map((step) => (
           <button
             key={step.id}
             onClick={() => setCurrentStep(step.id)}
@@ -1297,6 +1329,52 @@ function BuilderContent() {
         )}
 
         {currentStep === 6 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Languages</h2>
+            <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <h3 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--accent-light)", fontWeight: 800 }}>List of Languages</h3>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {languages.map((lang, idx) => (
+                  <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={labelStyle}>Language</label>
+                      <input style={inputStyle} placeholder="English, Spanish..." value={lang.name} onChange={(e) => { const u = [...languages]; u[idx].name = e.target.value; setLanguages(u); }} />
+                    </div>
+                    {templateHasLanguageProficiency && (
+                      <div style={{ flex: 1 }}>
+                        <label style={labelStyle}>Proficiency</label>
+                        <select 
+                          style={inputStyle} 
+                          value={lang.proficiency} 
+                          onChange={(e) => { const u = [...languages]; u[idx].proficiency = e.target.value; setLanguages(u); }}
+                        >
+                          <option value="Native">Native</option>
+                          <option value="Fluent">Fluent</option>
+                          <option value="Conversational">Conversational</option>
+                          <option value="Basic">Basic</option>
+                        </select>
+                      </div>
+                    )}
+                    {languages.length > 1 && (
+                      <button style={{ ...removeBtnStyle, padding: "12px 14px", marginBottom: 2 }} onClick={() => setLanguages(languages.filter((_, i) => i !== idx))}>✕</button>
+                    )}
+                  </div>
+                ))}
+                <button 
+                  style={{ ...addBtnStyle, width: "100%", padding: "14px", marginTop: 8, background: "rgba(255,255,255,0.02)", borderStyle: "solid" }} 
+                  onClick={() => setLanguages([...languages, { name: "", proficiency: "Fluent" }])}
+                  className="hover:bg-white/5"
+                >
+                  + Add New Language
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {currentStep === 7 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Layout & Style Fine-Tuning</h2>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
@@ -1359,7 +1437,9 @@ function BuilderContent() {
               if (currentStep === 0) {
                 router.push("/templates");
               } else {
-                setCurrentStep((s) => s - 1);
+                let prevStep = currentStep - 1;
+                if (prevStep === 6 && !templateHasLanguages) prevStep = 5;
+                setCurrentStep(prevStep);
               }
             }}
           >
@@ -1369,11 +1449,20 @@ function BuilderContent() {
 
             <button className="btn-secondary" onClick={handleAIAutoComplete} disabled={enhancing || generating} style={{ background: "linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2))", borderColor: "rgba(99, 102, 241, 0.4)", color: "#e0e7ff", display: "flex", alignItems: "center", gap: 8 }}>
               {enhancing 
-                ? (currentStep === 6 ? "Optimizing..." : "Building...") 
-                : (currentStep === 6 ? "✦ AI Auto-Layout" : "✦ AI Auto-Complete")}
+                ? (currentStep === 7 ? "Optimizing..." : "Building...") 
+                : (currentStep === 7 ? "✦ AI Auto-Layout" : "✦ AI Auto-Complete")}
             </button>
             {currentStep < STEPS.length - 1 ? (
-              <button className="btn-primary" onClick={() => setCurrentStep((s) => s + 1)}>Next →</button>
+              <button 
+                className="btn-primary" 
+                onClick={() => {
+                  let nextStep = currentStep + 1;
+                  if (nextStep === 6 && !templateHasLanguages) nextStep = 7;
+                  setCurrentStep(nextStep);
+                }}
+              >
+                Next →
+              </button>
             ) : (
               <button className="btn-primary" onClick={handleGeneratePreview} disabled={generating || enhancing}>
                 {generating ? "Generating..." : "✦ Preview Resume"}

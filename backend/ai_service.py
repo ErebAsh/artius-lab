@@ -3,7 +3,7 @@ import json
 import asyncio
 import google.generativeai as genai
 from dotenv import load_dotenv
-from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project, Certification
+from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project, Certification, Language
 
 load_dotenv()
 
@@ -25,7 +25,8 @@ Rules for Completion:
     - If very little content exists: Moderate margins (20-22mm), larger font (11pt), moderate section gaps (25-30px).
     - If average content exists: Standard set (18mm margins, 10.5pt font, 18px section gaps).
     - If content is very dense: Tighter margins (12-15mm), smaller font (9.5-10pt), lower line height (1.3), and smaller gaps (10-12px).
-11. RETURN EXACT JSON with keys: "enhanced_data" (matching input resume structure) and "layout_settings" (keys: margin, fontSize, lineHeight, sectionGap, columnGap). No markdown, no conversational text.
+11. For LANGUAGES: If no languages are provided and the template supports it, suggest the user's primary language (e.g., "English") and any others based on the profile context.
+12. RETURN EXACT JSON with keys: "enhanced_data" (matching input resume structure) and "layout_settings" (keys: margin, fontSize, lineHeight, sectionGap, columnGap). No markdown, no conversational text.
 """
 
 
@@ -135,6 +136,7 @@ async def parse_resume_text(resume_text: str) -> dict:
     - "projects": [{ "name", "description", "technologies": [], "link" }]
     - "expertise": { "technical": [], "professional": [] }
     - "certifications": [{ "name", "issuer", "year" }]
+    - "languages": [{ "name", "proficiency" }]
     
     Rules:
     1. Extract ALL information faithfully from the text
@@ -176,6 +178,7 @@ Return ONLY valid JSON matching the schema described. Do not wrap in markdown co
             "projects": [],
             "expertise": {"technical": [], "professional": []},
             "certifications": [],
+            "languages": [],
             "error": f"Failed to parse resume: {str(e)}"
         }
 
