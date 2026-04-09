@@ -93,15 +93,23 @@
         }
 
         .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             list-style: none;
             padding: 0;
             margin: 0;
         }
         .skill-item {
-            font-size: 9pt;
-            color: #444;
-            margin-bottom: 10px;
-            font-weight: 500;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 7.2pt;
+            background-color: #000;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 0; /* Minimalist sharp edges */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* ── Right Column (70%) ── */
@@ -276,23 +284,23 @@
             <!-- Skills -->
             <div class="sidebar-section">
                 <h2>Skills</h2>
-                <ul class="skill-list">
+                <div class="skill-list">
                     {% if skills %}
                         {% for skill in skills %}
-                        <li class="skill-item">{{ skill.name }}</li>
+                        <div class="skill-item">{{ skill.name }}</div>
                         {% endfor %}
                     {% endif %}
                     {% if expertise.technical %}
                         {% for item in expertise.technical %}
-                        <li class="skill-item">{{ item }}</li>
+                        <div class="skill-item">{{ item }}</div>
                         {% endfor %}
                     {% endif %}
                     {% if expertise.professional %}
                         {% for item in expertise.professional %}
-                        <li class="skill-item">{{ item }}</li>
+                        <div class="skill-item">{{ item }}</div>
                         {% endfor %}
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </aside>
 

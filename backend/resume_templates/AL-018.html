@@ -30,6 +30,8 @@
             margin: 0 auto;
             position: relative;
             padding: 0;
+            background: #fff;
+            border-top: 10px solid #283593; /* Thick top border as seen in screenshot */
         }
 
         /* ── Header ── */
@@ -55,7 +57,7 @@
         }
         .header-content {
             width: 65%;
-            padding: 85px 60px 0 30px;
+            padding: 60px 60px 0 30px; /* Reduced top padding to match photo box alignment */
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -118,7 +120,7 @@
             padding-right: 40px;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 8px; /* Further reduced from 18px for ultra-compact layout */
         }
         .section-title {
             font-family: 'Montserrat', sans-serif;
@@ -126,19 +128,19 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Reduced from 15px */
             color: #000;
         }
 
         .skill-group {
-            margin-bottom: 15px;
+            margin-bottom: 5px; /* Reduced from 15px */
         }
         .skill-group-title {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: 700;
             text-transform: uppercase;
             color: #283593;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             display: block;
         }
         .skill-list {
@@ -183,7 +185,7 @@
         /* ── Right column (65%) ── */
         .main-content {
             width: 65%;
-            padding-left: 40px;
+            padding-left: 50px; /* Increased padding for better separation */
             border-left: 1px solid #eee;
         }
 
@@ -196,7 +198,7 @@
         }
 
         .exp-item {
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Reduced from 15px */
         }
         .exp-header-row {
             display: flex;
@@ -267,8 +269,9 @@
             <div class="header-content">
                 <div class="header-top-row">
                     <h1 class="name">
-                        {{ personal.full_name | default('Jacson', true) | upper }}<br>
-                        {{ personal.full_name.split(' ')[-1] | default('Smith', true) | upper }}
+                        {% set name_parts = (personal.full_name | default('Jacson Smith', true)).split(' ') %}
+                        {{ name_parts[0] | upper }}<br>
+                        {{ name_parts[1:] | join(' ') | upper }}
                     </h1>
                     <div class="contact-top">
                         {% if personal.phone %}<div>{{ personal.phone }}</div>{% endif %}
@@ -289,10 +292,13 @@
         <div class="main-layout">
             <!-- Sidebar -->
             <aside class="sidebar">
-                <!-- Profile Title -->
+                <!-- Profile -->
+                {% if personal.summary %}
                 <div class="sidebar-section">
                     <h2 class="section-title">Profile</h2>
+                    <p class="profile-text" style="text-align: left; font-size: 8.5pt;">{{ personal.summary }}</p>
                 </div>
+                {% endif %}
 
                 <!-- Skills -->
                 <div class="sidebar-section">
@@ -341,15 +347,13 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+ 
+
             </aside>
 
             <!-- Main column -->
             <main class="main-content">
-                {% if personal.summary %}
-                <p class="profile-text">{{ personal.summary }}</p>
-                {% endif %}
-
-                <div class="sidebar-section" style="margin-top: 0;">
+                <div class="content-section" style="margin-bottom: 15px;">
                     <h2 class="section-title">Experience</h2>
                 </div>
 
@@ -372,7 +376,7 @@
                 {% endif %}
 
                 <!-- Projects -->
-                <div class="sidebar-section" style="margin-top: 20px;">
+                <div class="content-section" style="margin-top: 15px; margin-bottom: 10px;">
                     <h2 class="section-title">Projects</h2>
                 </div>
                 {% if projects and projects|length > 0 %}
@@ -380,7 +384,7 @@
                     <div class="exp-item">
                         <div class="exp-header-row">
                             <span class="exp-title">{{ project.name }}</span>
-                            <span class="exp-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</span>
+                            <span class="exp-date">{% if project.start_date %}{{ project.start_date }} - {% endif %}{{ project.end_date | default('Present', true) }}</span>
                         </div>
                         {% if project.link %}
                         <div class="exp-company" style="font-size: 8.5pt; color: #283593; text-transform: none; margin-bottom: 5px;">
@@ -411,6 +415,21 @@
                             <li style="font-style: italic;">Technologies: Illustrator, Photoshop, Figma</li>
                         </ul>
                     </div>
+                {% endif %}
+                <!-- Certifications -->
+                {% if certifications and certifications|length > 0 %}
+                <div class="content-section" style="margin-top: 15px; margin-bottom: 10px;">
+                    <h2 class="section-title">Certifications</h2>
+                </div>
+                {% for cert in certifications %}
+                <div class="exp-item">
+                    <div class="exp-header-row">
+                        <span class="exp-title" style="font-size: 10pt;">{{ cert.name }}</span>
+                        <span class="exp-date">{{ cert.year or cert.date }}</span>
+                    </div>
+                    <div class="exp-company" style="font-size: 9pt;">{{ cert.issuer }}</div>
+                </div>
+                {% endfor %}
                 {% endif %}
             </main>
         </div>

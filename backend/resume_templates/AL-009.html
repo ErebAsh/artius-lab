@@ -154,7 +154,7 @@
             fill: #fff;
         }
         .sidebar-content {
-            padding: 20px 25px 30px;
+            padding: 15px 25px 20px;
         }
         
         .contact-item {
@@ -205,17 +205,21 @@
             color: #222;
             margin-bottom: 2px;
         }
+        .edu-item:last-child {
+            margin-bottom: 0;
+        }
+
         .edu-info {
             font-size: 8.5pt;
             color: #5a5a5a;
         }
 
-        .expertise-list {
+        .skills-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .expertise-list li {
+        .skills-list li {
             position: relative;
             padding-left: 15px;
             margin-bottom: 10px;
@@ -223,11 +227,14 @@
             color: #5a5a5a;
             font-weight: 500;
         }
-        .expertise-list li::before {
+        .skills-list li::before {
             content: "•";
             position: absolute;
             left: 0;
             color: #5a5a5a;
+        }
+        .skills-list li:last-child {
+            margin-bottom: 0;
         }
 
         /* ── Main Column ── */
@@ -259,7 +266,7 @@
             fill: #5a5a5a;
         }
         .main-content-text {
-            padding: 25px 35px 35px;
+            padding: 15px 35px 20px;
         }
         .profile-text {
             font-size: 9.5pt;
@@ -270,6 +277,9 @@
 
         .exp-item {
             margin-bottom: 18px;
+        }
+        .exp-item:last-child {
+            margin-bottom: 0;
         }
         .exp-header {
             display: flex;
@@ -421,23 +431,22 @@
                 </div>
                 {% endif %}
 
-                <!-- Expertise -->
+                <!-- Skills -->
+                {% if skills and skills|length > 0 %}
                 <div class="sidebar-section">
                     <div class="sidebar-header">
-                        <svg viewBox="0 0 24 24"><path d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                        Expertise
+                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                        Skills
                     </div>
                     <div class="sidebar-content">
-                        <ul class="expertise-list">
-                            {% for item in expertise.professional %}
-                            <li>{{ item }}</li>
-                            {% endfor %}
-                            {% for item in expertise.technical %}
-                            <li>{{ item }}</li>
+                        <ul class="skills-list">
+                            {% for skill in skills %}
+                            <li>{{ skill.name }}</li>
                             {% endfor %}
                         </ul>
                     </div>
                 </div>
+                {% endif %}
             </aside>
 
             <!-- Main Content -->
@@ -482,6 +491,36 @@
                                 {% endfor %}
                             </ul>
                             {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Projects -->
+                {% if projects and projects|length > 0 %}
+                <div class="main-section">
+                    <div class="main-section-header">
+                        <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                        Featured Projects
+                    </div>
+                    <div class="main-content-text">
+                        {% for project in projects %}
+                        <div class="exp-item">
+                            <div class="exp-header" style="margin-bottom: 5px;">
+                                <span class="exp-title">{{ project.name }}</span>
+                                {% if project.link %}
+                                <span class="exp-date" style="color: #666; font-size: 8.5pt;">{{ project.link }}</span>
+                                {% endif %}
+                            </div>
+                            {% if project.technologies and project.technologies|length > 0 %}
+                            <div class="exp-company" style="font-size: 8.5pt; font-style: italic; color: #777; margin-bottom: 8px;">
+                                Core Stack: {{ project.technologies | join(', ') }}
+                            </div>
+                            {% endif %}
+                            <div class="profile-text" style="padding: 0; margin: 0;">
+                                {{ project.description }}
+                            </div>
                         </div>
                         {% endfor %}
                     </div>

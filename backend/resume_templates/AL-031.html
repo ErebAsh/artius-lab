@@ -383,29 +383,7 @@
             </div>
             {% endif %}
 
-            <!-- Education -->
-            {% if education and education|length > 0 %}
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">Education</h3>
-                {% for edu in education %}
-                <div class="sidebar-edu-item">
-                    <span class="sidebar-edu-degree">{{ edu.degree }}</span>
-                    {% if edu.field_of_study %}
-                    <span class="sidebar-edu-field">{{ edu.field_of_study }}</span>
-                    {% endif %}
-                    <span class="sidebar-edu-inst">{{ edu.institution }}</span>
-                    <span class="sidebar-edu-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
-                    {% if edu.gpa %}
-                    <div class="sidebar-edu-meta">GPA: {{ edu.gpa }}</div>
-                    {% endif %}
-                    {% if edu.achievements %}
-                    <div class="sidebar-edu-meta">{{ edu.achievements }}</div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
+            <!-- Expertise (Moved to Sidebar) -->
             {% if expertise.technical or expertise.professional %}
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Expertise</h3>
@@ -425,6 +403,8 @@
                 {% endif %}
             </div>
             {% endif %}
+
+
         </aside>
 
         <!-- Main Content -->
@@ -436,6 +416,28 @@
                 <div class="summary-text">
                     {{ personal.summary }}
                 </div>
+            </section>
+            {% endif %}
+
+            <!-- Education (Moved to right side) -->
+            {% if education and education|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                {% for edu in education %}
+                <div class="exp-item">
+                    <div class="exp-header">
+                        <span class="exp-role">{{ edu.degree }}{% if edu.field_of_study %} — {{ edu.field_of_study }}{% endif %}</span>
+                        <span class="exp-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
+                    </div>
+                    <div class="exp-company">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</div>
+                    {% if edu.achievements %}
+                    <div class="exp-desc" style="margin-top: 5px;">{{ edu.achievements }}</div>
+                    {% endif %}
+                    {% if edu.gpa %}
+                    <div class="exp-desc" style="font-weight: 600;">GPA: {{ edu.gpa }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
             </section>
             {% endif %}
 

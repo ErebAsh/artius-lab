@@ -76,12 +76,11 @@
         }
 
         .sidebar-content {
-            padding: 40px 30px;
-            flex-grow: 1;
+            padding: 25px 30px;
         }
 
         .sidebar-section {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .sidebar-header {
             font-family: 'Montserrat', sans-serif;
@@ -156,11 +155,13 @@
         .expertise-sidebar {
             background-color: #444;
             color: #fff;
-            padding: 40px 30px;
+            padding: 20px 30px 25px;
         }
         .expertise-sidebar .sidebar-header {
             color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
         }
         .expertise-sidebar .sidebar-header svg {
             fill: #fff;
@@ -192,7 +193,7 @@
         }
 
         .header-right {
-            padding: 60px 45px;
+            padding: 40px 45px;
             border-bottom: 1px solid #eee;
         }
         .name {
@@ -214,7 +215,7 @@
         }
 
         .main-content {
-            padding: 40px 45px;
+            padding: 25px 45px;
         }
 
         .section-header-main {
@@ -389,20 +390,42 @@
                 </div>
                 {% endif %}
 
-                <!-- Certifications -->
-                {% if certifications and certifications|length > 0 %}
+
+                <!-- Languages -->
+                {% if languages and languages|length > 0 %}
                 <div class="sidebar-section">
                     <h2 class="sidebar-header">
-                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-                        Certifications
+                        <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75l1.13 3h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+                        Languages
                     </h2>
-                    {% for cert in certifications %}
-                    <div class="edu-item">
-                        <div class="edu-year">{{ cert.year }}</div>
-                        <div class="edu-degree">{{ cert.name }}</div>
-                        <div class="edu-school">{{ cert.issuer }}</div>
+                    <ul class="expertise-list" style="margin-left: 0; padding-left: 0;">
+                        {% for lang in languages %}
+                        <li style="color: #444;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>{{ lang.name }}</span>
+                                <span style="font-weight: 700; font-size: 7.5pt;">{{ lang.proficiency }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Skills -->
+                {% if skills and skills|length > 0 %}
+                <div class="sidebar-section">
+                    <h2 class="sidebar-header">
+                        <svg viewBox="0 0 24 24"><path d="M11 18l-2-2 1.41-1.41L11 15.17l4.59-4.59L17 12l-6 6zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        Professional Skills
+                    </h2>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                        {% for skill in skills %}
+                        <div class="skill-item">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <div class="skill-bar" style="background: rgba(255,255,255,0.4);"><div class="skill-fill" style="width: {{ skill.level | default(80, true) }}%;"></div></div>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
                 {% endif %}
             </div>
@@ -449,7 +472,7 @@
 
                 <!-- Work Experience -->
                 {% if experience and experience|length > 0 %}
-                <div class="section-header-main">
+                <div class="section-header-main" style="margin-top: 25px;">
                     <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
                     Work Experience
                 </div>
@@ -472,40 +495,42 @@
                 {% endfor %}
                 {% endif %}
 
-                <!-- Skills & Projects -->
-                <div class="skills-reference">
-                    <div>
-                        <div class="section-header-main">
-                            <svg viewBox="0 0 24 24"><path d="M11 18l-2-2 1.41-1.41L11 15.17l4.59-4.59L17 12l-6 6zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                            Skills
-                        </div>
-                        {% if skills and skills|length > 0 %}
-                            {% for skill in skills %}
-                            <div class="skill-item">
-                                <span class="skill-name">{{ skill.name }}</span>
-                                <div class="skill-bar"><div class="skill-fill" style="width: {{ skill.level | default(80, true) }}%;"></div></div>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div>
-                        <div class="section-header-main">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
-                            Projects
-                        </div>
-                        {% if projects and projects|length > 0 %}
-                            {% for project in projects %}
-                            <div class="ref-item">
-                                <div class="ref-name">{{ project.name }}</div>
-                                {% if project.technologies %}
-                                <div class="ref-org">{{ project.technologies | join(', ') }}</div>
-                                {% endif %}
-                                <div class="ref-contact">{{ project.description | truncate(80) }}</div>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                <!-- Projects -->
+                {% if projects and projects|length > 0 %}
+                <div class="section-header-main" style="margin-top: 25px;">
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                    Projects
                 </div>
+                {% for project in projects %}
+                <div class="exp-item">
+                    <div class="exp-row">
+                        <span class="exp-title">{{ project.name }}</span>
+                        {% if project.link %}<span class="exp-date">{{ project.link }}</span>{% endif %}
+                    </div>
+                    {% if project.technologies %}
+                    <div class="exp-company" style="font-weight: 500; font-style: italic;">{{ project.technologies | join(' • ') }}</div>
+                    {% endif %}
+                    <div class="exp-desc">{{ project.description }}</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Certifications -->
+                {% if certifications and certifications|length > 0 %}
+                <div class="section-header-main" style="margin-top: 25px;">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+                    Certifications
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px 40px; margin-top: 15px;">
+                    {% for cert in certifications %}
+                    <div style="min-width: 240px; flex: 1;">
+                        <div style="font-size: 10pt; font-weight: 700; color: #222; text-transform: uppercase; margin-bottom: 2px;">{{ cert.name }}</div>
+                        <div style="font-size: 8.5pt; color: #666; font-weight: 500;">{{ cert.issuer }} <span style="margin: 0 5px; color: #aaa;">|</span> {{ cert.year }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
             </div>
         </main>
     </div>

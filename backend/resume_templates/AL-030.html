@@ -115,22 +115,23 @@
         }
 
         .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .skill-list li {
-            font-size: 9pt;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .skill-list li::before {
-            content: "//";
+        .skill-item {
+            font-size: 7.5pt;
+            background-color: rgba(180, 158, 133, 0.1);
             color: #b49e85;
-            font-weight: 700;
-            font-size: 8pt;
+            padding: 4px 10px;
+            border: 1px solid rgba(180, 158, 133, 0.4);
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
 
         /* Main Content */
@@ -285,30 +286,30 @@
                 <!-- Skills -->
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">Skills</h3>
-                    <ul class="skill-list">
+                    <div class="skill-list">
                         {% if skills %}
                         {% for skill in skills %}
-                        <li>{{ skill.name }}</li>
+                        <div class="skill-item">{{ skill.name }}</div>
                         {% endfor %}
                         {% else %}
-                        <li>Leadership</li>
-                        <li>Project Management</li>
-                        <li>Team Building</li>
-                        <li>Technical Analysis</li>
-                        <li>Operations Management</li>
+                        <div class="skill-item">Leadership</div>
+                        <div class="skill-item">Project Management</div>
+                        <div class="skill-item">Team Building</div>
+                        <div class="skill-item">Technical Analysis</div>
+                        <div class="skill-item">Operations Management</div>
                         {% endif %}
-                    </ul>
+                    </div>
                 </div>
 
                 <!-- Languages -->
                 {% if languages %}
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">Languages</h3>
-                    <ul class="skill-list">
+                    <div class="skill-list">
                         {% for lang in languages %}
-                        <li>{{ lang.name }} ({{ lang.level }})</li>
+                        <div class="skill-item">{{ lang.name }}</div>
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
                 {% endif %}
             </div>
@@ -379,6 +380,21 @@
                     </div>
                 </div>
                 {% endfor %}
+            </section>
+            {% endif %}
+
+            <!-- Certifications -->
+            {% if certifications and certifications|length > 0 %}
+            <section class="section">
+                <h2 class="section-title">Certifications</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    {% for cert in certifications %}
+                    <div class="exp-item" style="margin-bottom: 5px;">
+                        <div class="exp-role" style="font-size: 10pt;">{{ cert.name }}</div>
+                        <div class="exp-company" style="margin-bottom: 0;">{{ cert.issuer }} | {{ cert.year }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
             </section>
             {% endif %}
         </main>

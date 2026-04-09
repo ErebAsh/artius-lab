@@ -14,12 +14,18 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
+        :root {
+            --primary-color: #000000;
+            --text-dark: #1a1a1a;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+        }
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #fff;
-            color: #1a1a1a;
+            color: var(--text-dark);
             line-height: 1.4;
         }
         .container {
@@ -40,7 +46,7 @@
         .initials-badge {
             width: 100px;
             height: 100px;
-            background: #000;
+            background: var(--primary-color);
             color: #fff;
             border-radius: 50%;
             display: flex;
@@ -76,7 +82,7 @@
         /* Sidebar (Contact/Education/Languages) */
         .sidebar {
             width: 30%;
-            border-right: 1px solid #ddd;
+            border-right: 1px solid var(--border-color);
             padding-right: 30px;
         }
         .sidebar-section {
@@ -89,7 +95,7 @@
             letter-spacing: 2px;
             margin: 0 0 15px 0;
             padding-bottom: 5px;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid var(--primary-color);
         }
 
         .contact-item {
@@ -107,7 +113,7 @@
         .contact-icon-wrapper {
             width: 24px;
             height: 24px;
-            background: #000;
+            background: var(--primary-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -154,6 +160,37 @@
             font-style: italic;
         }
 
+        /* Skills & Certs */
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .skill-badge {
+            font-size: 7.5pt;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 0; /* Minimalist sharp corners */
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .cert-item {
+            margin-bottom: 10px;
+        }
+        .cert-name {
+            font-size: 8.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+        .cert-details {
+            font-size: 8pt;
+            color: #666;
+        }
+
         /* Main (Profile/Experience) */
         .content {
             width: 70%;
@@ -168,7 +205,7 @@
             letter-spacing: 2px;
             margin: 0 0 15px 0;
             padding-bottom: 5px;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid var(--primary-color);
         }
 
         .profile-text {
@@ -291,6 +328,29 @@
                     <div class="lang-item">
                         <div class="lang-name">{{ lang.name }}</div>
                         <div class="lang-level">{{ lang.level }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if skills and skills|length > 0 %}
+                <div class="sidebar-section">
+                    <h2>Skills</h2>
+                    <div class="skill-list">
+                        {% for skill in skills %}
+                        <div class="skill-badge">{{ skill.name }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if certifications and certifications|length > 0 %}
+                <div class="sidebar-section">
+                    <h2>Certifications</h2>
+                    {% for cert in certifications %}
+                    <div class="cert-item">
+                        <div class="cert-name">{{ cert.name }}</div>
+                        <div class="cert-details">{{ cert.issuer }} | {{ cert.year }}</div>
                     </div>
                     {% endfor %}
                 </div>

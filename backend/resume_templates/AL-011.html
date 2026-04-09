@@ -280,7 +280,7 @@
             align-items: center;
             gap: 10px;
             font-size: 9.5pt;
-            color: #444;
+            color: rgba(255,255,255,0.9);
         }
         .skill-dot {
             width: 8px;
@@ -363,13 +363,14 @@
             <div class="sidebar-section">
                 <h2>Skills</h2>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                    {% if expertise.technical %}
-                        {% for item in expertise.technical %}
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>{{ item }}</div>
+                    {% if skills and skills|length > 0 %}
+                        {% for skill in skills %}
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>{{ skill.name }}</div>
                         {% endfor %}
                     {% else %}
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Management</div>
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Teamwork</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Problem Solving</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Communication</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Critical Thinking</div>
                     {% endif %}
                 </div>
             </div>

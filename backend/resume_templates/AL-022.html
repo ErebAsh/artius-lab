@@ -158,10 +158,10 @@
         .main-content {
             width: 64%;
             background: var(--white);
-            margin-top: 180px; /* Reduced to show less dark header */
-            border-top-left-radius: 120px; /* Adjusted radius for tighter look */
+            margin-top: 180px; 
+            border-top-left-radius: 120px; 
             position: relative;
-            padding: 50px 50px 30px 20px;
+            padding: 60px 50px 30px 50px;
             z-index: 1;
         }
 
@@ -200,40 +200,24 @@
 
         /* ── Main Sections ── */
         .section {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
+            display: block;
+            margin-bottom: 25px;
             position: relative;
         }
         .section-header {
-            width: 40px;
-            flex-shrink: 0;
+            display: inline-block;
             background: var(--dark-grey);
             color: var(--white);
-            border-radius: 10px 10px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px 0;
-            position: relative;
+            border-radius: 15px 0 15px 0;
+            padding: 6px 30px;
+            margin-bottom: 20px;
         }
-        .section-header::after {
-            content: "";
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: var(--dark-grey);
-            border-radius: 0 0 10px 10px;
-        }
-        .section-title-vertical {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
+
+        .section-title-horizontal {
             font-family: 'Outfit', sans-serif;
             font-size: 13pt;
-            font-weight: 500;
-            letter-spacing: 4px;
+            font-weight: 600;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
@@ -279,14 +263,6 @@
             line-height: 1.5;
             margin-top: 8px;
         }
-
-        .divider {
-            height: 1.5px;
-            background: var(--dark-grey);
-            margin: 15px 0;
-            width: 100%;
-        }
-
         .footer {
             position: absolute;
             bottom: 30px;
@@ -385,7 +361,7 @@
             {% if education and education|length > 0 %}
             <section class="section">
                 <div class="section-header">
-                    <div class="section-title-vertical">Education</div>
+                    <div class="section-title-horizontal">Education</div>
                 </div>
                 <div class="section-content">
                     {% for edu in education %}
@@ -403,12 +379,12 @@
             </section>
             {% endif %}
 
-            <div class="divider"></div>
+            
 
             {% if experience and experience|length > 0 %}
             <section class="section">
                 <div class="section-header">
-                    <div class="section-title-vertical">Experience</div>
+                    <div class="section-title-horizontal">Experience</div>
                 </div>
                 <div class="section-content">
                     {% for exp in experience %}
@@ -437,11 +413,11 @@
             {% endif %}
 
             {% if projects and projects|length > 0 %}
-            <div class="divider"></div>
+            
             
             <section class="section">
                 <div class="section-header">
-                    <div class="section-title-vertical">Projects</div>
+                    <div class="section-title-horizontal">Projects</div>
                 </div>
                 <div class="section-content">
                     {% for project in projects %}
@@ -461,12 +437,6 @@
                 </div>
             </section>
             {% endif %}
-
-            <div class="footer">
-                <a href="http://{{ personal.website | default('WWW.HELPSHARED.COM', true) }}" class="website-link">
-                    {{ personal.website | default('WWW.HELPSHARED.COM', true) }}
-                </a>
-            </div>
         </main>
     </div>
 </body>

@@ -80,7 +80,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Beige Architectural",
         "description": "A sophisticated palette of beige and charcoal with a bold header. Features a unique circular photo placement and structured expertise sections.",
         "accent_color": "#5a5a5a",
-        "features": ["Dual-tone Header", "Circular Photo", "Beige Sidebar", "Structured Content"],
+        "features": ["Dual-tone Header", "Circular Photo", "Beige Sidebar", "Structured Content", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -103,11 +103,11 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
     },
     {
         "id": "AL-012",
-        "name": "Vibrant Blue Accent",
-        "description": "A vibrant blue template with modern diagonal accents and Pill-shaped section headers. Features a clean timeline for education and experience.",
-        "accent_color": "#00adef",
-        "features": ["Blue Accents", "Pill Headers", "Timeline Layout", "Modern Icons"],
-        "category": "Modern",
+        "name": "Nursing Mint Professional",
+        "description": "A clean teal-themed template with an overlapping circular photo and a numbered timeline. Perfect for healthcare professionals and students.",
+        "accent_color": "#8cc8bc",
+        "features": ["Overlapping Photo", "Numbered Timeline", "Sidebar Bullets", "Language Dots"],
+        "category": "Professional",
         "has_latex": False
     },
     {
@@ -124,7 +124,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Grayscale Structural",
         "description": "A sophisticated grayscale layout with a strong structural sidebar and integrated expertise sections. Great for designers and UI/UX specialists.",
         "accent_color": "#444444",
-        "features": ["Grayscale Theme", "Structural Sidebar", "Skill Progress Bars", "Integrated Expertise", "Projects Section"],
+        "features": ["Grayscale Theme", "Structural Sidebar", "Skill Progress Bars", "Enhanced Organization", "Full-width Sections", "Projects Section"],
         "category": "Modern",
         "has_latex": False
     },
@@ -169,7 +169,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "name": "Forest Green Angular",
         "description": "A forest green design with beige accents and sharp angular section dividers. Excellent for candidates looking for a unique, nature-inspired professional look.",
         "accent_color": "#1b431c",
-        "features": ["Forest Green Theme", "Beige Accents", "Angular Dividers", "Structured Profile", "Projects Section"],
+        "features": ["Forest Green Theme", "Beige Accents", "Angular Dividers", "Structured Profile", "Projects Section", "Experience Section", "Sidebar Education"],
         "category": "Modern",
         "has_latex": False
     },

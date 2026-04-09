@@ -49,10 +49,10 @@
             font-size: 10pt;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0 0 15px 0;
-            padding-bottom: 5px;
-            border-bottom: 1.5px solid rgba(255,255,255,0.2);
+            letter-spacing: 2.5px; /* Increased for readability on dark bg */
+            margin: 0 0 18px 0;
+            padding-bottom: 6px;
+            border-bottom: 1.5px solid rgba(255,255,255,0.15);
             color: #fff;
         }
 
@@ -110,54 +110,59 @@
         }
 
         .header {
-            padding: 40px 45px 30px;
+            padding: 60px 45px; /* Symmetrical padding */
             background: #fff;
             position: relative;
+            display: flex;
+            align-items: center;
         }
-
-        /* The light gray banner / design element */
+ 
         .header::after {
             content: "";
             position: absolute;
-            top: 25px;
+            top: 50%;
             left: 0;
             right: 0;
-            height: 60px;
-            background: #f0f0f0;
+            height: 120px; /* Taller banner for a bolder 'strap' look */
+            background: #f8f8f8;
             z-index: 1;
+            transform: translateY(-50%); /* Perfectly offsets the background strap */
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
         }
-
+ 
         .header-content {
             position: relative;
             z-index: 2;
             display: flex;
+            width: 100%;
             justify-content: space-between;
             align-items: center;
         }
-
+ 
         .name-title {
             flex-grow: 1;
         }
-
+ 
         .name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 26pt;
+            font-size: 32pt; /* Increased from 26pt */
             font-weight: 700;
             margin: 0;
             color: #000;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             line-height: 1;
         }
-
+ 
         .job-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 10pt;
+            font-size: 11pt;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             color: #666;
-            margin: 8px 0 0 0;
+            margin: 12px 0 0 0;
         }
 
         .main-body {
@@ -170,22 +175,23 @@
 
         .main-section h2 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 12pt;
+            font-size: 11pt;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin: 0 0 15px 0;
             color: #000;
-            border-bottom: 1.5px solid #000;
+            border-bottom: 2px solid #000;
             padding-bottom: 5px;
-            display: inline-block;
+            display: block; /* Changed from inline-block for a more structured separation */
+            width: 100%;
         }
 
         .profile-text {
-            font-size: 9pt;
+            font-size: 9.5pt;
             color: #444;
             line-height: 1.6;
-            text-align: justify;
+            text-align: left; /* Changed from justify for better natural flow */
         }
 
         .experience-item {
@@ -214,9 +220,10 @@
 
         .exp-company {
             font-size: 9pt;
-            color: #666;
+            color: #555;
             margin-bottom: 8px;
-            font-weight: 500;
+            font-weight: 600;
+            margin-top: -2px; /* Pull company closer to title */
         }
 
         .highlights {
@@ -317,10 +324,15 @@
                         <h1 class="name">{{ personal.full_name | default('Affra Fernando', true) }}</h1>
                         <p class="job-title">{{ personal.title | default('Marketing Consultant', true) }}</p>
                     </div>
-                    <!-- Small Circle Initial Badge as shown in image -->
-                    <div style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 14pt; font-family: Montserrat; font-weight: 300; background: #fff;">
-                        {{ personal.full_name[0] | default('A', true) }}{{ personal.full_name.split(' ')[1][0] | default('F', true) }}
+                    {% if personal.photo %}
+                    <div style="width: 75px; height: 75px; border-radius: 50%; border: 4px solid #fff; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.15); flex-shrink: 0;">
+                        <img src="{{ personal.photo }}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
+                    {% else %}
+                    <div style="width: 75px; height: 75px; border-radius: 50%; background: #333; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-family: Montserrat; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.15); flex-shrink: 0;">
+                        {{ personal.full_name[0] | default('A', true) | upper }}{{ personal.full_name.split(' ')[1][0] | default('F', true) | upper }}
+                    </div>
+                    {% endif %}
                 </div>
             </header>
 

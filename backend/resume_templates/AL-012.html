@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- has_photo -->
+<!-- has_languages -->
+<!-- has_language_proficiency -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Harry Nelson', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>{{ personal.full_name | default('Sarah Johnson', true) }} | {{ personal.title | default('Nursing Student Resume', true) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4;
             margin: 0;
+        }
+        :root {
+            --main-teal: #a1dbd1;
+            --sidebar-bg: #e3f6f3;
+            --text-dark: #3e5c5a;
+            --text-gray: #555;
+            --timeline-line: #a1dbd1;
         }
         * {
             box-sizing: border-box;
@@ -16,145 +25,177 @@
             print-color-adjust: exact !important;
         }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff;
+            background-color: #f5f5f5;
             color: #333;
-            line-height: 1.4;
-            width: 100%;
+            line-height: 1.5;
         }
         .container {
-            display: flex;
-            flex-direction: column;
-            min-height: 297mm;
             width: 210mm;
-            margin: 0 auto;
+            min-height: 297mm;
+            margin: 20px auto;
             background: #fff;
+            display: flex;
             position: relative;
             overflow: hidden;
-        }
-
-        /* ── Diagonal Accents ── */
-        .accent-top {
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 400px;
-            height: 200px;
-            background: #004b8d;
-            transform: rotate(-15deg);
-            z-index: 1;
-        }
-        .accent-top-light {
-            position: absolute;
-            top: 20px;
-            right: -30px;
-            width: 350px;
-            height: 80px;
-            background: #00adef;
-            transform: rotate(-15deg);
-            z-index: 2;
-        }
-        .accent-bottom {
-            position: absolute;
-            bottom: -60px;
-            left: -50px;
-            width: 100%;
-            height: 200px;
-            background: #004b8d;
-            transform: rotate(-5deg);
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            padding-left: 60px;
-            color: #fff;
-            font-size: 10pt;
-            letter-spacing: 2px;
-        }
-        .accent-bottom-light {
-            position: absolute;
-            bottom: 40px;
-            left: -30px;
-            width: 110%;
-            height: 50px;
-            background: #00adef;
-            transform: rotate(-5deg);
-            z-index: 2;
-        }
-
-        /* ── Header ── */
-        .header {
-            padding: 80px 60px 50px;
-            display: flex;
-            justify-content: flex-end;
-            position: relative;
-            z-index: 10;
-        }
-        .header-content {
-            text-align: right;
-            padding-right: 0;
-        }
-        .name {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1;
-        }
-        .name-first {
-            font-size: 34pt;
-            font-weight: 300;
-            color: #fff;
-        }
-        .name-last {
-            font-size: 38pt;
-            font-weight: 800;
-            color: #fff;
-            display: block; /* Stack as seen in some variations or keep together */
-            margin-top: 5px;
-        }
-        .job-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13pt;
-            font-weight: 500;
-            color: rgba(255,255,255,0.9);
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-
-        /* ── Main Layout ── */
-        .main-body {
-            display: flex;
-            flex-grow: 1;
-            padding: 0 60px;
-            z-index: 5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 8px;
         }
 
         /* ── Sidebar ── */
         .sidebar {
-            width: 40%;
-            padding-top: 0;
+            width: 38%;
+            background-color: var(--sidebar-bg);
+            padding: 280px 30px 40px;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 15px; /* Minimum gap between sidebar sections */
+            z-index: 1;
         }
-        .photo-section {
-            margin-top: -120px;
-            margin-bottom: 15px;
+
+        .sidebar-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 8px 0; /* Minimum margin below sidebar headers */
+            border-bottom: 2px solid var(--main-teal);
+            padding-bottom: 5px;
+            display: inline-block;
+            width: 100%;
         }
-        .photo-circle {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 8px solid #fff;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            background: #fff;
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 10pt;
+            color: var(--text-dark);
+        }
+        .contact-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--main-teal);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .contact-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-list li {
             position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-size: 10pt;
+            color: var(--text-dark);
         }
-        .photo-circle img {
+        .sidebar-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--main-teal);
+            font-size: 18pt;
+            line-height: 1;
+            top: -2px;
+        }
+
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 10pt;
+            color: var(--text-dark);
+        }
+        .dots {
+            display: flex;
+            gap: 5px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ccc;
+            border-radius: 50%;
+        }
+        .dot.active {
+            background-color: var(--main-teal);
+        }
+
+        /* ── Main content ── */
+        .main-content {
+            width: 62%;
+            padding: 240px 40px 40px 10px; /* Offset for header at top: 40px */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Header ── */
+        .header-block {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            left: 150px;
+            height: 180px;
+            background-color: var(--main-teal);
+            z-index: 2;
+            padding: 30px 40px 30px 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            font-size: 38pt;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.1;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14pt;
+            font-weight: 400;
+            color: var(--text-dark);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-top: 15px;
+        }
+
+        /* ── Photo ── */
+        .photo-container {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 10;
+            border: 8px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #eee;
+        }
+        .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -162,230 +203,149 @@
         .photo-placeholder {
             width: 100%;
             height: 100%;
-            background: #e1e1e1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 48pt;
             font-weight: 700;
-            color: #fff;
+            color: #ccc;
+            background: #f0f0f0;
         }
 
-        .section-header-sidebar {
+        /* ── Timeline/Sections ── */
+        .experience-timeline {
+            margin-top: 0;
+            position: relative;
+            padding-left: 20px;
+            counter-reset: resume-section;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: -50px;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--timeline-line);
+            z-index: 0;
+        }
+
+        .section {
+            position: relative;
+            margin-bottom: 20px; /* Increased margin between sections */
+            padding-left: 50px;
+            counter-increment: resume-section;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Increased margin below header */
+            position: relative;
+            left: -70px; /* Align number with timeline */
+        }
+        .section-number {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 2px solid var(--main-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14pt;
+            color: var(--text-dark);
+            z-index: 2;
+            margin-right: 30px;
+        }
+        .section-number::before {
+            content: counter(resume-section);
+        }
+        .section-title {
+            background-color: var(--sidebar-bg);
+            padding: 8px 30px;
             font-family: 'Montserrat', sans-serif;
             font-size: 16pt;
             font-weight: 700;
-            color: #004b8d;
+            color: var(--text-dark);
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 15px;
-            text-align: center;
+            flex-grow: 1;
+            margin-left: -5px;
+            margin: 0;
         }
 
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 9.5pt;
+        .section-content {
+            font-size: 10.5pt;
             color: #444;
-        }
-        .contact-icon {
-            width: 28px;
-            height: 28px;
-            background: #00adef;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 3px 6px rgba(0,173,239,0.3);
-        }
-        .contact-icon svg {
-            width: 12px;
-            height: 12px;
-            fill: #fff;
+            line-height: 1.6;
         }
 
-        .skill-item {
-            margin-bottom: 12px;
+        .entry {
+            margin-bottom: 20px; /* Increased margin between entries */
+        }
+        .entry-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: baseline;
+            margin-bottom: 5px;
         }
-        .skill-name {
-            font-size: 9.5pt;
-            font-weight: 600;
-            color: #444;
-        }
-        .skill-dots {
-            display: flex;
-            gap: 4px;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #e1e1e1;
-        }
-        .dot.active {
-            background: #004b8d;
-        }
-        .dot.vibrant {
-            background: #00adef;
-        }
-
-        .hobby-text {
-            font-size: 9.5pt;
-            color: #555;
-            line-height: 1.6;
-            text-align: center;
-        }
-
-        /* ── Main column ── */
-        .main-column {
-            width: 60%;
-            padding-left: 40px;
-            padding-top: 40px;
-        }
-
-        .pill-header {
-            background: #004b8d;
-            background: linear-gradient(to right, #004b8d, #002d44);
-            color: #fff;
-            display: inline-block;
-            padding: 8px 45px;
-            border-radius: 30px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14pt;
+        .entry-title {
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            box-shadow: 3px 5px 15px rgba(0,75,141,0.25);
-            position: relative;
-        }
-        .pill-header::after {
-            content: "";
-            position: absolute;
-            bottom: -5px;
-            right: 15px;
-            width: 90%;
-            height: 100%;
-            background: #00adef;
-            border-radius: 30px;
-            z-index: -1;
-            opacity: 0.6;
-        }
-
-        .profile-text {
-            font-size: 9.5pt;
-            color: #555;
-            line-height: 1.7;
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-
-        /* Timeline for main column */
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-        }
-        .timeline::before {
-            content: "";
-            position: absolute;
-            left: 5px;
-            top: 10px;
-            bottom: 0;
-            width: 2px;
-            background: #004b8d;
-        }
-        .timeline-item {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        .timeline-marker {
-            position: absolute;
-            left: -24px;
-            top: 5px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #004b8d;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 1px #004b8d;
-            z-index: 10;
-        }
-        .timeline-content {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 15px;
-        }
-        .timeline-year {
-            font-weight: 700;
-            font-size: 10pt;
+            font-size: 11pt;
             color: #222;
         }
-        .details-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 10.5pt;
-            color: #004b8d;
-            text-transform: uppercase;
-        }
-        .details-desc {
-            font-size: 9pt;
+        .entry-date {
+            font-size: 9.5pt;
             color: #666;
+            white-space: nowrap;
+        }
+        .entry-subtitle {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 10pt;
+            margin-bottom: 5px;
+        }
+        .entry-location {
+            font-size: 9.5pt;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        .entry-description {
+            margin-top: 8px;
+        }
+        .entry-list {
+            padding-left: 18px;
+            margin: 8px 0 0 0;
+        }
+        .entry-list li {
+            margin-bottom: 5px;
+        }
+
+        .coursework {
             margin-top: 5px;
+            font-size: 9.5pt;
+            color: #555;
+        }
+        .coursework strong {
+            color: #333;
         }
 
         @media print {
-            .container { width: 210mm; height: 297mm; }
-            .accent-top, .accent-top-light, .accent-bottom, .accent-bottom-light { 
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact;
-            }
+            body { background: none; }
+            .container { box-shadow: none; margin: 0; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Accents -->
-        <div class="accent-top"></div>
-        <div class="accent-top-light"></div>
-
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="name">
-                    <span class="name-first">{{ personal.full_name.split(' ')[0] | default('Harry', true) }}</span>
-                    <span class="name-last">{{ personal.full_name.split(' ')[1:] | join(' ') | default('Nelson', true) }}</span>
-                </h1>
-                <div class="job-title">{{ personal.title | default('Graphic Designer', true) }}</div>
-            </div>
-        </header>
-
-        <div class="main-body">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="photo-section">
-                    <div class="photo-circle">
-                        {% if personal.photo %}
-                        <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Harry Nelson', true) }}">
-                        {% else %}
-                        <div class="photo-placeholder">{{ personal.full_name[0] | default('H', true) | upper }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="sidebar-section">
-                    <h2 class="section-header-sidebar">Contact</h2>
-                    {% if personal.email %}
-                    <div class="contact-item">
-                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
-                        <span>{{ personal.email }}</span>
-                    </div>
-                    {% endif %}
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Contact -->
+            <div class="sidebar-section">
+                <h2>Contact</h2>
+                <div class="contact-list">
                     {% if personal.phone %}
                     <div class="contact-item">
                         <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
@@ -398,114 +358,187 @@
                         <span>{{ personal.location }}</span>
                     </div>
                     {% endif %}
-                    {% if personal.portfolio %}
+                    {% if personal.email %}
                     <div class="contact-item">
-                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14c-.17-.64-.26-1.31-.26-2s.09-1.36.26-2h3.38c-.09.66-.14 1.32-.14 2 0 .68.05 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.91-4.33-3.56zm2.95-8H5.08c.96-1.65 2.49-2.93 4.33-3.56-.6 1.11-1.06 2.31-1.38 3.56zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08-2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.14-1.32-.14-2 0-.68.05-1.34.14-2h4.68c.09.66.14 1.32.14 2 0 .68-.05 1.34-.14 2zm.4 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.09-.66.14-1.32.14-2 0-.68-.05-1.34-.14-2h3.38c.17.64.26 1.31.26 2s-.09 1.36-.26 2h-3.38z"/></svg></div>
-                        <span>{{ personal.portfolio }}</span>
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                        <span>{{ personal.email }}</span>
                     </div>
                     {% endif %}
                 </div>
+            </div>
 
-                <div class="sidebar-section">
-                    <h2 class="section-header-sidebar">Skills</h2>
-                    {% if skills and skills|length > 0 %}
-                        {% for skill in skills %}
-                        <div class="skill-item">
-                            <span class="skill-name">{{ skill.name }}</span>
-                            <div class="skill-dots">
-                                <div class="dot active"></div>
-                                <div class="dot active"></div>
-                                <div class="dot active"></div>
-                                <div class="dot active"></div>
-                                <div class="dot vibrant"></div>
-                            </div>
-                        </div>
+            <!-- Skills -->
+            {% if skills and skills|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Skills</h2>
+                <ul class="sidebar-list">
+                    {% for skill in skills[:6] %}
+                    <li>{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Languages -->
+            {% if languages and languages|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Languages</h2>
+                {% for lang in languages %}
+                <div class="language-item">
+                    <span>{{ lang.name }}</span>
+                    <div class="dots">
+                        {% set level = (lang.proficiency / 20) | round | int %}
+                        {% for i in range(5) %}
+                        <div class="dot {{ 'active' if i < level else '' }}"></div>
                         {% endfor %}
-                    {% else %}
-                        <div class="skill-item"><span class="skill-name">Web design</span><div class="skill-dots"><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot vibrant"></div></div></div>
-                        <div class="skill-item"><span class="skill-name">Graphic design</span><div class="skill-dots"><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div></div></div>
-                    {% endif %}
-                </div>
-
-                <div class="sidebar-section">
-                    <h2 class="section-header-sidebar">Hobbies</h2>
-                    <div class="hobby-text">Football, Writing, Music, Travel</div>
-                </div>
-            </aside>
-
-            <!-- Content -->
-            <main class="main-column">
-                {% if personal.summary %}
-                <div class="pill-header">About Me</div>
-                <div class="profile-text">
-                    {{ personal.summary }}
-                </div>
-                {% endif %}
-
-                {% if education and education|length > 0 %}
-                <div class="pill-header">Education</div>
-                <div class="timeline">
-                    {% for edu in education %}
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-year">{{ edu.start_date }}<br>{{ edu.end_date | default('Now', true) }}</div>
-                            <div class="timeline-details">
-                                <div class="details-title">{{ edu.institution }}</div>
-                                <div class="details-desc">{{ edu.degree }}</div>
-                            </div>
-                        </div>
                     </div>
-                    {% endfor %}
                 </div>
-                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
 
-                {% if certifications and certifications|length > 0 %}
-                <div class="pill-header">Certifications</div>
-                <div class="timeline">
+            <!-- Certifications -->
+            {% if certifications and certifications|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Certifications</h2>
+                <ul class="sidebar-list">
                     {% for cert in certifications %}
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-year">{{ cert.year }}</div>
-                            <div class="timeline-details">
-                                <div class="details-title" style="text-transform: uppercase;">{{ cert.name | upper }}</div>
-                                <div class="details-desc">{{ cert.issuer }}</div>
-                            </div>
-                        </div>
-                    </div>
+                    <li>
+                        <strong>{{ cert.name }}</strong>
+                        {% if cert.issuer %}<br><span style="font-size: 8.5pt; opacity: 0.8;">{{ cert.issuer }}</span>{% endif %}
+                        {% if cert.year %}<br><span style="font-size: 8.5pt; opacity: 0.8;">Expiry {{ cert.year }}</span>{% endif %}
+                    </li>
                     {% endfor %}
-                </div>
-                {% endif %}
+                </ul>
+            </div>
+            {% endif %}
 
-                {% if experience and experience|length > 0 %}
-                <div class="pill-header">Experience</div>
-                <div class="timeline">
-                    {% for exp in experience %}
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-year">{{ exp.start_date }}<br>{{ exp.end_date | default('Now', true) }}</div>
-                            <div class="timeline-details">
-                                <div class="details-title">{{ exp.title }}</div>
-                                <div class="details-desc">{{ exp.company }}</div>
-                                {% if exp.description %}
-                                <div style="font-size: 8.5pt; color: #777; margin-top: 5px;">{{ exp.description }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
+            <!-- Education (Moved to sidebar) -->
+            {% if education and education|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div style="margin-bottom: 12px;">
+                    <strong style="font-size: 10pt; color: var(--text-dark); display: block;">{{ edu.degree }}</strong>
+                    <span style="font-size: 9pt; color: var(--text-dark); opacity: 0.9;">{{ edu.institution }}</span>
+                    <br><span style="font-size: 8.5pt; color: var(--text-gray); font-style: italic;">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
                 </div>
-                {% endif %}
-            </main>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </aside>
+
+        <!-- Profile Photo -->
+        <div class="photo-container">
+            {% if personal.photo %}
+            <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
+            {% else %}
+            <div class="photo-placeholder">{{ personal.full_name[0] | upper if personal.full_name else 'S' }}</div>
+            {% endif %}
         </div>
 
-        <!-- Footer -->
-        <div class="accent-bottom-light"></div>
-        <footer class="accent-bottom">
-            WWW.HELPSHARED.COM
-        </footer>
+        <!-- Header Block -->
+        <div class="header-block">
+            <h1 class="name">
+                {% set names = personal.full_name.split(' ') %}
+                {{ names[0] | default('SARAH', true) }}<br>
+                {{ names[1:] | join(' ') | default('JOHNSON', true) }}
+            </h1>
+            <div class="title">{{ personal.title | default('NURSING STUDENT RESUME', true) }}</div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="experience-timeline">
+                <div class="timeline-line"></div>
+
+                <!-- 1. Personal Profile -->
+                {% if personal.summary %}
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-number"></div>
+                        <h2 class="section-title">Personal Profile</h2>
+                    </div>
+                    <div class="section-content">
+                        {{ personal.summary }}
+                    </div>
+                </section>
+                {% endif %}
+
+
+
+                <!-- 3. Experience -->
+                {% if experience and experience|length > 0 %}
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-number"></div>
+                        <h2 class="section-title">Experience</h2>
+                    </div>
+                    <div class="section-content">
+                        {% for exp in experience %}
+                        <div class="entry">
+                            <div class="entry-header">
+                                <div class="entry-title">{{ exp.title }}</div>
+                                <div class="entry-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                            </div>
+                            <div class="entry-subtitle">{{ exp.company }}</div>
+                            <div class="entry-location">{{ exp.location }}</div>
+                            {% if exp.description %}
+                                {% if exp.description.startswith('-') or '\n-' in exp.description or '\n•' in exp.description %}
+                                    <ul class="entry-list">
+                                        {% for line in exp.description.split('\n') %}
+                                            {% if line.strip() %}
+                                                <li>{{ line.strip('•- ') }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <div class="entry-description">{{ exp.description }}</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- 4. Projects -->
+                {% if projects and projects|length > 0 %}
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-number"></div>
+                        <h2 class="section-title">Projects</h2>
+                    </div>
+                    <div class="section-content">
+                        {% for project in projects %}
+                        <div class="entry">
+                            <div class="entry-header">
+                                <div class="entry-title">{{ project.name }}</div>
+                                <div class="entry-date">{{ project.date }}</div>
+                            </div>
+                            {% if project.link %}
+                            <div class="entry-subtitle">{{ project.link }}</div>
+                            {% endif %}
+                            {% if project.description %}
+                                {% if project.description.startswith('-') or '\n-' in project.description or '\n•' in project.description %}
+                                    <ul class="entry-list">
+                                        {% for line in project.description.split('\n') %}
+                                            {% if line.strip() %}
+                                                <li>{{ line.strip('•- ') }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <div class="entry-description">{{ project.description }}</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+        </main>
     </div>
 </body>
 </html>
