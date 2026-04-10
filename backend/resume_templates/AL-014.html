@@ -36,13 +36,14 @@
         /* ── Sidebar ── */
         .sidebar {
             width: 35%;
-            background-color: #d8dbe2;
+            background-color: #0f172a;/* Midnight Navy */
             display: flex;
             flex-direction: column;
+            color: #fff;
         }
 
         .header-left-box {
-            background-color: #444;
+            background-color: #1e3a8a; /* Deep Ocean */
             height: 200px;
             display: flex;
             flex-direction: column;
@@ -70,7 +71,7 @@
             right: -15px;
             top: 50%;
             transform: translateY(-50%);
-            border-left: 15px solid #444;
+            border-left: 15px solid #1e3a8a;
             border-top: 15px solid transparent;
             border-bottom: 15px solid transparent;
         }
@@ -86,20 +87,20 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 11pt;
             font-weight: 700;
-            color: #222;
+            color: #fff;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             display: flex;
             align-items: center;
             gap: 12px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #aaa;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
             margin-bottom: 12px;
         }
         .sidebar-header svg {
             width: 18px;
             height: 18px;
-            fill: #333;
+            fill: #38bdf8;
         }
 
         .contact-item {
@@ -108,7 +109,7 @@
             gap: 12px;
             margin-bottom: 10px;
             font-size: 8.5pt;
-            color: #444;
+            color: rgba(255,255,255,0.8);
         }
         .contact-icon {
             width: 22px;
@@ -130,6 +131,7 @@
             text-transform: uppercase;
             display: block;
             font-size: 8pt;
+            color: #38bdf8;
         }
 
         .edu-item {
@@ -138,18 +140,18 @@
         .edu-year {
             font-weight: 700;
             font-size: 9pt;
-            color: #333;
+            color: #38bdf8;
         }
         .edu-degree {
             font-weight: 800;
             text-transform: uppercase;
             font-size: 9.5pt;
-            color: #222;
+            color: #fff;
             margin: 2px 0;
         }
         .edu-school {
             font-size: 8.5pt;
-            color: #555;
+            color: rgba(255,255,255,0.7);
         }
 
         .expertise-sidebar {
@@ -220,22 +222,22 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 11pt;
             font-weight: 700;
-            color: #222;
+            color: #1e3a8a;
             text-transform: uppercase;
             letter-spacing: 2.5px;
             display: flex;
             align-items: center;
             gap: 15px;
             padding-bottom: 8px;
-            border-top: 1px solid #333;
-            border-bottom: 1px solid #333;
+            border-top: 2px solid #1e3a8a;
+            border-bottom: 1px solid #eee;
             margin-bottom: 15px;
             padding-top: 8px;
         }
         .section-header-main svg {
             width: 20px;
             height: 20px;
-            fill: #333;
+            fill: #1e3a8a;
         }
 
         .profile-text {
@@ -285,26 +287,24 @@
             gap: 28px;
             margin-top: 20px;
         }
-        .skill-item {
+        .skill-item-sidebar {
             margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
         }
-        .skill-name {
+        .skill-name-sidebar {
             font-size: 8.5pt;
             font-weight: 600;
-            color: #444;
+            color: #fff;
+            margin-bottom: 4px;
         }
-        .skill-bar {
+        .skill-bar-sidebar {
             height: 6px;
-            background: #eee;
+            background: rgba(255,255,255,0.1);
             width: 100%;
             border-radius: 3px;
         }
-        .skill-fill {
+        .skill-fill-sidebar {
             height: 100%;
-            background: #444;
+            background: #38bdf8;
             border-radius: 3px;
         }
 
@@ -417,26 +417,29 @@
                         Skills
                     </h2>
                     <div style="display: flex; flex-direction: column; gap: 15px;">
+                        {% if skills and skills|length > 0 %}
+                        <div style="margin-top: 5px;">
+                            {% for skill in skills %}
+                            <div class="skill-item-sidebar">
+                                <div class="skill-name-sidebar">{{ skill.name }}</div>
+                                <div class="skill-bar-sidebar">
+                                    <div class="skill-fill-sidebar" style="width: {{ skill.level | default('80', true) }}%;"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
                         {% if expertise.technical %}
                         <div>
-                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #222; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Technical</div>
-                            <div style="font-size: 8.5pt; color: #555; line-height: 1.5;">{{ expertise.technical | join(', ') }}</div>
+                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #38bdf8; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Technical</div>
+                            <div style="font-size: 8.5pt; color: rgba(255,255,255,0.7); line-height: 1.5;">{{ expertise.technical | join(', ') }}</div>
                         </div>
                         {% endif %}
                         {% if expertise.professional %}
                         <div>
-                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #222; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Professional</div>
-                            <div style="font-size: 8.5pt; color: #555; line-height: 1.5;">{{ expertise.professional | join(', ') }}</div>
-                        </div>
-                        {% endif %}
-                        {% if skills and skills|length > 0 %}
-                        <div>
-                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #222; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Software/Other</div>
-                            <div style="font-size: 8.5pt; color: #555; line-height: 1.5;">
-                                {% set skill_names = [] %}
-                                {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
-                                {{ skill_names | join(', ') }}
-                            </div>
+                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #38bdf8; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Professional</div>
+                            <div style="font-size: 8.5pt; color: rgba(255,255,255,0.7); line-height: 1.5;">{{ expertise.professional | join(', ') }}</div>
                         </div>
                         {% endif %}
                     </div>
