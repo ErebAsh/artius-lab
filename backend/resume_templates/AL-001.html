@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- has_hobbies -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Resume', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <style>
         @page {
             size: A4;
@@ -255,6 +256,14 @@
                     </span>
                 </div>
                 {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% if hobbies and hobbies|length > 0 %}
+        <div class="section">
+            <div class="section-title">Hobbies & Interests</div>
+            <div class="profile-text">
+                {{ hobbies | join(' • ') }}
             </div>
         </div>
         {% endif %}

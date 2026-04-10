@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Sonia Marmeladova', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -286,13 +286,13 @@
             {% if personal.photo %}
             <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
             {% else %}
-            <div class="photo-placeholder">{{ personal.full_name[0] | default('S', true) | upper }}</div>
+            <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
             {% endif %}
         </div>
 
         <!-- Header -->
         <header class="header-info">
-            <h1>{{ personal.full_name | default('Sonia Marmeladova', true) }}</h1>
+            <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
             <p>{{ personal.title | default('Your Title Name Here', true) }}</p>
             <div class="header-line"></div>
         </header>

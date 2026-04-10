@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Julia Griffith', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -35,7 +35,7 @@
         /* Left Sidebar */
         .sidebar {
             width: 33%;
-            background-color: #2d3440;
+            background-color: #042f2e;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -92,7 +92,7 @@
         .contact-icon {
             width: 16px;
             height: 16px;
-            fill: #b49e85;
+            fill: #14b8a6;
         }
 
         .edu-item {
@@ -111,7 +111,7 @@
         }
         .edu-date {
             font-size: 8pt;
-            color: #b49e85;
+            color: #fb7185;
         }
 
         .skill-list {
@@ -124,10 +124,10 @@
         }
         .skill-item {
             font-size: 7.5pt;
-            background-color: rgba(180, 158, 133, 0.1);
-            color: #b49e85;
+            background-color: rgba(20, 184, 166, 0.1);
+            color: #14b8a6;
             padding: 4px 10px;
-            border: 1px solid rgba(180, 158, 133, 0.4);
+            border: 1px solid rgba(20, 184, 166, 0.4);
             border-radius: 4px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -152,7 +152,7 @@
             letter-spacing: 8px;
             margin: 0;
             line-height: 1.1;
-            color: #b49e85;
+            color: #14b8a6;
         }
         .title {
             font-family: 'Montserrat', sans-serif;
@@ -173,7 +173,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #b49e85;
+            color: #14b8a6;
             margin-bottom: 15px;
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
@@ -202,7 +202,7 @@
         }
         .exp-date {
             font-size: 9pt;
-            color: #b49e85;
+            color: #fb7185;
             font-weight: 600;
         }
         .exp-company {
@@ -237,7 +237,7 @@
                 {% if personal.photo %}
                 <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
                 {% else %}
-                <div class="photo-placeholder">{{ personal.full_name[0] | default('J', true) | upper }}</div>
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                 {% endif %}
             </div>
 
@@ -318,7 +318,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1 class="name">{{ personal.full_name | default('Julia Griffith', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p class="title">{{ personal.title | default('Professional Title', true) }}</p>
             </header>
 

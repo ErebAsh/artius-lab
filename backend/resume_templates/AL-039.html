@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Priya Rao', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -333,13 +333,13 @@
                     <img src="{{ personal.photo_url }}" alt="Profile Photo">
                 {% else %}
                     <div class="photo-placeholder">
-                        {{ (personal.full_name | default('PR', true))[0] }}{{ (personal.full_name | default('PR', true)).split(' ')[1][0] if (personal.full_name | default('PR', true)).split(' ')|length > 1 }}
+                        {{ (personal.full_name | default('Artius Lab', true))[0] }}{{ (personal.full_name | default('Artius Lab', true)).split(' ')[1][0] if (personal.full_name | default('Artius Lab', true)).split(' ')|length > 1 }}
                     </div>
                 {% endif %}
             </div>
 
             <div class="name-box">
-                <h1 class="name">{{ personal.full_name | default('Priya Rao', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
             </div>
 
             <!-- Contact Information -->
@@ -350,12 +350,12 @@
                 </div>
                 <div class="contact-item">
                     <i class="fa-solid fa-envelope"></i>
-                    <a href="mailto:{{ personal.email }}">{{ personal.email | default('priya.rao@resumegemini.com', true) }}</a>
+                    <a href="mailto:{{ personal.email }}">{{ personal.email | default('priya.rao@artiuslab.com', true) }}</a>
                 </div>
                 {% if personal.portfolio or personal.website %}
                 <div class="contact-item">
                     <i class="fa-solid fa-globe"></i>
-                    <span>{{ personal.portfolio or personal.website | default('https://resumegemini.com', true) }}</span>
+                    <span>{{ personal.portfolio or personal.website | default('https://artiuslab.com', true) }}</span>
                 </div>
                 {% endif %}
                 {% if personal.location %}

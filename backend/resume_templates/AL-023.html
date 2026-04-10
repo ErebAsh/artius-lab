@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('John Smith', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -272,7 +272,7 @@
         <header class="header">
             <div class="name-area">
                 <h1 class="name">
-                    {{ personal.full_name.split(' ')[0] | default('John', true) }}
+                    {{ personal.full_name.split(' ')[0] | default('Artius', true) }}
                     <span>{{ personal.full_name.split(' ')[1:] | join(' ') | default('Smith', true) }}</span>
                 </h1>
                 <div class="title">{{ personal.title | default('IT Project Manager', true) }}</div>

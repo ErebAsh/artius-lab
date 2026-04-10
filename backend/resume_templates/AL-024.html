@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Lauren Murphy', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -269,9 +269,9 @@
         <!-- Header -->
         <header class="header">
             <div class="initials-badge">
-                {{ personal.full_name[0] | default('L', true) }}/{{ personal.full_name.split(' ')[1][0] | default('M', true) }}
+                {{ personal.full_name[0] | default('A', true) }}/{{ personal.full_name.split(' ')[1][0] | default('M', true) }}
             </div>
-            <h1 class="full-name">{{ personal.full_name | default('Lauren Murphy', true) }}</h1>
+            <h1 class="full-name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
             <p class="job-title">{{ personal.title | default('Designer', true) }}</p>
         </header>
 

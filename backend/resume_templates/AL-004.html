@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <style>
         @page {
             size: A4;
@@ -66,6 +66,18 @@
             color: #1e2538;
             margin-top: 0;
         }
+        .right-column h2 {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+        }
+        .right-column h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #d1b897;
+        }
         .section {
             margin-bottom: 15px;
         }
@@ -118,16 +130,34 @@
             color: #444;
             margin-top: 0;
         }
-        .skills-list li {
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-        }
         .skills-list li::before {
             content: "•";
             color: #555;
             font-size: 14px;
             margin-right: 12px;
+        }
+        .skills-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        .skill-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .skill-label {
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+        .skill-values {
+            color: #444;
+            line-height: 1.4;
         }
         .profile-text {
             font-size: 11px;
@@ -249,39 +279,15 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            {% if skills and skills|length > 0 %}
+            {% if certifications and certifications|length > 0 %}
             <div class="section">
-                <h2>Skills</h2>
-                <ul class="skills-list">
-                    {% for skill in skills %}
-                    <li>{{ skill.name }}</li>
+                <h2>Certifications</h2>
+                    {% for cert in certifications %}
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #333; text-transform: uppercase;">{{ cert.name }}</div>
+                        <div style="font-size: 10px; color: #666; margin-top: 2px;">{{ cert.issuer }} | {{ cert.year or cert.date }}</div>
+                    </div>
                     {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-            
-            {% if expertise.technical or expertise.professional %}
-            <div class="section">
-                <h2>Expertise</h2>
-                <div style="font-size: 11px; color: #444;">
-                    {% if expertise.technical %}
-                        <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Technical</div>
-                        <ul class="skills-list" style="margin-bottom: 15px;">
-                            {% for item in expertise.technical %}
-                            <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    
-                    {% if expertise.professional %}
-                        <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Professional</div>
-                        <ul class="skills-list">
-                            {% for item in expertise.professional %}
-                            <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
             </div>
             {% endif %}
         </div>
@@ -342,17 +348,40 @@
             </div>
             {% endif %}
 
-            {% if certifications and certifications|length > 0 %}
+            {% if expertise.professional or expertise.technical or (skills and skills|length > 0) %}
             <div class="section">
-                <h2>Certifications</h2>
-                    {% for cert in certifications %}
-                    <div style="margin-bottom: 15px;">
-                        <h3 class="exp-title">{{ cert.name }}</h3>
-                        <div class="exp-details">
-                            {{ cert.issuer }} | {{ cert.year }}
-                        </div>
+                <h2>Skills</h2>
+                <div class="skills-section">
+                    {% if expertise.technical and expertise.technical|length > 0 %}
+                    <div class="skill-row" style="flex-direction: row; gap: 15px; align-items: baseline;">
+                        <span class="skill-label" style="min-width: 100px;">Technical</span>
+                        <span class="skill-values">{{ expertise.technical | join(', ') }}</span>
                     </div>
-                    {% endfor %}
+                    {% endif %}
+                    
+                    {% if expertise.professional and expertise.professional|length > 0 %}
+                    <div class="skill-row" style="flex-direction: row; gap: 15px; align-items: baseline;">
+                        <span class="skill-label" style="min-width: 100px;">Professional</span>
+                        <span class="skill-values">{{ expertise.professional | join(', ') }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if expertise.software_and_other and expertise.software_and_other|length > 0 %}
+                    <div class="skill-row" style="flex-direction: row; gap: 15px; align-items: baseline;">
+                        <span class="skill-label" style="min-width: 100px;">Software/Other</span>
+                        <span class="skill-values">{{ expertise.software_and_other | join(', ') }}</span>
+                    </div>
+                    {% elif skills and skills|length > 0 %}
+                    <div class="skill-row" style="flex-direction: row; gap: 15px; align-items: baseline;">
+                        <span class="skill-label" style="min-width: 100px;">Software/Other</span>
+                        <span class="skill-values">
+                            {% set skill_names = [] %}
+                            {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                            {{ skill_names | join(', ') }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
         </div>

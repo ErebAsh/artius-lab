@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Emma Watson', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -112,8 +112,17 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 15px;
-            position: relative;
-            display: block;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+        }
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1.5px;
+            background: #8B0000;
         }
         
         /* Contact Items */
@@ -257,6 +266,34 @@
             font-weight: bold;
         }
 
+        .skill-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 9.5pt;
+        }
+        .skill-label {
+            font-weight: 700;
+            min-width: 110px;
+            color: #333;
+            text-transform: uppercase;
+            font-size: 8.5pt;
+        }
+        .skill-values {
+            flex: 1;
+            color: #555;
+        }
+
+        .cert-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .cert-list li {
+            font-size: 9pt;
+            padding: 5px 0;
+            color: #555;
+        }
+
         @media print {
             body { background: none; }
             .container { box-shadow: none; margin: 0; width: 100%; border-top: 15px solid #8B0000; border-bottom: 15px solid #8B0000;}
@@ -271,7 +308,7 @@
                 <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
             </div>
             {% endif %}
-            <h1>{{ personal.full_name | default('Emma Watson', true) }}</h1>
+            <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
             <p>{{ personal.title | default('Your Professional Title', true) }}</p>
         </header>
 
@@ -347,27 +384,21 @@
                     {% endif %}
                 </div>
 
+                {% if certifications and certifications|length > 0 %}
                 <div class="section">
-                    <span class="section-title">Skills</span>
-                    <ul class="skills-list">
-                        {% if skills and skills|length > 0 %}
-                            {% for skill in skills %}
-                            <li>{{ skill.name }}</li>
-                            {% endfor %}
-                        {% elif expertise and (expertise.technical or expertise.professional) %}
-                            {% for skill in expertise.technical %}
-                            <li>{{ skill }}</li>
-                            {% endfor %}
-                            {% for skill in expertise.professional %}
-                            <li>{{ skill }}</li>
-                            {% endfor %}
-                        {% else %}
-                            <li>Relevant Skill</li>
-                            <li>Relevant Skill</li>
-                            <li>Relevant Skill</li>
-                        {% endif %}
+                    <span class="section-title">Certifications</span>
+                    <ul class="cert-list">
+                        {% for cert in certifications %}
+                        <li>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-weight: 700;">{{ cert.name }}</span>
+                                <span style="font-size: 8.5pt; color: #888;">{{ cert.issuer }}{% if cert.year %} | {{ cert.year }}{% endif %}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
+                {% endif %}
             </aside>
 
             <!-- Main Content -->
@@ -447,18 +478,33 @@
                 </div>
                 {% endif %}
 
-                {% if certifications and certifications|length > 0 %}
                 <div class="section">
-                    <span class="section-title">Certifications</span>
-                    <ul class="item-list">
-                        {% for cert in certifications %}
-                        <li>
-                            <strong>{{ cert.name }}</strong> {% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    <span class="section-title">Skills</span>
+                    <div style="margin-top: 10px;">
+                        {% if expertise.technical %}
+                        <div class="skill-row">
+                            <span class="skill-label">Technical:</span>
+                            <span class="skill-values">{{ expertise.technical | join(', ') }}</span>
+                        </div>
+                        {% endif %}
+                        {% if expertise.professional %}
+                        <div class="skill-row">
+                            <span class="skill-label">Professional:</span>
+                            <span class="skill-values">{{ expertise.professional | join(', ') }}</span>
+                        </div>
+                        {% endif %}
+                        {% if skills and skills|length > 0 %}
+                        <div class="skill-row">
+                            <span class="skill-label">Software:</span>
+                            <span class="skill-values">
+                                {% set skill_names = [] %}
+                                {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                                {{ skill_names | join(', ') }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
             </main>
         </div>
     </div>

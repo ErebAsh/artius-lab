@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -35,7 +35,7 @@
         /* ── Left Sidebar ── */
         .sidebar {
             width: 35%;
-            background-color: #3d4555;
+            background-color: #1e1b4b;
             color: #fff;
             padding: 0;
             display: flex;
@@ -184,7 +184,7 @@
             font-size: 30pt;
             font-weight: 700;
             margin: 0;
-            color: #2d3142;
+            color: #1e1b4b;
             text-transform: uppercase;
             letter-spacing: 3px;
             line-height: 1.1;
@@ -195,13 +195,13 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #888;
+            color: #fb7185;
             margin: 8px 0 0 0;
         }
         .header-divider {
             width: 60px;
             height: 3px;
-            background: #3d4555;
+            background: #fb7185;
             margin-top: 20px;
         }
 
@@ -218,7 +218,7 @@
             margin: 0 0 16px 0;
             padding-bottom: 6px;
             border-bottom: 2px solid #e8e8e8;
-            color: #2d3142;
+            color: #1e1b4b;
         }
 
         .about-text {
@@ -256,7 +256,7 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: #3d4555;
+            background: #fb7185;
             border: 2px solid #fff;
             box-shadow: 0 0 0 1.5px #ddd;
             z-index: 1;
@@ -302,7 +302,7 @@
             content: "•";
             position: absolute;
             left: 0;
-            color: #3d4555;
+            color: #fb7185;
         }
 
         /* References */
@@ -347,10 +347,10 @@
             <div class="photo-section">
                 <div class="photo-frame">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Profile Photo', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
                     <div class="photo-placeholder">
-                        {{ personal.full_name[0] | default('?', true) | upper }}
+                        {{ personal.full_name[0] | default('A', true) | upper }}
                     </div>
                     {% endif %}
                 </div>
@@ -406,22 +406,7 @@
                 </div>
                 {% endif %}
 
-                <!-- Expertise -->
-                {% if expertise.professional or expertise.technical %}
-                <div class="sidebar-section">
-                    <h2>Expertise</h2>
-                    <ul class="expertise-list">
-                        {% for item in expertise.professional %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                        {% for item in expertise.technical %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
-                <!-- Skills as tags -->
+                <!-- Skills -->
                 {% if skills and skills|length > 0 %}
                 <div class="sidebar-section">
                     <h2>Skills</h2>
@@ -431,6 +416,31 @@
                         {% endfor %}
                     </ul>
                 </div>
+                {% elif expertise and (expertise.professional or expertise.technical or expertise.software_and_other) %}
+                <div class="sidebar-section">
+                    <h2>Skills</h2>
+                    {% if expertise.professional and expertise.professional|length > 0 %}
+                    <ul class="expertise-list" style="margin-bottom: 8px;">
+                        {% for item in expertise.professional %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if expertise.technical and expertise.technical|length > 0 %}
+                    <ul class="expertise-list" style="margin-bottom: 8px;">
+                        {% for item in expertise.technical %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if expertise.software_and_other and expertise.software_and_other|length > 0 %}
+                    <ul class="expertise-list">
+                        {% for item in expertise.software_and_other %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
         </aside>
@@ -438,7 +448,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="main-header">
-                <h1>{{ personal.full_name | default('YOUR NAME', true) }}</h1>
+                <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p class="job-title">{{ personal.title | default('YOUR PROFESSION', true) }}</p>
                 <div class="header-divider"></div>
             </div>

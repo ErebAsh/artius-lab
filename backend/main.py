@@ -246,6 +246,12 @@ def preview_template(template_id: str):
                 "description": "Designed a scalable e-commerce architecture using Docker and Kubernetes, resulting in 40% faster deployment cycles.",
                 "link": "github.com/emmawatson/ecommerce"
             }
+        ],
+        "hobbies": [
+            "Photography",
+            "Hiking",
+            "Open Source Contributing",
+            "Digital Illustration"
         ]
     }
     
@@ -360,6 +366,12 @@ def preview_latex_template(template_id: str):
                 "description": "Designed a scalable e-commerce architecture using Docker and Kubernetes, resulting in 40 percent faster deployment cycles.",
                 "link": "github.com/emmawatson/ecommerce"
             }
+        ],
+        "hobbies": [
+            "Photography",
+            "Hiking",
+            "Open Source Contributing",
+            "Digital Illustration"
         ]
     }
 

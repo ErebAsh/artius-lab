@@ -411,6 +411,28 @@ def _detect_has_photo(template_id: str) -> bool:
         return False
 
 
+def _detect_has_advanced_skills(template_id: str) -> bool:
+    """Auto-detect whether a template HTML contains an expertise/advanced skills section."""
+    template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        return "expertise.technical" in content or "expertise.professional" in content or "<!-- has_advanced_skills -->" in content
+    except FileNotFoundError:
+        return False
+
+
+def _detect_has_hobbies(template_id: str) -> bool:
+    """Auto-detect whether a template HTML contains a section for hobbies."""
+    template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        return "hobbies" in content or "<!-- has_hobbies -->" in content
+    except FileNotFoundError:
+        return False
+
+
 def get_template_by_id(template_id: str):
     for t in RESUME_TEMPLATES:
         if t["id"] == template_id:
@@ -418,7 +440,9 @@ def get_template_by_id(template_id: str):
                 **t, 
                 "has_photo": _detect_has_photo(t["id"]),
                 "has_languages": _detect_has_languages(t["id"]),
-                "has_language_proficiency": _detect_has_language_proficiency(t["id"])
+                "has_language_proficiency": _detect_has_language_proficiency(t["id"]),
+                "has_advanced_skills": _detect_has_advanced_skills(t["id"]),
+                "has_hobbies": _detect_has_hobbies(t["id"])
             }
     return None
 
@@ -430,7 +454,9 @@ def get_all_templates():
             **t, 
             "has_photo": _detect_has_photo(t["id"]),
             "has_languages": _detect_has_languages(t["id"]),
-            "has_language_proficiency": _detect_has_language_proficiency(t["id"])
+            "has_language_proficiency": _detect_has_language_proficiency(t["id"]),
+            "has_advanced_skills": _detect_has_advanced_skills(t["id"]),
+            "has_hobbies": _detect_has_hobbies(t["id"])
         } 
         for t in RESUME_TEMPLATES
     ]

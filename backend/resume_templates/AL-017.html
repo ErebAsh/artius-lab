@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Sahib Khan', true) }} | {{ personal.title | default('Graphic Designer', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -275,9 +275,9 @@
             <div class="photo-section">
                 <div class="photo-circle">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Sahib Khan', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
-                    <div class="photo-placeholder">{{ personal.full_name[0] | default('S', true) | upper }}</div>
+                    <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -347,7 +347,7 @@
         <!-- Main Content (Right) -->
         <main class="main-content">
             <header class="header-section">
-                <h1 class="name">{{ personal.full_name | default('Sahib Khan', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <div class="job-title">{{ personal.title | default('Graphic Designer', true) }}</div>
             </header>
 
@@ -443,17 +443,6 @@
 
 
 
-            <!-- Hobbies -->
-            {% if hobbies and hobbies|length > 0 %}
-            <div class="main-section">
-                <h2 class="section-header-main"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.19 14.99L11 13V7h1.5v5.25l4.5 2.67-.81 1.07z"/></svg> Hobbies</h2>
-                <ul class="main-skills-grid">
-                    {% for hobby in hobbies %}
-                    <li>{{ hobby }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
         </main>
     </div>
 </body>

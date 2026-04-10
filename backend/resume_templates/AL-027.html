@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Natalie Edwards', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -223,7 +223,7 @@
                 <img src="{{ personal.photo }}" alt="Profile Photo">
                 {% else %}
                 <div style="width:100%; height:100%; background:#ddd; display:flex; align-items:center; justify-content:center; color:#888; font-size:40pt; font-weight:700;">
-                    {{ personal.full_name[0] | default('N', true) }}
+                    {{ personal.full_name[0] | default('A', true) }}
                 </div>
                 {% endif %}
             </div>
@@ -265,7 +265,7 @@
 
             {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
-                <h2>Expertise</h2>
+                <h2>Skills</h2>
                 <ul class="expertise-list">
                     {% for skill in skills %}
                     <li>{{ skill.name }}</li>
@@ -278,7 +278,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="header-block">
-                <h1>{{ personal.full_name | default('Natalie Edwards', true) }}</h1>
+                <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p>{{ personal.title | default('Graphic Design', true) }}</p>
             </header>
 

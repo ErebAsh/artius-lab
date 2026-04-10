@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Angelia Thomas', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -173,15 +173,22 @@
 
         .main-section-header {
             font-family: 'Montserrat', sans-serif;
-            font-size: 16pt;
+            font-size: 14pt;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 15px;
             color: #222;
-            border-top: 1.5px solid #222;
-            padding-top: 8px;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+        }
+        .main-section-header::after {
+            content: "";
+            flex: 1;
+            height: 1.5px;
+            background: #222;
         }
 
         .profile-text {
@@ -245,6 +252,26 @@
             .container { width: 210mm; height: 297mm; box-shadow: none; }
             body { background: white; }
         }
+
+        .skills-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 9.5pt;
+            margin-top: 5px;
+        }
+        .skill-row {
+            display: flex;
+        }
+        .skill-label {
+            font-weight: 700;
+            min-width: 130px;
+            color: #222;
+        }
+        .skill-values {
+            flex: 1;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -252,7 +279,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="header-section">
-                <h1 class="name">{{ personal.full_name | default('Angelia Thomas', true) | replace(' ', '<br>') | safe }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) | replace(' ', '<br>') | safe }}</h1>
                 <div class="job-title">{{ personal.title | default('Market Manager', true) }}</div>
                 <div class="header-divider"></div>
             </div>
@@ -318,28 +345,16 @@
                 {% for cert in certifications %}
                 <div class="education-item">
                     <div class="edu-degree">{{ cert.name }}</div>
-                    <div class="edu-institution">{{ cert.issuer }}</div>
-                    <div class="edu-date">{{ cert.year }}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+                        <div class="edu-institution" style="margin: 0;">{{ cert.issuer }}</div>
+                        <div class="edu-date" style="white-space: nowrap;">{{ cert.year or cert.date }}</div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
             {% endif %}
 
-            <!-- Expertise -->
-            <div class="sidebar-section">
-                <span class="section-header">Expertise</span>
-                <div class="sidebar-divider"></div>
-                {% if expertise.professional %}
-                    {% for item in expertise.professional %}
-                    <div class="expertise-item">{{ item }}</div>
-                    {% endfor %}
-                {% else %}
-                    <div class="expertise-item">Project Management</div>
-                    <div class="expertise-item">Problem Sensitivity</div>
-                    <div class="expertise-item">Written Comprehension</div>
-                    <div class="expertise-item">Team Work</div>
-                {% endif %}
-            </div>
+
         </aside>
 
         <!-- Main Content -->
@@ -352,6 +367,7 @@
                 </div>
             </div>
             {% endif %}
+
 
             {% if experience and experience|length > 0 %}
             <div class="main-section">
@@ -398,6 +414,36 @@
                     {% endif %}
                 </div>
                 {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if expertise.professional or expertise.technical or (skills and skills|length > 0) %}
+            <div class="main-section">
+                <span class="main-section-header">Skills</span>
+                <div class="skills-section">
+                    {% if expertise.technical %}
+                    <div class="skill-row">
+                        <span class="skill-label">Technical:</span>
+                        <span class="skill-values">{{ expertise.technical | join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if expertise.professional %}
+                    <div class="skill-row">
+                        <span class="skill-label">Professional:</span>
+                        <span class="skill-values">{{ expertise.professional | join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if skills and skills|length > 0 %}
+                    <div class="skill-row">
+                        <span class="skill-label">Software/Other:</span>
+                        <span class="skill-values">
+                            {% set skill_names = [] %}
+                            {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                            {{ skill_names | join(', ') }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
         </main>

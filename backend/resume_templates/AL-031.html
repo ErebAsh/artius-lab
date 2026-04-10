@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- has_photo -->
+<!-- has_hobbies -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Sandra Miller', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -35,7 +36,7 @@
         /* ── Sidebar ── */
         .sidebar {
             width: 35%;
-            background-color: #111111;
+            background-color: #1e1b4b;
             color: #ffffff;
             padding: 55px 32px 40px;
             display: flex;
@@ -46,7 +47,7 @@
         .name {
             font-family: 'Playfair Display', serif;
             font-size: 26pt;
-            color: #c59d5f;
+            color: #a78bfa;
             margin: 0 0 8px 0;
             line-height: 1.1;
             font-weight: 700;
@@ -57,7 +58,7 @@
             font-size: 8.5pt;
             text-transform: uppercase;
             letter-spacing: 2.5px;
-            color: rgba(197,157,95,0.7);
+            color: rgba(167, 139, 250, 0.7);
             margin-bottom: 35px;
             text-align: left;
         }
@@ -66,7 +67,7 @@
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            border: 3px solid #c59d5f;
+            border: 3px solid #a78bfa;
             overflow: hidden;
             margin-bottom: 15px;
             background-color: #333;
@@ -84,7 +85,7 @@
             align-items: center;
             justify-content: center;
             font-size: 52px;
-            color: #c59d5f;
+            color: #a78bfa;
             background: linear-gradient(135deg, #222 0%, #111 100%);
             font-family: 'Playfair Display', serif;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -105,7 +106,7 @@
             margin-bottom: 12px;
             color: #ffffff;
             padding-bottom: 8px;
-            border-bottom: 1px solid rgba(197,157,95,0.3);
+            border-bottom: 1px solid rgba(167, 139, 250, 0.3);
         }
 
         .contact-info {
@@ -212,7 +213,7 @@
             bottom: 0;
             width: 40px;
             height: 3px;
-            background: #c59d5f;
+            background: #a78bfa;
         }
 
         .summary-text {
@@ -328,7 +329,7 @@
             {% endif %}
 
             <h1 class="name">
-                {% set names = (personal.full_name | default('Sandra Miller', true)).split(' ') %}
+                {% set names = (personal.full_name | default('Artius Lab', true)).split(' ') %}
                 {% if names|length >= 2 %}
                     {{ names[0] }}<br>{{ names[1:] | join(' ') }}
                 {% else %}
@@ -372,37 +373,26 @@
             </div>
 
             <!-- Skills -->
-            {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Skills</h3>
-                <ul class="skill-list">
+                
+                {% if skills and skills|length > 0 %}
+                <ul class="skill-list" style="margin-bottom: 25px;">
                     {% for skill in skills %}
                     <li><span class="skill-dot"></span>{{ skill.name }}</li>
                     {% endfor %}
                 </ul>
-            </div>
-            {% endif %}
+                {% endif %}
 
-            <!-- Expertise (Moved to Sidebar) -->
-            {% if expertise.technical or expertise.professional %}
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">Expertise</h3>
-                {% if expertise.technical %}
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-                    {% for item in expertise.technical %}
-                    <span style="font-size: 7.5pt; background: rgba(197,157,95,0.15); color: #c59d5f; padding: 3px 10px; border-radius: 4px; border-bottom: 1px solid rgba(197,157,95,0.3);">{{ item }}</span>
+                {% if hobbies and hobbies|length > 0 %}
+                <h3 class="sidebar-title">Hobbies</h3>
+                <ul class="skill-list">
+                    {% for hobby in hobbies %}
+                    <li><span class="skill-dot"></span>{{ hobby }}</li>
                     {% endfor %}
-                </div>
-                {% endif %}
-                {% if expertise.professional %}
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    {% for item in expertise.professional %}
-                    <span style="font-size: 7.5pt; font-weight: 500; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);">{{ item }}</span>
-                    {% endfor %}
-                </div>
+                </ul>
                 {% endif %}
             </div>
-            {% endif %}
 
 
         </aside>

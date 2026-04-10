@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Olivia Wilson', true) }} | {{ personal.title | default('Barista Professional', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -258,12 +258,12 @@
                 {% if personal.photo %}
                 <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
                 {% else %}
-                <div class="photo-placeholder">{{ personal.full_name[0] | default('O', true) }}</div>
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) }}</div>
                 {% endif %}
             </div>
             <div class="name-area">
                 <h1>
-                    {% set names = (personal.full_name | default('Olivia Wilson', true)).split(' ') %}
+                    {% set names = (personal.full_name | default('Artius Lab', true)).split(' ') %}
                     {{ (names[0] | title) }}<br>{{ (names[1:] | join(' ') | title) }}
                 </h1>
             </div>

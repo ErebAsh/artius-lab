@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Rahul Kumar', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -242,7 +242,7 @@
             <!-- Header -->
             <header>
                 <div class="header-left">
-                    <h1 class="name">{{ personal.full_name | default('Rahul Kumar', true) }}</h1>
+                    <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 </div>
                 <div class="contact-right">
                     <div class="contact-item">
@@ -250,12 +250,12 @@
                         <i class="fa-solid fa-phone"></i>
                     </div>
                     <div class="contact-item">
-                        <span>{{ personal.email | default('rahul.kumar@resumegemini.com', true) }}</span>
+                        <span>{{ personal.email | default('rahul.kumar@artiuslab.com', true) }}</span>
                         <i class="fa-solid fa-envelope"></i>
                     </div>
                     <div class="contact-item">
-                        <a href="{% if 'http' not in (personal.portfolio or personal.website) %}https://{% endif %}{{ personal.portfolio or personal.website | default('resumegemini.com', true) }}">
-                            {{ personal.portfolio or personal.website | default('https://resumegemini.com', true) | replace('https://', '') | replace('http://', '') }}
+                        <a href="{% if 'http' not in (personal.portfolio or personal.website) %}https://{% endif %}{{ personal.portfolio or personal.website | default('artiuslab.com', true) }}">
+                            {{ personal.portfolio or personal.website | default('https://artiuslab.com', true) | replace('https://', '') | replace('http://', '') }}
                         </a>
                         <i class="fa-solid fa-globe"></i>
                     </div>

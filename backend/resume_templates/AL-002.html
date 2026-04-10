@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -75,8 +75,17 @@
             letter-spacing: 2px;
             margin: 0 0 15px 0;
             padding-bottom: 5px;
-            border-bottom: 2px solid #ddd;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+        }
+        .sidebar-section h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
         }
         
         .contact-item {
@@ -152,6 +161,16 @@
             letter-spacing: 2px;
             margin: 0 0 20px 0;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+        }
+        .main-section h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
         }
         
         .statement-text {
@@ -257,7 +276,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h1 class="name">{{ personal.full_name | default('PAUL JOHNSON', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p class="job-title">{{ personal.title | default('CREATIVE DIRECTOR', true) }}</p>
             </div>
 
@@ -283,17 +302,39 @@
                 {% endif %}
             </div>
 
-            {% if expertise.professional or expertise.technical %}
+            {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
-                <h2>SKILLS AND EXPERTISE</h2>
+                <h2>SKILL</h2>
                 <ul class="expertise-list">
+                    {% for skill in skills %}
+                    <li>{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% elif expertise and (expertise.professional or expertise.technical or expertise.software_and_other) %}
+            <div class="sidebar-section">
+                <h2>SKILL</h2>
+                {% if expertise.professional and expertise.professional|length > 0 %}
+                <ul class="expertise-list" style="margin-bottom: 8px;">
                     {% for item in expertise.professional %}
                     <li>{{ item }}</li>
                     {% endfor %}
+                </ul>
+                {% endif %}
+                {% if expertise.technical and expertise.technical|length > 0 %}
+                <ul class="expertise-list" style="margin-bottom: 8px;">
                     {% for item in expertise.technical %}
                     <li>{{ item }}</li>
                     {% endfor %}
                 </ul>
+                {% endif %}
+                {% if expertise.software_and_other and expertise.software_and_other|length > 0 %}
+                <ul class="expertise-list">
+                    {% for item in expertise.software_and_other %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
             {% endif %}
 

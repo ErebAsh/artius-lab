@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Naomi Gibson', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -200,7 +200,27 @@
         }
         .sidebar-list li {
             font-size: 8.5pt;
-            padding: 5px 0;
+            padding: 5px 0 5px 15px;
+            color: #555;
+            position: relative;
+        }
+        .sidebar-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #666;
+            font-size: 12pt;
+            top: 1px;
+        }
+
+        .clean-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .clean-list li {
+            font-size: 8.5pt;
+            padding: 4px 0;
             color: #555;
         }
 
@@ -264,7 +284,7 @@
                 <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
             </div>
             {% endif %}
-            <h1>{{ personal.full_name | default('Naomi Gibson', true) }}</h1>
+            <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
             <p>{{ personal.title | default('Professional Title', true) }}</p>
         </header>
 
@@ -348,13 +368,13 @@
                         <span class="section-title">Certifications</span>
                     </div>
                     {% if certifications and certifications|length > 0 %}
+                    <ul class="clean-list">
                         {% for cert in certifications %}
-                        <div class="edu-item" style="margin-bottom: 12px;">
-                            <div class="edu-title" style="font-size: 8.5pt;">{{ cert.name }}</div>
-                            <div class="edu-subtitle" style="font-size: 8pt;">{{ cert.issuer }}</div>
-                            <div class="edu-date" style="font-size: 8pt;">{{ cert.year or cert.date }}</div>
-                        </div>
+                        <li>
+                            <strong>{{ cert.name }}</strong>{% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
+                        </li>
                         {% endfor %}
+                    </ul>
                     {% endif %}
                 </div>
 

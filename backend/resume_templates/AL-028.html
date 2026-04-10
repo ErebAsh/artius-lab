@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Evelyn Huges', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -36,11 +36,11 @@
         /* Sidebar (35%) */
         .sidebar {
             width: 35%;
-            background-color: #e8e2d9;
+            background-color: #f8fafc;
             padding: 240px 25px 40px; /* Increased padding to clear header */
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #dcd3c5;
+            border-right: 1px solid #e2e8f0;
         }
 
         .section-header {
@@ -57,8 +57,8 @@
             color: #333;
         }
         .header-line {
-            height: 1px;
-            background-color: #beb09d;
+            height: 2px;
+            background-color: #cbd5e1;
             width: 100%;
             position: relative;
         }
@@ -66,10 +66,10 @@
             content: '';
             position: absolute;
             left: 0;
-            top: -3px;
+            top: -2.5px;
             width: 7px;
             height: 7px;
-            background-color: #333;
+            background-color: #0f172a;
             border-radius: 50%;
         }
 
@@ -82,7 +82,7 @@
         .contact-icon {
             width: 20px;
             height: 20px;
-            fill: #333;
+            fill: #0f172a;
             margin-top: 2px;
         }
         .contact-info {
@@ -123,12 +123,12 @@
         }
         .skill-bar-bg {
             height: 2px;
-            background-color: #d1c8bb;
+            background-color: #cbd5e1;
             width: 100%;
         }
         .skill-bar-fill {
             height: 100%;
-            background-color: #333;
+            background-color: #0f172a;
         }
 
         .hobbies-grid {
@@ -179,7 +179,7 @@
         }
         .edu-date {
             font-size: 10pt;
-            color: #b9a38d;
+            color: #334155;
             font-weight: 600;
             margin-left: 10px;
         }
@@ -208,25 +208,29 @@
         .header-left-bar {
             width: 35%;
             height: 40px;
-            background-color: #e8e2d9;
+            background-color: #f8fafc;
+            border-right: 1px solid #e2e8f0;
         }
         .header-main-box {
-            background-color: #3d3d3d;
-            width: 310px; /* Reduced to fit A4 */
+            background-color: #0f172a;
+            width: 410px; 
             min-height: 120px;
             height: auto;
             margin-top: 40px;
-            padding: 20px 25px;
+            padding: 20px 30px 20px 40px; /* added inner padding to balance */
             display: flex;
             flex-direction: column;
             justify-content: center;
             color: #fff;
-            box-shadow: 10px 10px 0 rgba(0,0,0,0.05);
+            box-shadow: 10px 10px 0 rgba(15,23,42,0.08);
+            border-left: none;
+            margin-left: -35px;
+            z-index: 20;
         }
         .header-main-box h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 24pt;
-            font-weight: 700;
+            font-size: 28pt;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin: 0;
@@ -234,20 +238,20 @@
         }
         .header-main-box p {
             font-family: 'Montserrat', sans-serif;
-            font-size: 12pt;
+            font-size: 11.5pt;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 4px;
             margin: 8px 0 0 0;
-            color: #fff;
+            color: #94a3b8;
             line-height: 1.2;
         }
         
         .initials-box {
-            width: 60px; /* Reduced to fit A4 */
+            width: 60px; 
             min-height: 120px;
             height: auto;
-            background-color: #4a4a4a;
+            background-color: #334155;
             margin-top: 40px;
             display: flex;
             align-items: center;
@@ -257,42 +261,17 @@
         }
         .initials {
             font-family: 'Montserrat', sans-serif;
-            font-size: 18pt; /* Slightly smaller */
-            font-weight: 700;
-            color: #b9a38d;
+            font-size: 19pt; 
+            font-weight: 800;
+            color: #38bdf8;
             display: flex;
             flex-direction: column;
             align-items: center;
             line-height: 1;
-            gap: 2px;
+            gap: 4px;
         }
 
-        .photo-area {
-            margin-top: 40px;
-            margin-left: 15px; /* Reduced margin to fit A4 */
-            width: 120px;
-            height: 150px;
-            background-color: #fff;
-            padding: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-        .photo-area img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .photo-placeholder {
-            width: 100%;
-            height: 100%;
-            background-color: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #aaa;
-            font-size: 40pt;
-            font-weight: 700;
-        }
+
 
         @media print {
             body { background: none; }
@@ -306,7 +285,7 @@
         <div class="header-container">
             <div class="header-left-bar"></div>
             <div class="header-main-box">
-                <h1>{{ personal.full_name | default('Evelyn Huges', true) }}</h1>
+                <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p>{{ personal.title | default('Web Designer', true) }}</p>
             </div>
             <div class="initials-box">
@@ -323,13 +302,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="photo-area">
-                {% if personal.photo %}
-                <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
-                {% else %}
-                <div class="photo-placeholder">{{ personal.full_name[0] | default('E', true) | upper }}</div>
-                {% endif %}
-            </div>
+
         </div>
 
         <!-- Sidebar -->
@@ -418,31 +391,6 @@
                 {% endif %}
             </div>
 
-            <!-- Hobbies -->
-            <div class="sidebar-section" style="margin-top: 20px;">
-                <div class="section-header">
-                    <h2>Hobbies</h2>
-                    <div class="header-line"></div>
-                </div>
-                <div class="hobbies-grid">
-                    <div class="hobby-item">
-                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                        <span>Music</span>
-                    </div>
-                    <div class="hobby-item">
-                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                        <span>Hockey</span>
-                    </div>
-                    <div class="hobby-item">
-                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.43c-.16.09-.33.14-.5.14-.17 0-.34-.05-.5-.14l-7.97-4.43c-.32-.17-.53-.5-.53-.88v-9c0-.38.21-.71.53-.88l7.97-4.43c.16-.09.33-.14.5-.14.17 0 .34.05.5.14l7.97 4.43c.32.17.53.5.53.88v9z"/></svg>
-                        <span>Travel</span>
-                    </div>
-                    <div class="hobby-item">
-                        <svg class="hobby-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                        <span>Football</span>
-                    </div>
-                </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -451,7 +399,7 @@
             {% if personal.summary %}
             <div class="main-section">
                 <div class="section-header">
-                    <h2 style="color: #b9a38d;">Profile Summary</h2>
+                    <h2 style="color: #0f172a;">Profile Summary</h2>
                     <div class="header-line"></div>
                 </div>
                 <div class="summary-text">
@@ -464,7 +412,7 @@
             {% if education and education|length > 0 %}
             <div class="main-section">
                 <div class="section-header">
-                    <h2 style="color: #b9a38d;">Education</h2>
+                    <h2 style="color: #0f172a;">Education</h2>
                     <div class="header-line"></div>
                 </div>
                 
@@ -483,7 +431,7 @@
             {% else %}
                 <div class="main-section">
                     <div class="section-header">
-                        <h2 style="color: #b9a38d;">Education</h2>
+                        <h2 style="color: #0f172a;">Education</h2>
                         <div class="header-line"></div>
                     </div>
                     <div class="edu-item">
@@ -509,7 +457,7 @@
             {% if experience and experience|length > 0 %}
             <div class="main-section">
                 <div class="section-header">
-                    <h2 style="color: #b9a38d;">Experience</h2>
+                    <h2 style="color: #0f172a;">Experience</h2>
                     <div class="header-line"></div>
                 </div>
                 {% for exp in experience %}
@@ -530,7 +478,7 @@
             {% if projects and projects|length > 0 %}
             <div class="main-section">
                 <div class="section-header">
-                    <h2 style="color: #b9a38d;">Projects</h2>
+                    <h2 style="color: #0f172a;">Projects</h2>
                     <div class="header-line"></div>
                 </div>
                 {% for project in projects %}
@@ -540,7 +488,7 @@
                         <span class="edu-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</span>
                     </div>
                     {% if project.link %}
-                    <div class="edu-institution" style="color: #b9a38d; margin-bottom: 8px;"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
+                    <div class="edu-institution" style="color: #334155; margin-bottom: 8px;"><a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a></div>
                     {% endif %}
                     <div class="edu-desc">
                         {{ project.description }}

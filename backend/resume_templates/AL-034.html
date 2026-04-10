@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Alice Watson', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -329,32 +329,29 @@
                 {% endif %}
             </div>
 
-            <!-- Expertise -->
+            <!-- Skills -->
             <div class="sidebar-section">
-                <h3 class="sidebar-title">Expertise</h3>
-                <div class="expertise-category">Professional</div>
+                <h3 class="sidebar-title">Skills</h3>
                 <ul class="skill-list">
                     {% if skills %}
-                    {% for skill in skills %}
-                    <li>{{ skill.name }}</li>
-                    {% endfor %}
+                        {% for skill in skills %}
+                        <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    {% elif expertise and (expertise.technical or expertise.professional) %}
+                        {% for skill in expertise.technical %}
+                        <li>{{ skill }}</li>
+                        {% endfor %}
+                        {% for skill in expertise.professional %}
+                        <li>{{ skill }}</li>
+                        {% endfor %}
                     {% else %}
-                    <li>Analytical problem-solving</li>
-                    <li>Strong organizational skills</li>
-                    <li>Expertise in conflict handling</li>
-                    <li>Excellent presentation skills</li>
-                    <li>Excellent negotiation skills</li>
-                    <li>Leadership experience</li>
+                        <li>Analytical problem-solving</li>
+                        <li>Strong organizational skills</li>
+                        <li>Skills in conflict handling</li>
+                        <li>Social media marketing</li>
+                        <li>Email marketing automation</li>
+                        <li>Advanced HTML/CSS</li>
                     {% endif %}
-                </ul>
-                <div class="expertise-category">Technical</div>
-                <ul class="skill-list">
-                    <li>Content creation and editing</li>
-                    <li>Social media marketing</li>
-                    <li>Email marketing automation</li>
-                    <li>Video editing and production</li>
-                    <li>Paid advertising and PPC</li>
-                    <li>Advanced HTML/CSS</li>
                 </ul>
             </div>
         </aside>
@@ -363,7 +360,7 @@
         <main class="main">
             <header class="header">
                 <h1 class="name">
-                    {% set names = (personal.full_name | default('Alice Watson', true)).split(' ') %}
+                    {% set names = (personal.full_name | default('Artius Lab', true)).split(' ') %}
                     {% if names|length >= 2 %}
                         <span class="first-name">{{ names[0] }}</span> <span class="last-name">{{ names[1:] | join(' ') }}</span>
                     {% else %}
@@ -438,26 +435,43 @@
             </section>
             {% endif %}
 
-            <!-- Professional Development -->
+            <!-- Certifications -->
+            {% if certifications and certifications|length > 0 %}
             <section class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Professional Development</h2>
+                    <h2 class="section-title">Certifications</h2>
+                </div>
+                {% for cert in certifications %}
+                <div class="dev-item">
+                    <div class="dev-info">
+                        <div class="dev-name">{{ cert.name }}</div>
+                        <div class="dev-inst">{{ cert.issuer }}</div>
+                    </div>
+                    <div class="dev-date">{{ cert.year or cert.date }}</div>
+                </div>
+                {% endfor %}
+            </section>
+            {% else %}
+            <section class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Certifications</h2>
                 </div>
                 <div class="dev-item">
                     <div class="dev-info">
-                        <div class="dev-name">Class, Course or Workshop</div>
-                        <div class="dev-inst">Organization, Location</div>
+                        <div class="dev-name">Certification Name</div>
+                        <div class="dev-inst">Issuing Organization</div>
                     </div>
-                    <div class="dev-date">Date - Date</div>
+                    <div class="dev-date">Year</div>
                 </div>
                 <div class="dev-item">
                     <div class="dev-info">
-                        <div class="dev-name">Class, Course or Workshop</div>
-                        <div class="dev-inst">Organization, Location</div>
+                        <div class="dev-name">Certification Name</div>
+                        <div class="dev-inst">Issuing Organization</div>
                     </div>
-                    <div class="dev-date">Date - Date</div>
+                    <div class="dev-date">Year</div>
                 </div>
             </section>
+            {% endif %}
         </main>
     </div>
 </body>

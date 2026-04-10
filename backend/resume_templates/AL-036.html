@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Helena Dawn', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -230,17 +230,49 @@
         }
 
         /* Skills */
-        .skills-list {
+        .skill-item {
+            margin-bottom: 12px;
+        }
+        .skill-label {
+            font-size: 8.5pt;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .skill-bar-bg {
+            height: 3px;
+            background: #eee;
+            border-radius: 2px;
+            position: relative;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background: #333;
+            border-radius: 2px;
+            position: relative;
+            width: var(--skill-level, 80%);
+        }
+        .skill-dot {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            right: -4px;
+            top: -2.5px;
+        }
+
+        .clean-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .skills-list li {
+        .clean-list li {
             font-size: 8.5pt;
             padding: 4px 0;
             color: #555;
         }
-
         @media print {
             body { background: none; }
             .container { box-shadow: none; margin: 0; width: 100%;}
@@ -257,7 +289,7 @@
                     <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
                 </div>
                 {% endif %}
-                <h1>{{ personal.full_name | default('Helena Dawn', true) }}</h1>
+                <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p>{{ personal.title | default('Professional Title', true) }}</p>
             </div>
         </header>
@@ -332,31 +364,49 @@
 
                 <div class="section">
                     <span class="section-title">Core Skills</span>
-                    <ul class="skills-list">
+                    <div style="margin-top: 10px;">
                         {% if skills and skills|length > 0 %}
                             {% for skill in skills %}
-                            <li>• {{ skill.name | upper }}</li>
+                            <div class="skill-item">
+                                <div class="skill-label">
+                                    <span>{{ skill.name }}</span>
+                                </div>
+                                <div class="skill-bar-bg">
+                                    <div class="skill-bar-fill" style="--skill-level: {{ skill.level | default(80, true) }}%;">
+                                        <div class="skill-dot"></div>
+                                    </div>
+                                </div>
+                            </div>
                             {% endfor %}
                         {% elif expertise and (expertise.technical or expertise.professional) %}
                             {% for skill in expertise.technical %}
-                            <li>• {{ skill | upper }}</li>
+                            <div class="skill-item">
+                                <div class="skill-label"><span>{{ skill }}</span></div>
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="--skill-level: 85%;"><div class="skill-dot"></div></div></div>
+                            </div>
                             {% endfor %}
                             {% for skill in expertise.professional %}
-                            <li>• {{ skill | upper }}</li>
+                            <div class="skill-item">
+                                <div class="skill-label"><span>{{ skill }}</span></div>
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="--skill-level: 80%;"><div class="skill-dot"></div></div></div>
+                            </div>
                             {% endfor %}
                         {% else %}
-                            <li>• PROFESSIONAL</li>
+                            <div class="skill-item">
+                                <div class="skill-label"><span>PROFESSIONAL</span></div>
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="--skill-level: 75%;"><div class="skill-dot"></div></div></div>
+                            </div>
                         {% endif %}
-                    </ul>
+                    </div>
                 </div>
 
                 {% if certifications and certifications|length > 0 %}
                 <div class="section">
                     <span class="section-title">Certifications</span>
-                    <ul class="item-list">
+                    <ul class="clean-list">
                         {% for cert in certifications %}
                         <li>
-                            <strong>{{ cert.name }}</strong> {% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
+                            <strong>{{ cert.name }}</strong>{% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
                         </li>
                         {% endfor %}
                     </ul>

@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Jacson Smith', true) }} | {{ personal.title | default('UX / UI Designer', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -260,16 +260,16 @@
             <div class="header-photo">
                 <div class="photo-box">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Jacson Smith', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 60px; background: #283593; color: #fff;">{{ personal.full_name[0] | default('J', true) | upper }}</div>
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 60px; background: #283593; color: #fff;">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                     {% endif %}
                 </div>
             </div>
             <div class="header-content">
                 <div class="header-top-row">
                     <h1 class="name">
-                        {% set name_parts = (personal.full_name | default('Jacson Smith', true)).split(' ') %}
+                        {% set name_parts = (personal.full_name | default('Artius Lab', true)).split(' ') %}
                         {{ name_parts[0] | upper }}<br>
                         {{ name_parts[1:] | join(' ') | upper }}
                     </h1>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- has_photo -->
+<!-- has_advanced_skills -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Charlotte Miller', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -92,13 +93,7 @@
             margin-bottom: 15px;
             text-align: left;
         }
-        .sidebar-hr {
-            height: 4px;
-            background-color: #e5e5e5;
-            width: 100%;
-            border: none;
-            margin-bottom: 15px;
-        }
+
         .sidebar-title {
             font-size: 10.5pt;
             font-weight: 700;
@@ -194,8 +189,17 @@
             text-transform: uppercase;
             letter-spacing: 2.5px;
             color: #333;
-            margin-bottom: 15px;
-            display: block;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+        }
+        .section-title::after {
+            content: "";
+            height: 1px;
+            background-color: #eee;
+            flex-grow: 1;
         }
 
         .experience-item {
@@ -224,14 +228,6 @@
             margin-bottom: 6px;
             line-height: 1.5;
         }
-
-        .main-hr {
-            height: 1px;
-            background-color: #eee;
-            width: 100%;
-            border: none;
-            margin: 25px 0;
-        }
         
         .sidebar-hr {
             height: 2px;
@@ -241,27 +237,47 @@
             margin-bottom: 15px;
         }
 
-        /* Core Skills Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 21px;
+        .skills-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 5px;
         }
-        .skill-column h4 {
-            font-size: 9pt;
+        .skill-row {
+            display: flex;
+            gap: 20px;
+        }
+        .skill-category {
+            font-size: 8.5pt;
             font-weight: 700;
-            margin: 0 0 10px 0;
-            color: #444;
+            color: #333;
+            min-width: 90px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .skill-list {
+        .skill-values {
+            font-size: 8.5pt;
+            color: #555;
+            line-height: 1.6;
+            flex: 1;
+        }
+        .clean-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .skill-list li {
+        .clean-list li {
+            font-size: 8.5pt;
+            padding: 4px 0;
+            color: #555;
+        }
+        .simple-skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 12px;
+            line-height: 1.6;
             font-size: 8.5pt;
             color: #555;
-            padding: 3px 0;
         }
 
         @media print {
@@ -278,12 +294,12 @@
                 {% if personal.photo %}
                 <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
                 {% else %}
-                <div class="photo-placeholder">{{ personal.full_name[0] | default('C', true) | upper }}</div>
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                 {% endif %}
             </div>
 
             <div class="header-name">
-                <h1>{{ personal.full_name | default('Charlotte Miller', true) }}</h1>
+                <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p>{{ personal.title | default('PROFESSIONAL TITLE', true) }}</p>
             </div>
 
@@ -341,6 +357,19 @@
                     </div>
                 {% endif %}
             </div>
+            {% if certifications and certifications|length > 0 %}
+            <div class="sidebar-section">
+                <hr class="sidebar-hr">
+                <span class="sidebar-title">Certifications</span>
+                <ul class="clean-list">
+                    {% for cert in certifications %}
+                    <li>
+                        <strong>{{ cert.name }}</strong>{% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </aside>
 
         <!-- Main Content (Right) -->
@@ -352,7 +381,6 @@
                     {{ personal.summary }}
                 </div>
             </div>
-            <hr class="main-hr">
             {% endif %}
 
             <span class="section-title">Professional Experience</span>
@@ -418,8 +446,6 @@
                 </div>
             {% endif %}
 
-            <hr class="main-hr">
-
             {% if projects and projects|length > 0 %}
             <span class="section-title">Projects</span>
             {% for project in projects %}
@@ -440,55 +466,34 @@
             {% endfor %}
             {% endif %}
 
-            {% if certifications and certifications|length > 0 %}
-            <hr class="main-hr">
-            <span class="section-title">Certifications</span>
-            <ul class="bullet-list">
-                {% for cert in certifications %}
-                <li>
-                    <strong>{{ cert.name }}</strong> {% if cert.issuer %} | {{ cert.issuer }}{% endif %} {% if cert.year %}({{ cert.year }}){% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-            <hr class="main-hr">
-            {% endif %}
 
-            <span class="section-title">Core Skills</span>
-            <div class="skills-grid">
-                {% if expertise.professional or (not expertise.technical and skills) %}
-                <div class="skill-column">
-                    <h4>PROFESSIONAL</h4>
-                    <ul class="skill-list">
-                        {% if expertise.professional %}
-                            {% for skill in expertise.professional %}
-                            <li>{{ skill }}</li>
-                            {% endfor %}
-                        {% else %}
-                            {% for skill in skills[:(skills|length/2)|round(0, 'ceil')|int] %}
-                            <li>{{ skill.name }}</li>
-                            {% endfor %}
-                        {% endif %}
-                    </ul>
+            {% if expertise.professional or expertise.technical or (skills and skills|length > 0) %}
+            <span class="section-title">Skills</span>
+            <div class="skills-container">
+                {% if expertise.technical %}
+                <div class="skill-row">
+                    <span class="skill-category">Technical</span>
+                    <div class="skill-values">{{ expertise.technical | join(', ') }}</div>
                 </div>
                 {% endif %}
-                
-                {% if expertise.technical or (not expertise.professional and skills) %}
-                <div class="skill-column">
-                    <h4>TECHNICAL</h4>
-                    <ul class="skill-list">
-                        {% if expertise.technical %}
-                            {% for skill in expertise.technical %}
-                            <li>{{ skill }}</li>
-                            {% endfor %}
-                        {% else %}
-                            {% for skill in skills[(skills|length/2)|round(0, 'ceil')|int:] %}
-                            <li>{{ skill.name }}</li>
-                            {% endfor %}
-                        {% endif %}
-                    </ul>
+                {% if expertise.professional %}
+                <div class="skill-row">
+                    <span class="skill-category">Professional</span>
+                    <div class="skill-values">{{ expertise.professional | join(', ') }}</div>
+                </div>
+                {% endif %}
+                {% if skills and skills|length > 0 %}
+                <div class="skill-row">
+                    <span class="skill-category">Software/Other</span>
+                    <div class="skill-values">
+                        {% set skill_names = [] %}
+                        {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                        {{ skill_names | join(', ') }}
+                    </div>
                 </div>
                 {% endif %}
             </div>
+            {% endif %}
         </main>
     </div>
 </body>

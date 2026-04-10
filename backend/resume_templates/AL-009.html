@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Erina Valentina', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -41,7 +41,7 @@
         }
         .header-left {
             width: 32%;
-            background-color: #e5d3c5;
+            background-color: #faf7f5;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -64,7 +64,7 @@
         .photo-placeholder {
             width: 100%;
             height: 100%;
-            background: #d4c2b4;
+            background: #e5d3c5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,7 +75,7 @@
         }
         .header-right {
             width: 68%;
-            background-color: #5a5a5a;
+            background-color: #2d241e;
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -95,7 +95,7 @@
         }
         .job-title-container {
             margin-top: 15px;
-            border: 1px solid rgba(255,255,255,0.4);
+            border: 1px solid #c5a08b;
             padding: 8px 30px;
             position: relative;
         }
@@ -105,7 +105,7 @@
             top: 50%;
             width: 40px;
             height: 1px;
-            background: rgba(255,255,255,0.4);
+            background: #c5a08b;
         }
         .job-title-container::before { left: -50px; }
         .job-title-container::after { right: -50px; }
@@ -113,9 +113,10 @@
         .job-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 11pt;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 3px;
+            color: #c5a08b;
         }
 
         /* ── Content Body ── */
@@ -127,7 +128,7 @@
         /* ── Sidebar ── */
         .sidebar {
             width: 32%;
-            background-color: #e5d3c5;
+            background-color: #faf7f5;
             padding: 0;
             display: flex;
             flex-direction: column;
@@ -136,7 +137,7 @@
             margin-bottom: 0;
         }
         .sidebar-header {
-            background: #5a5a5a;
+            background: #2d241e;
             color: #fff;
             padding: 12px 25px;
             display: flex;
@@ -147,11 +148,12 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
+            border-bottom: 1px solid rgba(197, 160, 139, 0.3);
         }
         .sidebar-header svg {
             width: 18px;
             height: 18px;
-            fill: #fff;
+            fill: #c5a08b;
         }
         .sidebar-content {
             padding: 15px 25px 20px;
@@ -176,7 +178,7 @@
         .contact-icon-circle svg {
             width: 14px;
             height: 14px;
-            fill: #5a5a5a;
+            fill: #2d241e;
         }
         .contact-label {
             font-weight: 700;
@@ -211,7 +213,7 @@
 
         .edu-info {
             font-size: 8.5pt;
-            color: #5a5a5a;
+            color: #2d241e;
         }
 
         .skills-list {
@@ -231,7 +233,7 @@
             content: "•";
             position: absolute;
             left: 0;
-            color: #5a5a5a;
+            color: #c5a08b;
         }
         .skills-list li:last-child {
             margin-bottom: 0;
@@ -248,7 +250,7 @@
             margin-bottom: 0;
         }
         .main-section-header {
-            background: rgba(229, 211, 197, 0.4);
+            background: rgba(197, 160, 139, 0.15);
             padding: 12px 35px;
             display: flex;
             align-items: center;
@@ -258,12 +260,13 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #5a5a5a;
+            color: #2d241e;
+            border-left: 4px solid #c5a08b;
         }
         .main-section-header svg {
             width: 22px;
             height: 22px;
-            fill: #5a5a5a;
+            fill: #c5a08b;
         }
         .main-content-text {
             padding: 15px 35px 20px;
@@ -339,14 +342,14 @@
             <div class="header-left">
                 <div class="photo-frame">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Erina Valentina', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
-                    <div class="photo-placeholder">{{ personal.full_name[0] | default('E', true) | upper }}</div>
+                    <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                     {% endif %}
                 </div>
             </div>
             <div class="header-right">
-                <h1 class="name">{{ personal.full_name | default('Erina Valentina', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <div class="job-title-container">
                     <span class="job-title">{{ personal.title | default('Digital Marketer', true) }}</span>
                 </div>
@@ -393,6 +396,58 @@
                     </div>
                 </div>
 
+                <!-- Skills -->
+                {% if skills and skills|length > 0 %}
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                        Skills
+                    </div>
+                    <div class="sidebar-content">
+                        <ul class="skills-list">
+                            {% for skill in skills %}
+                            <li>{{ skill.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% elif expertise and (expertise.professional or expertise.technical or expertise.software_and_other) %}
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                        Skills
+                    </div>
+                    <div class="sidebar-content">
+                        {% if expertise.technical and expertise.technical|length > 0 %}
+                        <div class="contact-label" style="font-size: 8pt; margin-bottom: 4px;">Technical</div>
+                        <ul class="skills-list" style="margin-bottom: 10px;">
+                            {% for item in expertise.technical %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        
+                        {% if expertise.professional and expertise.professional|length > 0 %}
+                        <div class="contact-label" style="font-size: 8pt; margin-bottom: 4px;">Professional</div>
+                        <ul class="skills-list" style="margin-bottom: 10px;">
+                            {% for item in expertise.professional %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
+                        {% if expertise.software_and_other and expertise.software_and_other|length > 0 %}
+                        <div class="contact-label" style="font-size: 8pt; margin-bottom: 4px;">Software/Other</div>
+                        <ul class="skills-list" style="margin-bottom: 6px;">
+                            {% for item in expertise.software_and_other %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Education -->
                 {% if education and education|length > 0 %}
                 <div class="sidebar-section">
@@ -422,31 +477,17 @@
                     <div class="sidebar-content">
                         {% for cert in certifications %}
                         <div class="edu-item">
-                            <div class="edu-year">{{ cert.year }}</div>
                             <div class="edu-degree">{{ cert.name }}</div>
-                            <div class="edu-info">{{ cert.issuer }}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+                                <div class="edu-info" style="margin: 0;">{{ cert.issuer }}</div>
+                                <div class="edu-year" style="margin: 0; white-space: nowrap;">{{ cert.year or cert.date }}</div>
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
                 {% endif %}
 
-                <!-- Skills -->
-                {% if skills and skills|length > 0 %}
-                <div class="sidebar-section">
-                    <div class="sidebar-header">
-                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
-                        Skills
-                    </div>
-                    <div class="sidebar-content">
-                        <ul class="skills-list">
-                            {% for skill in skills %}
-                            <li>{{ skill.name }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
             </aside>
 
             <!-- Main Content -->

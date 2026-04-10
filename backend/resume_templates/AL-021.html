@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Name Here', true) }} | {{ personal.title | default('Graphic Designer', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -255,7 +255,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1 class="name">{{ personal.full_name | default('NAME HERE', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <div class="prof">{{ personal.title | default('graphic designer', true) }}</div>
             </div>
             <div class="header-right">
@@ -264,7 +264,7 @@
                         {% if personal.photo %}
                         <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
                         {% else %}
-                        <div class="photo-hex-inner">{{ personal.full_name[0] | default('N', true) }}</div>
+                        <div class="photo-hex-inner">{{ personal.full_name[0] | default('A', true) }}</div>
                         {% endif %}
                     </div>
                 </div>

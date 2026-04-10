@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- has_hobbies -->
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Giada Martini', true) | title }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -40,11 +41,11 @@
         }
         .header-band-top {
             height: 45px;
-            background: #333;
+            background: #1e1b4b;
         }
         .header-band-name {
             height: 150px;
-            background: #EAE3D9;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -53,28 +54,30 @@
         }
         .header-band-title {
             height: 45px;
-            background: #333;
+            background: #312e81;
             display: flex;
             align-items: center;
             padding: 0 60px;
         }
 
         .name {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 52pt;
-            color: #333;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 34pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: #1e1b4b;
             line-height: 1;
             margin: 0;
             z-index: 2;
         }
         .job-title {
-            color: #333;
+            color: #fff;
             text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             font-size: 10pt;
             font-weight: 500;
             margin: 0;
-            margin-top: -5px;
         }
 
         .photo-wrapper {
@@ -108,11 +111,11 @@
         /* ── Sidebar ── */
         .sidebar {
             width: 35%;
-            background: #EAE3D9;
+            background: #f8fafc;
             padding: 40px 45px;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 10px;
         }
 
         .sidebar-section h2 {
@@ -120,10 +123,10 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #333;
-            margin-bottom: 15px;
+            color: #1e1b4b;
+            margin-bottom: 8px;
             padding-bottom: 5px;
-            border-bottom: 1.5px solid #333;
+            border-bottom: 1.5px solid #312e81;
             display: block;
         }
 
@@ -131,7 +134,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             font-size: 8.5pt;
             color: #444;
         }
@@ -143,7 +146,7 @@
         }
 
         .edu-item {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .edu-degree {
             font-size: 9pt;
@@ -257,23 +260,22 @@
         <div class="header">
             <div class="header-band-top"></div>
             <div class="header-band-name">
-                <div class="name-title-container">
-                    <h1 class="name">{{ personal.full_name | default('Giada Martini', true) | title }}</h1>
-                    <p class="job-title">{{ personal.title | default('MARKETING MANAGER', true) }}</p>
-                </div>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) | upper }}</h1>
                 <div class="photo-wrapper">
                     <div class="photo-container">
                         {% if personal.photo %}
                         <img src="{{ personal.photo }}" alt="Profile Photo">
                         {% else %}
                         <div style="width:100%; height:100%; background:#888; display:flex; align-items:center; justify-content:center; color:#fff; font-size:40pt; font-weight:700;">
-                            {{ personal.full_name[0] | default('G', true) | upper }}
+                            {{ personal.full_name[0] | default('A', true) | upper }}
                         </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="header-band-title"></div>
+            <div class="header-band-title">
+                <p class="job-title">{{ personal.title | default('MARKETING MANAGER', true) }}</p>
+            </div>
         </div>
 
         <div class="page-content">
@@ -317,6 +319,19 @@
                     <ul class="skill-list">
                         {% for skill in skills %}
                         <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                {% if certifications and certifications|length > 0 %}
+                <div class="sidebar-section">
+                    <h2>Certifications</h2>
+                    <ul class="skill-list" style="list-style: none; padding-left: 0;">
+                        {% for cert in certifications %}
+                        <li style="padding-left: 0; margin-bottom: 12px; display: flex; flex-direction: column;">
+                            <span style="font-weight: 700; font-size: 9pt; color: #333;">{{ cert.name }}</span>
+                            <span style="font-size: 8pt; color: #666; margin-top: 2px;">{{ cert.issuer }}{% if cert.year or cert.date %} | {{ cert.year or cert.date }}{% endif %}</span>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Resume', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -71,14 +71,8 @@
             letter-spacing: 3px;
             font-size: 11pt;
             color: #666;
-            margin: 10px 0 20px 0;
+            margin: 10px 0 10px 0;
             font-weight: 400;
-        }
-        .title-separator {
-            width: 100%;
-            height: 1px;
-            background-color: #ccc;
-            margin-bottom: 15px;
         }
 
         h2 {
@@ -86,9 +80,19 @@
             font-size: 14pt;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin: 0 0 20px 0;
+            margin: 0 0 8px 0;
             color: #333;
             border-bottom: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+        }
+        h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ccc;
         }
         
         .section {
@@ -147,8 +151,18 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin: 0 0 20px 0;
+            margin: 0 0 8px 0;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+        }
+        .sidebar-section h3::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ccc;
         }
         
         .contact-item {
@@ -204,6 +218,30 @@
             color: #888;
         }
 
+        .skills-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 9.5pt;
+            margin-top: 5px;
+        }
+        .skill-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .skill-label {
+            font-weight: 700;
+            color: #222;
+            text-transform: uppercase;
+            font-size: 8.5pt;
+            letter-spacing: 1px;
+        }
+        .skill-values {
+            color: #555;
+            line-height: 1.4;
+        }
+
     </style>
 </head>
 <body>
@@ -213,9 +251,8 @@
         <!-- Main Content (Left) -->
         <main class="main-content">
             <header>
-                <h1>{{ personal.full_name | default('Stanley Wilson', true) }}</h1>
+                <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p class="job-title">{{ personal.title | default('PROFESSIONAL TITLE', true) }}</p>
-                <div class="title-separator"></div>
             </header>
 
             {% if personal.summary %}
@@ -304,39 +341,31 @@
                 {% endfor %}
             </div>
 
+            {% if skills and skills|length > 0 %}
+            <div class="sidebar-section">
+                <h3>SKILLS</h3>
+                <ul class="skills-list">
+                    {% for s in skills %}
+                    <li>{{ s.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
             {% if certifications and certifications|length > 0 %}
             <div class="sidebar-section">
                 <h3>CERTIFICATIONS</h3>
                 {% for cert in certifications %}
                 <div class="edu-item">
                     <div class="edu-degree">{{ cert.name }}</div>
-                    <div class="edu-uni">{{ cert.issuer }}</div>
-                    <div class="edu-date">{{ cert.year }}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+                        <div class="edu-uni" style="margin: 0;">{{ cert.issuer }}</div>
+                        <div class="edu-date" style="white-space: nowrap;">{{ cert.year or cert.date }}</div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
             {% endif %}
-
-            <div class="sidebar-section">
-                <h3>SKILLS</h3>
-                <ul class="skills-list">
-                    {% if expertise.professional %}
-                        {% for item in expertise.professional %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    {% endif %}
-                    {% if expertise.technical %}
-                        {% for item in expertise.technical %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    {% endif %}
-                    {% if not expertise.professional and not expertise.technical %}
-                        {% for skill in skills %}
-                        <li>{{ skill.name }}</li>
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-            </div>
         </aside>
     </div>
 </body>

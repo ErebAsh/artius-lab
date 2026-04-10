@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('John Smith', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -300,9 +300,9 @@
             <div class="photo-section">
                 <div class="photo-circle">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('John Smith', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
-                    <div class="photo-placeholder">{{ personal.full_name[0] | default('J', true) | upper }}</div>
+                    <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -380,7 +380,7 @@
         <!-- Main Column -->
         <main class="main-column">
             <header class="header">
-                <h1 class="name">{{ personal.full_name | default('John Smith', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <p class="job-title">{{ personal.title | default('Professional Title', true) }}</p>
             </header>
 

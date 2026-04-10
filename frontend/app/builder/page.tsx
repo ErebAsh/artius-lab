@@ -169,6 +169,8 @@ function BuilderContent() {
   const [templateHasSkillLevels, setTemplateHasSkillLevels] = useState(false);
   const [templateHasLanguages, setTemplateHasLanguages] = useState(false);
   const [templateHasLanguageProficiency, setTemplateHasLanguageProficiency] = useState(false);
+  const [templateHasAdvancedSkills, setTemplateHasAdvancedSkills] = useState(false);
+  const [templateHasHobbies, setTemplateHasHobbies] = useState(false);
   const [rawPhoto, setRawPhoto] = useState("");  // original unedited photo for re-editing
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
 
@@ -209,6 +211,8 @@ function BuilderContent() {
           setTemplateHasSkillLevels(data.has_skill_levels === true || hasSkillFeatures);
           setTemplateHasLanguages(data.has_languages === true);
           setTemplateHasLanguageProficiency(data.has_language_proficiency === true);
+          setTemplateHasAdvancedSkills(data.has_advanced_skills === true);
+          setTemplateHasHobbies(data.has_hobbies === true);
         }
       } catch (err) {
         console.error("Failed to fetch template info:", err);
@@ -260,6 +264,11 @@ function BuilderContent() {
     professional: [""]
   });
 
+  const [hobbies, setHobbies] = useState({
+    enabled: false,
+    list: [""]
+  });
+
   // ── Load resume from DB if ?resume=ID is present ──
   const loadResumeFromDB = useCallback(async (id: number) => {
     try {
@@ -281,6 +290,16 @@ function BuilderContent() {
           technical: rd.expertise.technical?.length ? rd.expertise.technical : [""],
           professional: rd.expertise.professional?.length ? rd.expertise.professional : [""]
         });
+      }
+      if (rd.hobbies) {
+        if (Array.isArray(rd.hobbies)) {
+          setHobbies({ enabled: false, list: rd.hobbies.length > 0 ? rd.hobbies : [""] });
+        } else if (typeof rd.hobbies === 'object') {
+          setHobbies({ 
+            enabled: rd.hobbies.enabled ?? false, 
+            list: rd.hobbies.list?.length ? rd.hobbies.list : [""] 
+          });
+        }
       }
       if (data.layout_settings) {
         setLayout((prev: typeof layout) => ({ ...prev, ...data.layout_settings }));
@@ -319,6 +338,7 @@ function BuilderContent() {
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
       certifications: certifications.filter((c) => c.name.trim() !== ""),
       languages: languages.filter((l) => l.name.trim() !== ""),
+      hobbies: hobbies.enabled ? hobbies.list.filter(h => h.trim() !== "") : [],
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -365,7 +385,7 @@ function BuilderContent() {
     } finally {
       setSaving(false);
     }
-  }, [requireAuth, token, personal, education, experience, skills, projects, expertise, templateId, layout, resumeId, API_BASE]);
+  }, [requireAuth, token, personal, education, experience, skills, projects, expertise, hobbies, templateId, layout, resumeId, API_BASE]);
 
   // Auto-save effect
   useEffect(() => {
@@ -380,7 +400,7 @@ function BuilderContent() {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [personal, education, experience, skills, projects, certifications, expertise, layout, token, generating, enhancing, handleSaveDraft]);
+  }, [personal, education, experience, skills, projects, certifications, expertise, hobbies, layout, token, generating, enhancing, handleSaveDraft]);
 
   const handleAIAutoComplete = async () => {
     setEnhancing(true);
@@ -399,6 +419,7 @@ function BuilderContent() {
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
       certifications: certifications.filter((c) => c.name.trim() !== ""),
       languages: languages.filter((l) => l.name.trim() !== ""),
+      hobbies: hobbies.enabled ? hobbies.list.filter(h => h.trim() !== "") : [],
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -449,6 +470,16 @@ function BuilderContent() {
           professional: enhanced.expertise.professional?.length > 0 ? enhanced.expertise.professional : [""]
         });
       }
+      if (enhanced.hobbies) {
+        if (Array.isArray(enhanced.hobbies)) {
+          setHobbies({ ...hobbies, list: enhanced.hobbies });
+        } else {
+          setHobbies({ 
+            enabled: enhanced.hobbies.enabled ?? hobbies.enabled, 
+            list: enhanced.hobbies.list || hobbies.list 
+          });
+        }
+      }
 
       // Automatically apply AI-suggested layout
       if (layoutSettings) {
@@ -488,6 +519,7 @@ function BuilderContent() {
         .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
       certifications: certifications.filter((c) => c.name.trim() !== ""),
       languages: languages.filter((l) => l.name.trim() !== ""),
+      hobbies: hobbies.enabled ? hobbies.list.filter(h => h.trim() !== "") : [],
       expertise: expertise.enabled ? {
         technical: expertise.technical.filter(t => t.trim() !== ""),
         professional: expertise.professional.filter(p => p.trim() !== "")
@@ -930,6 +962,7 @@ function BuilderContent() {
                 <input style={inputStyle} placeholder="johndoe.dev" value={personal.portfolio} onChange={(e) => setPersonal({ ...personal, portfolio: e.target.value })} />
               </div>
             </div>
+
             <div>
               <label style={labelStyle}>Professional Summary</label>
               <textarea
@@ -939,6 +972,72 @@ function BuilderContent() {
                 onChange={(e) => setPersonal({ ...personal, summary: e.target.value })}
               />
             </div>
+
+            {/* Hobbies Section (Conditional) */}
+            {templateHasHobbies && (
+              <div style={{ marginTop: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <label style={labelStyle}>Hobbies & Interests</label>
+                  <label className="switch" style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: hobbies.enabled ? "var(--accent-light)" : "var(--text-muted)" }}>
+                      {hobbies.enabled ? "ENABLED" : "DISABLED"}
+                    </span>
+                    <div style={{ position: "relative", width: 44, height: 22 }}>
+                      <input 
+                        type="checkbox" 
+                        checked={hobbies.enabled}
+                        onChange={(e) => setHobbies({ ...hobbies, enabled: e.target.checked })}
+                        style={{ opacity: 0, width: 0, height: 0 }}
+                      />
+                      <span style={{
+                        position: "absolute", cursor: "pointer", top: 0, left: 0, right: 0, bottom: 0,
+                        backgroundColor: hobbies.enabled ? "var(--accent)" : "#ccc",
+                        transition: ".4s", borderRadius: 34
+                      }}>
+                        <span style={{
+                          position: "absolute", content: "", height: 16, width: 16, left: hobbies.enabled ? 24 : 4, bottom: 3,
+                          backgroundColor: "white", transition: ".4s", borderRadius: "50%"
+                        }}></span>
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
+                {hobbies.enabled && (
+                  <div style={{ padding: 20, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--border)" }}>
+                    <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 16px 0" }}>
+                      This template supports showing your hobbies. Add them below.
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                      {hobbies.list.map((hobby, hIdx) => (
+                        <div key={hIdx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <input 
+                            style={{ ...inputStyle, width: "auto", minWidth: 150 }} 
+                            placeholder="e.g. Photography" 
+                            value={hobby} 
+                            onChange={(e) => {
+                              const newList = [...hobbies.list];
+                              newList[hIdx] = e.target.value;
+                              setHobbies({ ...hobbies, list: newList });
+                            }}
+                          />
+                          {hobbies.list.length > 1 && (
+                            <button 
+                              style={{ ...removeBtnStyle, padding: "8px 10px" }} 
+                              onClick={() => setHobbies({ ...hobbies, list: hobbies.list.filter((_, i) => i !== hIdx) })}
+                            >✕</button>
+                          )}
+                        </div>
+                      ))}
+                      <button 
+                        style={{ ...addBtnStyle, padding: "8px 16px" }} 
+                        onClick={() => setHobbies({ ...hobbies, list: [...hobbies.list, ""] })}
+                      >+ Add Hobby</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -1048,43 +1147,45 @@ function BuilderContent() {
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4 }}>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Skills & Expertise</h2>
-              <div 
-                onClick={() => setExpertise({...expertise, enabled: !expertise.enabled})}
-                style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  gap: 12, 
-                  background: expertise.enabled ? "rgba(99, 102, 241, 0.1)" : "rgba(255,255,255,0.03)", 
-                  padding: "6px 14px", 
-                  borderRadius: 30, 
-                  border: expertise.enabled ? "1px solid var(--accent)" : "1px solid rgba(255,255,255,0.1)",
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-                }}
-                className="hover:scale-105"
-              >
-                <span style={{ fontSize: 10, fontWeight: 800, color: expertise.enabled ? "var(--accent-light)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.5 }}>Advanced Columns</span>
-                <div style={{ 
-                  width: 32, 
-                  height: 18, 
-                  background: expertise.enabled ? "var(--accent)" : "rgba(255,255,255,0.1)", 
-                  borderRadius: 20, 
-                  position: "relative",
-                  transition: "background 0.3s"
-                }}>
+              {templateHasAdvancedSkills && (
+                <div 
+                  onClick={() => setExpertise({...expertise, enabled: !expertise.enabled})}
+                  style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: 12, 
+                    background: expertise.enabled ? "rgba(99, 102, 241, 0.1)" : "rgba(255,255,255,0.03)", 
+                    padding: "6px 14px", 
+                    borderRadius: 30, 
+                    border: expertise.enabled ? "1px solid var(--accent)" : "1px solid rgba(255,255,255,0.1)",
+                    cursor: "pointer",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                  }}
+                  className="hover:scale-105"
+                >
+                  <span style={{ fontSize: 10, fontWeight: 800, color: expertise.enabled ? "var(--accent-light)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.5 }}>Advanced Columns</span>
                   <div style={{ 
-                    width: 12, 
-                    height: 12, 
-                    background: "#fff", 
-                    borderRadius: "50%", 
-                    position: "absolute", 
-                    top: 3, 
-                    left: expertise.enabled ? 17 : 3,
-                    transition: "left 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
-                  }} />
+                    width: 32, 
+                    height: 18, 
+                    background: expertise.enabled ? "var(--accent)" : "rgba(255,255,255,0.1)", 
+                    borderRadius: 20, 
+                    position: "relative",
+                    transition: "background 0.3s"
+                  }}>
+                    <div style={{ 
+                      width: 12, 
+                      height: 12, 
+                      background: "#fff", 
+                      borderRadius: "50%", 
+                      position: "absolute", 
+                      top: 3, 
+                      left: expertise.enabled ? 17 : 3,
+                      transition: "left 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                    }} />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             
             {templateHasSkillLevels ? (
@@ -1219,7 +1320,7 @@ function BuilderContent() {
               </div>
             )}
 
-            {expertise.enabled && (
+            {templateHasAdvancedSkills && expertise.enabled && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, animation: "fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
                 <div style={{ padding: 24, background: "var(--surface)", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}>
                   <label style={{ ...labelStyle, color: "var(--accent-light)", fontWeight: 800 }}>Technical Expertise</label>

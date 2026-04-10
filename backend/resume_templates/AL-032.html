@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- has_photo -->
+<!-- has_hobbies -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Kathy Sinclair', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -35,12 +36,12 @@
         /* Sidebar */
         .sidebar {
             width: 32%;
-            background-color: #e6d5c8;
+            background-color: #f8fafc;
             padding: 45px 35px;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            border-right: 1px solid rgba(0,0,0,0.05);
+            border-right: 1px solid #e2e8f0;
         }
 
         .photo-container {
@@ -83,8 +84,8 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            color: #3d2b1f;
-            border-bottom: 2px solid #dcd1c6;
+            color: #0f172a;
+            border-bottom: 2px solid #38bdf8;
             padding-bottom: 6px;
             width: 100%;
         }
@@ -99,12 +100,12 @@
         .contact-icon {
             width: 16px;
             height: 16px;
-            fill: #5d4037;
+            fill: #38bdf8;
             flex-shrink: 0;
         }
         .contact-value {
             font-size: 8.5pt;
-            color: #3d2b1f;
+            color: #0f172a;
             word-break: break-all;
             font-weight: 500;
         }
@@ -137,7 +138,7 @@
             transform: translateY(-50%);
             width: calc(100% + 40px); /* Extends toward the right edge */
             height: 100px;
-            background-color: #e6d5c8; 
+            background-color: #0f172a; 
             z-index: 1;
             border-radius: 0 50px 50px 0;
         }
@@ -152,13 +153,13 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin: 0;
-            color: #333;
+            color: #ffffff;
             line-height: 1.1;
         }
         .header p {
             font-family: 'Montserrat', sans-serif;
             font-size: 11pt;
-            color: #5d4037; /* Darker brown for readability on strap */
+            color: #bae6fd; /* Light blue headline */
             margin: 5px 0 0 0;
             letter-spacing: 1px;
             font-weight: 600;
@@ -173,8 +174,8 @@
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            color: #333;
-            border-bottom: 2px solid #e6d5c8;
+            color: #0f172a;
+            border-bottom: 2px solid #0f172a;
             padding-bottom: 8px;
         }
 
@@ -207,6 +208,26 @@
             margin-bottom: 6px;
         }
 
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-list li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 8px;
+            font-size: 9pt;
+            color: #555;
+        }
+        .sidebar-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
         @media print {
             body { background: none; }
             .container { box-shadow: none; margin: 0; }
@@ -221,7 +242,7 @@
                 {% if personal.photo %}
                 <img src="{{ personal.photo }}" alt="{{ personal.full_name }}">
                 {% else %}
-                <div class="photo-placeholder">{{ personal.full_name[0] | default('K', true) | upper }}</div>
+                <div class="photo-placeholder">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                 {% endif %}
             </div>
 
@@ -261,45 +282,25 @@
             </div>
 
             <!-- Skills -->
-            {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Skills</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                {% if skills and skills|length > 0 %}
+                <ul class="sidebar-list" style="margin-bottom: 25px;">
                     {% for skill in skills %}
-                    <span style="font-size: 8pt; background-color: #fcf8f5; color: #5d4037; padding: 4px 10px; border: 1px solid #d7ccc8; border-radius: 4px;">{{ skill.name }}</span>
+                    <li>{{ skill.name }}</li>
                     {% endfor %}
-                </div>
-            </div>
-            {% endif %}
+                </ul>
+                {% endif %}
 
-            <!-- Expertise -->
-            {% if expertise.technical or expertise.professional %}
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">Expertise</h3>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    {% if expertise.technical %}
-                    <div>
-                        <div style="font-size: 7.5pt; font-weight: 700; color: #8d6e63; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Technical</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                            {% for item in expertise.technical %}
-                            <span style="font-size: 7.5pt; color: #5d4037;">• {{ item }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% if expertise.professional %}
-                    <div>
-                        <div style="font-size: 7.5pt; font-weight: 700; color: #8d6e63; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Professional</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                            {% for item in expertise.professional %}
-                            <span style="font-size: 7.5pt; color: #5d4037;">• {{ item }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
+                {% if hobbies and hobbies|length > 0 %}
+                <h3 class="sidebar-title">Hobbies</h3>
+                <ul class="sidebar-list">
+                    {% for hobby in hobbies %}
+                    <li>{{ hobby }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
-            {% endif %}
 
 
         </aside>
@@ -309,7 +310,7 @@
             <header class="header">
                 <div class="header-strap"></div>
                 <div class="header-content">
-                    <h1>{{ personal.full_name | default('Kathy Sinclair', true) }}</h1>
+                    <h1>{{ personal.full_name | default('Artius Lab', true) }}</h1>
                     <p>{{ personal.title | default('Job title or headline', true) }}</p>
                 </div>
             </header>

@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Jenna Melinda', true) }} | {{ personal.title | default('Business Analyst', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -16,9 +16,9 @@
             print-color-adjust: exact !important;
         }
         :root {
-            --dark-grey: #222222;
-            --accent-orange: #B35C1E;
-            --text-muted: #888888;
+            --dark-grey: #020617;
+            --accent-orange: #22d3ee;
+            --text-muted: #94a3b8;
             --white: #FFFFFF;
         }
         body {
@@ -55,18 +55,20 @@
         .first-name {
             font-family: 'Outfit', sans-serif;
             font-size: 36pt;
-            font-weight: 400;
-            color: var(--accent-orange);
+            font-weight: 300;
+            color: var(--white);
             line-height: 1;
             margin: 0;
+            letter-spacing: 2px;
         }
         .last-name {
             font-family: 'Outfit', sans-serif;
             font-size: 52pt;
-            font-weight: 600;
-            color: var(--white);
+            font-weight: 800;
+            color: var(--accent-orange);
             line-height: 0.9;
             margin: 0 0 15px 0;
+            letter-spacing: -1px;
         }
         .title-line {
             display: flex;
@@ -96,14 +98,16 @@
         .sidebar-section h2 {
             font-family: 'Outfit', sans-serif;
             font-size: 14pt;
-            font-weight: 600;
+            font-weight: 700;
             margin: 0 0 15px 0;
             display: inline-block;
-            background: var(--white);
-            color: var(--dark-grey);
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent-orange);
             padding: 5px 25px;
-            border-radius: 20px 0 20px 0;
-            text-transform: capitalize;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-left: 4px solid var(--accent-orange);
         }
 
         .profile-text {
@@ -208,9 +212,10 @@
             display: inline-block;
             background: var(--dark-grey);
             color: var(--white);
-            border-radius: 15px 0 15px 0;
+            border-radius: 4px;
             padding: 6px 30px;
             margin-bottom: 20px;
+            border-right: 4px solid var(--accent-orange);
         }
 
         .section-title-horizontal {
@@ -289,8 +294,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="name-section">
-                <h1 class="first-name">{{ personal.full_name.split(' ')[0] | default('Jenna', true) }}</h1>
-                <h1 class="last-name">{{ personal.full_name.split(' ')[1] | default('Melinda', true) }}</h1>
+                <h1 class="first-name">{{ personal.full_name.split(' ')[0] | default('Artius', true) }}</h1>
+                <h1 class="last-name">{{ personal.full_name.split(' ')[1] | default('Lab', true) }}</h1>
                 <div class="title-line">
                     <p class="job-title">{{ personal.title | default('Business Analyst', true) }}</p>
                 </div>
@@ -333,7 +338,7 @@
                 </div>
                 <div class="contact-item">
                     <div class="contact-label">Email</div>
-                    <div class="contact-value">{{ personal.email | default('jennamelinda@helpshared.com', true) }}</div>
+                    <div class="contact-value">{{ personal.email | default('hello@artiuslab.com', true) }}</div>
                 </div>
                 {% if personal.website %}
                 <div class="contact-item">
@@ -352,7 +357,7 @@
                     <img src="{{ personal.photo }}" alt="Profile Photo">
                     {% else %}
                     <div class="photo-placeholder">
-                        {{ personal.full_name[0] | default('J', true) }}
+                        {{ personal.full_name[0] | default('A', true) }}
                     </div>
                     {% endif %}
                 </div>

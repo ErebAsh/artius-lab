@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Susan Williams', true) }} | Resume</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -224,7 +224,7 @@
         <!-- Header -->
         <header>
             <div class="header-left">
-                <h1 class="name">{{ personal.full_name | default('Susan Williams', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <div class="title">{{ personal.title | default('Software Development Head', true) }}</div>
             </div>
             <div class="header-right">
@@ -233,12 +233,12 @@
                     <i class="fa-solid fa-phone"></i>
                 </div>
                 <div class="contact-item">
-                    <span>{{ personal.email | default('susan.williams@resumegemini.com', true) }}</span>
+                    <span>{{ personal.email | default('susan.williams@artiuslab.com', true) }}</span>
                     <i class="fa-solid fa-envelope"></i>
                 </div>
                 {% if personal.linkedin %}
                 <div class="contact-item">
-                    <span>{{ personal.linkedin | replace('https://', '') | replace('http://', '') | default('linkedin.com/company/resumegemini', true) }}</span>
+                    <span>{{ personal.linkedin | replace('https://', '') | replace('http://', '') | default('linkedin.com/company/artiuslab', true) }}</span>
                     <i class="fa-brands fa-linkedin"></i>
                 </div>
                 {% endif %}

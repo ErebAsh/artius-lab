@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Robert Anthoni', true) }} | {{ personal.title | default('Web Designer', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -80,7 +80,7 @@
         }
 
         .sidebar-section {
-            margin-bottom: 8px;
+            margin-bottom: 20px;
         }
         .sidebar-header {
             font-family: 'Montserrat', sans-serif;
@@ -94,7 +94,7 @@
             gap: 12px;
             padding-bottom: 10px;
             border-bottom: 1px solid #aaa;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .sidebar-header svg {
             width: 18px;
@@ -106,7 +106,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 8.5pt;
             color: #444;
         }
@@ -133,7 +133,7 @@
         }
 
         .edu-item {
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
         .edu-year {
             font-weight: 700;
@@ -153,18 +153,16 @@
         }
 
         .expertise-sidebar {
-            background-color: #444;
-            color: #fff;
             padding: 20px 30px 25px;
         }
         .expertise-sidebar .sidebar-header {
-            color: #fff;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: #222;
+            border-bottom: 1px solid #aaa;
             margin-bottom: 10px;
             padding-bottom: 6px;
         }
         .expertise-sidebar .sidebar-header svg {
-            fill: #fff;
+            fill: #333;
         }
         .expertise-list {
             list-style: none;
@@ -181,7 +179,7 @@
             content: "•";
             position: absolute;
             left: 0;
-            color: #fff;
+            color: #444;
         }
 
         /* ── Main Column ── */
@@ -343,9 +341,9 @@
             <div class="header-left-box">
                 <div class="photo-circle">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Robert Anthoni', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
-                    <div style="width: 100%; height: 100%; background: #666; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 40px; font-weight: 700;">{{ personal.full_name[0] | default('R', true) | upper }}</div>
+                    <div style="width: 100%; height: 100%; background: #666; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 40px; font-weight: 700;">{{ personal.full_name[0] | default('A', true) | upper }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -411,52 +409,46 @@
                 </div>
                 {% endif %}
 
-                <!-- Skills -->
-                {% if skills and skills|length > 0 %}
+                <!-- Skills Section -->
+                {% if expertise.technical or expertise.professional or (skills and skills|length > 0) %}
                 <div class="sidebar-section">
                     <h2 class="sidebar-header">
-                        <svg viewBox="0 0 24 24"><path d="M11 18l-2-2 1.41-1.41L11 15.17l4.59-4.59L17 12l-6 6zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                        Professional Skills
+                        <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8h2.5V2c-2.76 0-5 2.24-5 4z"/></svg>
+                        Skills
                     </h2>
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-                        {% for skill in skills %}
-                        <div class="skill-item">
-                            <span class="skill-name">{{ skill.name }}</span>
-                            <div class="skill-bar" style="background: rgba(255,255,255,0.4);"><div class="skill-fill" style="width: {{ skill.level | default(80, true) }}%;"></div></div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        {% if expertise.technical %}
+                        <div>
+                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #222; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Technical</div>
+                            <div style="font-size: 8.5pt; color: #555; line-height: 1.5;">{{ expertise.technical | join(', ') }}</div>
                         </div>
-                        {% endfor %}
+                        {% endif %}
+                        {% if expertise.professional %}
+                        <div>
+                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #222; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Professional</div>
+                            <div style="font-size: 8.5pt; color: #555; line-height: 1.5;">{{ expertise.professional | join(', ') }}</div>
+                        </div>
+                        {% endif %}
+                        {% if skills and skills|length > 0 %}
+                        <div>
+                            <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #222; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px;">Software/Other</div>
+                            <div style="font-size: 8.5pt; color: #555; line-height: 1.5;">
+                                {% set skill_names = [] %}
+                                {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                                {{ skill_names | join(', ') }}
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}
             </div>
-
-            <!-- Expertise Section (Bottom Sidebar) -->
-            {% if expertise.technical or expertise.professional %}
-            <div class="expertise-sidebar">
-                <h2 class="sidebar-header">
-                    <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8h2.5V2c-2.76 0-5 2.24-5 4z"/></svg>
-                    Expertise
-                </h2>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    {% if expertise.technical %}
-                        {% for item in expertise.technical %}
-                        <span style="font-size: 7.5pt; background: rgba(255,255,255,0.1); color: #fff; padding: 3px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">{{ item }}</span>
-                        {% endfor %}
-                    {% endif %}
-                    {% if expertise.professional %}
-                        {% for item in expertise.professional %}
-                        <span style="font-size: 7.5pt; font-weight: 500; color: #fff; background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 4px; border-bottom: 2px solid rgba(255,255,255,0.3);">{{ item }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
         </aside>
 
         <!-- Main Column -->
         <main class="main-column">
             <div class="header-right">
-                <h1 class="name">{{ personal.full_name | default('Robert Anthoni', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <div class="subtitle">{{ personal.title | default('Web Designer / UI UX', true) }}</div>
             </div>
 

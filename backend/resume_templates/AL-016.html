@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- has_photo -->
+<!-- has_hobbies -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Chloe Henderson', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -94,22 +95,42 @@
 
         .skill-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
+            gap: 12px;
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .skill-item {
+        .skill-item-container {
+            margin-bottom: 5px;
+        }
+        .skill-name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 7.2pt;
-            background-color: #000;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 0; /* Minimalist sharp edges */
+            font-size: 8.5pt;
             font-weight: 600;
+            color: #222;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .skill-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .skill-bar-bg {
+            height: 6px;
+            background: #eee;
+            flex: 1;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background: #000;
+            border-radius: 3px;
         }
 
         /* ── Right Column (70%) ── */
@@ -246,12 +267,13 @@
             <div class="photo-section">
                 <div class="photo-circle">
                     {% if personal.photo %}
-                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Chloe Henderson', true) }}">
+                    <img src="{{ personal.photo }}" alt="{{ personal.full_name | default('Artius Lab', true) }}">
                     {% else %}
                     <div style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 40px;">{{ (personal.full_name or 'C')[0] | upper }}</div>
                     {% endif %}
                 </div>
             </div>
+
 
             <!-- Education -->
             {% if education %}
@@ -267,6 +289,42 @@
             </div>
             {% endif %}
 
+            <!-- Skills -->
+            <div class="sidebar-section">
+                <h2>Skills</h2>
+                <div class="skill-list">
+                    {% if skills %}
+                        {% for skill in skills %}
+                        <div class="skill-item-container">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <div class="skill-bar-row">
+                                <div class="skill-bar-bg">
+                                    <div class="skill-bar-fill" style="width: {{ skill.level | default(80, true) }}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% elif expertise.technical or expertise.professional %}
+                        {% for item in expertise.technical %}
+                        <div class="skill-item-container">
+                            <span class="skill-name">{{ item }}</span>
+                            <div class="skill-bar-row">
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%;"></div></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% for item in expertise.professional %}
+                        <div class="skill-item-container">
+                            <span class="skill-name">{{ item }}</span>
+                            <div class="skill-bar-row">
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%;"></div></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
             <!-- Certifications -->
             {% if certifications %}
             <div class="sidebar-section">
@@ -274,34 +332,15 @@
                 {% for cert in certifications %}
                 <div class="item">
                     <div class="item-main">{{ cert.name }}</div>
-                    <div class="item-sub">{{ cert.issuer }}</div>
-                    <div class="item-meta">{{ cert.year or cert.date }}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+                        <div class="item-sub" style="margin-top: 2px;">{{ cert.issuer }}</div>
+                        <div class="item-meta" style="margin-top: 0; white-space: nowrap;">{{ cert.year or cert.date }}</div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
             {% endif %}
 
-            <!-- Skills -->
-            <div class="sidebar-section">
-                <h2>Skills</h2>
-                <div class="skill-list">
-                    {% if skills %}
-                        {% for skill in skills %}
-                        <div class="skill-item">{{ skill.name }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    {% if expertise.technical %}
-                        {% for item in expertise.technical %}
-                        <div class="skill-item">{{ item }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    {% if expertise.professional %}
-                        {% for item in expertise.professional %}
-                        <div class="skill-item">{{ item }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
         </aside>
 
         <!-- Main Column -->
@@ -309,7 +348,7 @@
             <!-- Header -->
             <header class="header">
                 <div class="header-left">
-                    <h1 class="name">{{ personal.full_name | default('Chloe Henderson', true) }}</h1>
+                    <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                     <div class="title">{{ personal.title | default('Professional Title', true) }}</div>
                 </div>
                 <div class="contact-grid">

@@ -3,7 +3,7 @@
 <!-- has_photo -->
 <head>
     <meta charset="UTF-8">
-    <title>{{ personal.full_name | default('Jacob Hill', true) }} | {{ personal.title | default('Professional Profile', true) }}</title>
+    <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         @page {
@@ -221,6 +221,26 @@
         @media print {
             .container { width: 210mm; height: 297mm; }
         }
+
+        .skills-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 9.5pt;
+            margin-top: 5px;
+        }
+        .skill-row {
+            display: flex;
+        }
+        .skill-label {
+            font-weight: 700;
+            min-width: 130px;
+            color: #000;
+        }
+        .skill-values {
+            flex: 1;
+            color: #444;
+        }
     </style>
 </head>
 <body>
@@ -228,7 +248,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="header-section">
-                <h1 class="name">{{ personal.full_name | default('Jacob Hill', true) }}</h1>
+                <h1 class="name">{{ personal.full_name | default('Artius Lab', true) }}</h1>
                 <div class="job-title-top">{{ personal.title | default('Corporate Communications Assistant', true) }}</div>
             </div>
 
@@ -253,19 +273,7 @@
                 {% endif %}
             </div>
 
-            {% if expertise.professional or expertise.technical %}
-            <div class="sidebar-section">
-                <h2>Expertise</h2>
-                <ul class="expertise-list">
-                    {% for item in expertise.professional %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                    {% for item in expertise.technical %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
+
 
             {% if education and education|length > 0 %}
             <div class="sidebar-section">
@@ -306,6 +314,7 @@
             </div>
             {% endif %}
 
+
             {% if experience and experience|length > 0 %}
             <div class="main-section">
                 <h2>Professional Experience</h2>
@@ -344,6 +353,36 @@
                     {% endif %}
                 </div>
                 {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if expertise.professional or expertise.technical or skills %}
+            <div class="main-section">
+                <h2>Skills</h2>
+                <div class="skills-section">
+                    {% if expertise.technical %}
+                    <div class="skill-row">
+                        <span class="skill-label">Technical:</span>
+                        <span class="skill-values">{{ expertise.technical | join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if expertise.professional %}
+                    <div class="skill-row">
+                        <span class="skill-label">Professional:</span>
+                        <span class="skill-values">{{ expertise.professional | join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if skills and skills|length > 0 %}
+                    <div class="skill-row">
+                        <span class="skill-label">Software/Other:</span>
+                        <span class="skill-values">
+                            {% set skill_names = [] %}
+                            {% for s in skills %}{% set _ = skill_names.append(s.name) %}{% endfor %}
+                            {{ skill_names | join(', ') }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
         </main>

@@ -72,6 +72,7 @@ class ResumeData(BaseModel):
     certifications: list[Certification] = []
     languages: list[Language] = []
     expertise: Optional[Expertise] = None
+    hobbies: list[str] = []
 
 
 class EnhancedResumeData(BaseModel):
@@ -83,6 +84,7 @@ class EnhancedResumeData(BaseModel):
     certifications: list[Certification] = []
     languages: list[Language] = []
     expertise: Optional[Expertise] = None
+    hobbies: list[str] = []
 
 
 class HTMLData(BaseModel):

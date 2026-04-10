@@ -66,6 +66,7 @@ def generate_html(enhanced_data: dict, template_id: str, layout_settings: Option
         projects=enhanced_data.get("projects", []),
         expertise=enhanced_data.get("expertise", {}),
         certifications=enhanced_data.get("certifications", []),
+        hobbies=enhanced_data.get("hobbies", []),
     )
 
     if layout_settings:
@@ -127,6 +128,7 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
         "projects": enhanced_data.get("projects", []),
         "expertise": enhanced_data.get("expertise", {}),
         "certifications": enhanced_data.get("certifications", []),
+        "hobbies": enhanced_data.get("hobbies", []),
     })
 
     latex_source = template.render(
@@ -137,6 +139,7 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
         projects=safe_data.get("projects", []),
         expertise=safe_data.get("expertise", {}),
         certifications=safe_data.get("certifications", []),
+        hobbies=safe_data.get("hobbies", []),
     )
 
     return latex_source
