@@ -7,6 +7,7 @@ interface User {
   id: number;
   email: string;
   full_name: string;
+  has_api_key?: boolean;
 }
 
 interface AuthContextType {
@@ -14,7 +15,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName: string) => Promise<void>;
+  register: (email: string, password: string, fullName: string, geminiApiKey?: string) => Promise<void>;
   logout: () => void;
   showAuthModal: boolean;
   setShowAuthModal: (show: boolean) => void;
@@ -78,11 +79,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setShowAuthModal(false);
   }, []);
 
-  const register = useCallback(async (email: string, password: string, fullName: string) => {
+  const register = useCallback(async (email: string, password: string, fullName: string, geminiApiKey?: string) => {
     const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, full_name: fullName }),
+      body: JSON.stringify({ email, password, full_name: fullName, gemini_api_key: geminiApiKey || null }),
     });
 
     if (!res.ok) {

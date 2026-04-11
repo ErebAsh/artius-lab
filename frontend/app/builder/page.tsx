@@ -137,6 +137,8 @@ interface Project {
   description: string;
   technologies: string[];
   link: string;
+  start_date: string;
+  end_date: string;
 }
 
 interface Certification {
@@ -171,6 +173,7 @@ function BuilderContent() {
   const [templateHasLanguageProficiency, setTemplateHasLanguageProficiency] = useState(false);
   const [templateHasAdvancedSkills, setTemplateHasAdvancedSkills] = useState(false);
   const [templateHasHobbies, setTemplateHasHobbies] = useState(false);
+  const [templateHasProjectDates, setTemplateHasProjectDates] = useState(false);
   const [rawPhoto, setRawPhoto] = useState("");  // original unedited photo for re-editing
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
 
@@ -213,6 +216,7 @@ function BuilderContent() {
           setTemplateHasLanguageProficiency(data.has_language_proficiency === true);
           setTemplateHasAdvancedSkills(data.has_advanced_skills === true);
           setTemplateHasHobbies(data.has_hobbies === true);
+          setTemplateHasProjectDates(data.has_project_dates === true);
         }
       } catch (err) {
         console.error("Failed to fetch template info:", err);
@@ -247,7 +251,7 @@ function BuilderContent() {
   ]);
 
   const [projects, setProjects] = useState<Project[]>([
-    { name: "", description: "", technologies: [""], link: "" },
+    { name: "", description: "", technologies: [""], link: "", start_date: "", end_date: "" },
   ]);
 
   const [certifications, setCertifications] = useState<Certification[]>([
@@ -1371,6 +1375,18 @@ function BuilderContent() {
                     <label style={labelStyle}>Link</label>
                     <input style={inputStyle} placeholder="github.com/..." value={proj.link} onChange={(e) => { const u = [...projects]; u[idx].link = e.target.value; setProjects(u); }} />
                   </div>
+                  {templateHasProjectDates && (
+                    <>
+                      <div>
+                        <label style={labelStyle}>Start Date (Optional)</label>
+                        <input style={inputStyle} placeholder="Jan 2023" value={proj.start_date || ""} onChange={(e) => { const u = [...projects]; u[idx].start_date = e.target.value; setProjects(u); }} />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>End Date (Optional)</label>
+                        <input style={inputStyle} placeholder="Present" value={proj.end_date || ""} onChange={(e) => { const u = [...projects]; u[idx].end_date = e.target.value; setProjects(u); }} />
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div style={{ marginTop: 14 }}>
                   <label style={labelStyle}>Description</label>
@@ -1390,7 +1406,7 @@ function BuilderContent() {
                 </div>
               </div>
             ))}
-            <button style={addBtnStyle} onClick={() => setProjects([...projects, { name: "", description: "", technologies: [""], link: "" }])}>+ Add Project</button>
+            <button style={addBtnStyle} onClick={() => setProjects([...projects, { name: "", description: "", technologies: [""], link: "", start_date: "", end_date: "" }])}>+ Add Project</button>
           </div>
         )}
 

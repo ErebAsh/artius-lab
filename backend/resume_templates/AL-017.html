@@ -416,7 +416,13 @@
                                 <div class="item-subtitle" style="color: #4b2c5e; background: #fff; display: inline-block; padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 8pt; margin-top: 5px;">{{ project.link }}</div>
                                 {% endif %}
                             </div>
-                            <div class="item-date">{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                            <div class="item-date">
+                                {% if project.start_date %}
+                                    {{ project.start_date }}{% if project.end_date %} - {{ project.end_date }}{% endif %}
+                                {% elif project.end_date %}
+                                    {{ project.end_date }}
+                                {% endif %}
+                            </div>
                         </div>
                         {% if project.description %}
                         <div class="item-desc">{{ project.description }}</div>

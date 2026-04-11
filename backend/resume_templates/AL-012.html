@@ -367,6 +367,20 @@
                 </div>
             </div>
 
+            <!-- Education -->
+            {% if education and education|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div style="margin-bottom: 12px;">
+                    <strong style="font-size: 10pt; color: var(--text-dark); display: block;">{{ edu.degree }}</strong>
+                    <span style="font-size: 9pt; color: var(--text-dark); opacity: 0.9;">{{ edu.institution }}</span>
+                    <br><span style="font-size: 8.5pt; color: var(--text-gray); font-style: italic;">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <!-- Skills -->
             {% if skills and skills|length > 0 %}
             <div class="sidebar-section">
@@ -387,7 +401,7 @@
                 <div class="language-item">
                     <span>{{ lang.name }}</span>
                     <div class="dots">
-                        {% set level = (lang.proficiency / 20) | round | int %}
+                        {% set level = ((lang.proficiency | default(0) | int) / 20) | round | int %}
                         {% for i in range(5) %}
                         <div class="dot {{ 'active' if i < level else '' }}"></div>
                         {% endfor %}
@@ -413,19 +427,6 @@
             </div>
             {% endif %}
 
-            <!-- Education (Moved to sidebar) -->
-            {% if education and education|length > 0 %}
-            <div class="sidebar-section">
-                <h2>Education</h2>
-                {% for edu in education %}
-                <div style="margin-bottom: 12px;">
-                    <strong style="font-size: 10pt; color: var(--text-dark); display: block;">{{ edu.degree }}</strong>
-                    <span style="font-size: 9pt; color: var(--text-dark); opacity: 0.9;">{{ edu.institution }}</span>
-                    <br><span style="font-size: 8.5pt; color: var(--text-gray); font-style: italic;">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</span>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
         </aside>
 
         <!-- Profile Photo -->
@@ -440,9 +441,9 @@
         <!-- Header Block -->
         <div class="header-block">
             <h1 class="name">
-                {% set names = personal.full_name.split(' ') %}
-                {{ names[0] | default('SARAH', true) }}<br>
-                {{ names[1:] | join(' ') | default('JOHNSON', true) }}
+                {% set names = (personal.full_name | default('SARAH JOHNSON', true)).split(' ') %}
+                {{ names[0] }}<br>
+                {{ names[1:] | join(' ') }}
             </h1>
             <div class="title">{{ personal.title | default('NURSING STUDENT RESUME', true) }}</div>
         </div>
@@ -486,7 +487,7 @@
                             {% if exp.description %}
                                 {% if exp.description.startswith('-') or '\n-' in exp.description or '\n•' in exp.description %}
                                     <ul class="entry-list">
-                                        {% for line in exp.description.split('\n') %}
+                                        {% for line in (exp.description | default('', true)).split('\n') %}
                                             {% if line.strip() %}
                                                 <li>{{ line.strip('•- ') }}</li>
                                             {% endif %}
@@ -522,7 +523,7 @@
                             {% if project.description %}
                                 {% if project.description.startswith('-') or '\n-' in project.description or '\n•' in project.description %}
                                     <ul class="entry-list">
-                                        {% for line in project.description.split('\n') %}
+                                        {% for line in (project.description | default('', true)).split('\n') %}
                                             {% if line.strip() %}
                                                 <li>{{ line.strip('•- ') }}</li>
                                             {% endif %}

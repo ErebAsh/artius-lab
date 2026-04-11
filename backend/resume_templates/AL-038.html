@@ -116,9 +116,17 @@
             font-size: 8.5pt;
             color: #555;
         }
+        .contact-icon-wrapper {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
         .contact-icon {
-            width: 16px;
-            height: 16px;
+            width: 100%;
+            height: 100%;
             fill: #555;
         }
         .contact-link {
@@ -308,24 +316,34 @@
                 <span class="sidebar-title">Contact</span>
                 <div class="contact-details">
                     <div class="contact-item">
-                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        <div class="contact-icon-wrapper">
+                            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </div>
                         <span>{{ personal.phone | default('1-123-1234-123', true) }}</span>
                     </div>
                     <div class="contact-item">
-                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <div class="contact-icon-wrapper">
+                            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </div>
                         <span>{{ personal.email | default('email@email.com', true) }}</span>
                     </div>
                     <div class="contact-item">
-                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <div class="contact-icon-wrapper">
+                            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        </div>
                         <span>{{ personal.location | default('City, State, Country', true) }}</span>
                     </div>
                     <div class="contact-item">
-                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                        <div class="contact-icon-wrapper">
+                            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.27c-.97 0-1.75-.79-1.75-1.76s.78-1.76 1.75-1.76 1.75.79 1.75 1.76-.78 1.76-1.75 1.76zm13.5 12.27h-3v-5.6c0-3.37-4-3.11-4 0v5.6h-3v-11h3v1.77c1.4-2.59 7-2.78 7 2.48v6.75z"/></svg>
+                        </div>
                         <a href="{% if personal.linkedin and 'http' not in personal.linkedin %}https://{% endif %}{{ personal.linkedin | default('#', true) }}" class="contact-link"><span>{{ personal.linkedin | default('LinkedIn: @username', true) }}</span></a>
                     </div>
                     {% if personal.portfolio %}
                     <div class="contact-item">
-                        <svg class="contact-icon" viewBox="0 0 24 24"><path d="M10 13c.22 0 .44-.09.61-.26.34-.33.34-.88 0-1.21L9.07 10l1.54-1.54c.34-.33.34-.88 0-1.21-.33-.34-.88-.34-1.21 0l-2.14 2.15c-.34.33-.34.88 0 1.21l2.14 2.15c.16.16.38.24.61.24zM14 13c.22 0 .44-.09.61-.26l2.14-2.15c.34-.33.34-.88 0-1.21l-2.14-2.15c-.33-.34-.88-.34-1.21 0-.34.33-.34.88 0 1.21L14.93 10l-1.54 1.54c-.34.33-.34.88 0 1.21.17.17.39.25.61.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        <div class="contact-icon-wrapper">
+                            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-9h11M12 4.5c1.657 0 3 3.358 3 7.5s-1.343 7.5-3 7.5-3-3.358-3-7.5 1.343-7.5 3-7.5z"/></svg>
+                        </div>
                         <a href="{% if 'http' not in personal.portfolio %}https://{% endif %}{{ personal.portfolio }}" class="contact-link"><span>{{ personal.portfolio | replace('https://', '') | replace('http://', '') }}</span></a>
                     </div>
                     {% endif %}

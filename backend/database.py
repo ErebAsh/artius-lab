@@ -8,6 +8,31 @@ import aiosqlite  # type: ignore[import-untyped]
 import json
 from datetime import datetime, timezone
 from typing import Any
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# ── Encryption Configuration ──────────────────────────────────────
+# You must set ENCRYPTION_MASTER_KEY in your .env
+_CRYPTO_KEY = os.getenv("ENCRYPTION_MASTER_KEY")
+_fernet = Fernet(_CRYPTO_KEY.encode()) if _CRYPTO_KEY else None
+
+def encrypt_data(data: str | None) -> str | None:
+    """Encrypt a string using the master key."""
+    if not data or not _fernet:
+        return data
+    return _fernet.encrypt(data.encode()).decode()
+
+def decrypt_data(data: str | None) -> str | None:
+    """Decrypt a string using the master key."""
+    if not data or not _fernet:
+        return data
+    try:
+        return _fernet.decrypt(data.encode()).decode()
+    except Exception:
+        # If decryption fails (e.g. key changed or data wasn't encrypted), return original
+        return data
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "artius.db")
 
@@ -34,6 +59,7 @@ async def init_db() -> None:
                 email           TEXT NOT NULL UNIQUE,
                 password_hash   TEXT NOT NULL,
                 full_name       TEXT NOT NULL DEFAULT '',
+                gemini_api_key  TEXT DEFAULT NULL,
                 created_at      TEXT NOT NULL DEFAULT (datetime('now')),
                 updated_at      TEXT NOT NULL DEFAULT (datetime('now'))
             )
@@ -58,6 +84,12 @@ async def init_db() -> None:
         # ── Add user_id column if missing (migration for existing DBs) ──
         try:
             await db.execute("ALTER TABLE resumes ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE")
+        except Exception:
+            pass  # Column already exists
+
+        # ── Add gemini_api_key column if missing (migration for existing DBs) ──
+        try:
+            await db.execute("ALTER TABLE users ADD COLUMN gemini_api_key TEXT DEFAULT NULL")
         except Exception:
             pass  # Column already exists
 
@@ -320,17 +352,17 @@ async def save_enhancement_log(
 #  USER CRUD
 # ═══════════════════════════════════════════════════════════════════
 
-async def create_user(email: str, password_hash: str, full_name: str = "") -> int:
+async def create_user(email: str, password_hash: str, full_name: str = "", gemini_api_key: str | None = None) -> int:
     """Create a new user. Returns the new user ID."""
     db = await aiosqlite.connect(DB_PATH)
     try:
         now = datetime.now(timezone.utc).isoformat()
         cursor = await db.execute(
             """
-            INSERT INTO users (email, password_hash, full_name, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (email, password_hash, full_name, gemini_api_key, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (email.lower().strip(), password_hash, full_name.strip(), now, now),
+            (email.lower().strip(), password_hash, full_name.strip(), encrypt_data(gemini_api_key), now, now),
         )
         await db.commit()
         row_id: int = cursor.lastrowid  # type: ignore[assignment]
@@ -355,6 +387,7 @@ async def get_user_by_email(email: str) -> dict[str, Any] | None:
             "email": row["email"],
             "password_hash": row["password_hash"],
             "full_name": row["full_name"],
+            "gemini_api_key": decrypt_data(row["gemini_api_key"]),
             "created_at": row["created_at"],
             "updated_at": row["updated_at"],
         }
@@ -368,7 +401,7 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
     db.row_factory = aiosqlite.Row
     try:
         cursor = await db.execute(
-            "SELECT id, email, full_name, created_at, updated_at FROM users WHERE id = ?",
+            "SELECT id, email, full_name, gemini_api_key, created_at, updated_at FROM users WHERE id = ?",
             (user_id,),
         )
         row = await cursor.fetchone()
@@ -378,11 +411,29 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
             "id": row["id"],
             "email": row["email"],
             "full_name": row["full_name"],
+            "gemini_api_key": decrypt_data(row["gemini_api_key"]),
             "created_at": row["created_at"],
             "updated_at": row["updated_at"],
         }
     finally:
         await db.close()
+
+
+async def update_user_api_key(user_id: int, api_key: str | None) -> bool:
+    """Update a user's Gemini API key."""
+    db = await aiosqlite.connect(DB_PATH)
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        encrypted_val = encrypt_data(api_key) if api_key and api_key.strip() else None
+        cursor = await db.execute(
+            "UPDATE users SET gemini_api_key = ?, updated_at = ? WHERE id = ?",
+            (encrypted_val, now, user_id),
+        )
+        await db.commit()
+        return cursor.rowcount > 0
+    finally:
+        await db.close()
+
 
 # ═══════════════════════════════════════════════════════════════════
 #  USER SETTINGS

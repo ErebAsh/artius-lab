@@ -1,6 +1,7 @@
 fastapi
 uvicorn[standard]
 google-generativeai
+openai
 weasyprint
 python-multipart
 pydantic
@@ -10,3 +11,4 @@ aiosqlite
 PyPDF2
 bcrypt
 PyJWT
+cryptography

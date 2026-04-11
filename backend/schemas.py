@@ -98,6 +98,7 @@ class UserRegister(BaseModel):
     email: str
     password: str
     full_name: Optional[str] = ""
+    gemini_api_key: Optional[str] = None
 
 
 class UserLogin(BaseModel):

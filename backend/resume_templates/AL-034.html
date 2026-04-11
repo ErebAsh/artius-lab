@@ -257,6 +257,62 @@
             font-size: 9pt;
         }
 
+        .skills-grid-main {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .skill-item-main {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 15px;
+            line-height: 1.4;
+        }
+        .skill-label-main {
+            font-weight: 700;
+            text-transform: none;
+            font-size: 9.5pt;
+            color: #333;
+            letter-spacing: normal;
+        }
+        .skill-values-main {
+            font-size: 9.5pt;
+            color: #555;
+        }
+
+        .view-project-btn {
+            display: inline-block;
+            padding: 3px 8px;
+            color: #c1a182;
+            text-decoration: none;
+            border: 1px solid #c1a182;
+            border-radius: 4px;
+            font-size: 7pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+        .project-name {
+            font-weight: 700;
+            font-size: 10pt;
+            color: #333;
+            text-transform: uppercase;
+        }
+        .tech-list {
+            font-size: 8pt;
+            color: #777;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
         @media print {
             body { background: none; }
             .container { box-shadow: none; margin: 0; }
@@ -329,31 +385,28 @@
                 {% endif %}
             </div>
 
-            <!-- Skills -->
+            <!-- Certifications -->
+            {% if certifications and certifications|length > 0 %}
             <div class="sidebar-section">
-                <h3 class="sidebar-title">Skills</h3>
-                <ul class="skill-list">
-                    {% if skills %}
-                        {% for skill in skills %}
-                        <li>{{ skill.name }}</li>
-                        {% endfor %}
-                    {% elif expertise and (expertise.technical or expertise.professional) %}
-                        {% for skill in expertise.technical %}
-                        <li>{{ skill }}</li>
-                        {% endfor %}
-                        {% for skill in expertise.professional %}
-                        <li>{{ skill }}</li>
-                        {% endfor %}
-                    {% else %}
-                        <li>Analytical problem-solving</li>
-                        <li>Strong organizational skills</li>
-                        <li>Skills in conflict handling</li>
-                        <li>Social media marketing</li>
-                        <li>Email marketing automation</li>
-                        <li>Advanced HTML/CSS</li>
-                    {% endif %}
-                </ul>
+                <h3 class="sidebar-title">Certifications</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    {% for cert in certifications %}
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: 700; font-size: 9pt; color: #333; text-transform: uppercase;">{{ cert.name }}</span>
+                        <span style="font-size: 8.5pt; color: #888;">{{ cert.issuer }}{% if cert.year or cert.date %} | {{ cert.year or cert.date }}{% endif %}</span>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
+            {% else %}
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Certifications</h3>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 700; font-size: 9pt; color: #333; text-transform: uppercase;">PMP Certification</span>
+                    <span style="font-size: 8.5pt; color: #888;">Project Management Institute, 2024</span>
+                </div>
+            </div>
+            {% endif %}
         </aside>
 
         <!-- Main Content -->
@@ -386,7 +439,7 @@
                 {% for exp in experience %}
                 <div class="exp-item">
                     <div class="exp-role">{{ exp.title }}</div>
-                    <div class="exp-meta">{{ exp.company }}, {{ exp.location }} | {{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</div>
+                    <div class="exp-meta">{{ exp.company }}, {{ exp.location }} | {% if exp.start_date %}{{ exp.start_date }}{% if exp.end_date %} - {{ exp.end_date }}{% endif %}{% elif exp.end_date %}{{ exp.end_date }}{% endif %}</div>
                     <div class="exp-desc">
                         {{ exp.description | safe }}
                     </div>
@@ -425,53 +478,63 @@
                 </div>
                 {% for project in projects %}
                 <div class="exp-item">
-                    <div class="exp-role">{{ project.name }}</div>
-                    <div class="exp-meta">{% if project.link %}<a href="{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a> | {% endif %}{{ project.start_date }} - {{ project.end_date | default('Present', true) }}</div>
+                    <div class="project-header">
+                        <div class="project-name">{{ project.name }}</div>
+                        {% if project.link %}
+                        <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="view-project-btn">View Project</a>
+                        {% endif %}
+                    </div>
+                    <div class="exp-meta">{% if project.start_date %}{{ project.start_date }}{% if project.end_date %} - {{ project.end_date }}{% endif %}{% elif project.end_date %}{{ project.end_date }}{% endif %}</div>
                     <div class="exp-desc">
                         {{ project.description | safe }}
                     </div>
+                    {% if project.technologies and project.technologies|length > 0 %}
+                    <div class="tech-list">Technologies: {{ project.technologies | join(', ') }}</div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </section>
             {% endif %}
 
-            <!-- Certifications -->
-            {% if certifications and certifications|length > 0 %}
-            <section class="content-section">
+            <!-- Skills (Moved to Right Side) -->
+            <section class="content-section" style="margin-top: 25px;">
                 <div class="section-header">
-                    <h2 class="section-title">Certifications</h2>
+                    <h2 class="section-title">Professional Skills</h2>
                 </div>
-                {% for cert in certifications %}
-                <div class="dev-item">
-                    <div class="dev-info">
-                        <div class="dev-name">{{ cert.name }}</div>
-                        <div class="dev-inst">{{ cert.issuer }}</div>
+                <div class="skills-grid-main">
+                    {% if expertise and (expertise.technical or expertise.professional or expertise.software_and_other) %}
+                        {% if expertise.technical %}
+                        <div class="skill-item-main">
+                            <div class="skill-label-main">Technical:</div>
+                            <div class="skill-values-main">{{ expertise.technical | join(', ') }}</div>
+                        </div>
+                        {% endif %}
+                        {% if expertise.professional %}
+                        <div class="skill-item-main">
+                            <div class="skill-label-main">Professional:</div>
+                            <div class="skill-values-main">{{ expertise.professional | join(', ') }}</div>
+                        </div>
+                        {% endif %}
+                        {% if expertise.software_and_other %}
+                        <div class="skill-item-main">
+                            <div class="skill-label-main">Software/Other:</div>
+                            <div class="skill-values-main">{{ expertise.software_and_other | join(', ') }}</div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if skills and skills|length > 0 %}
+                    <div class="skill-item-main">
+                        <div class="skill-label-main">Other Skills:</div>
+                        <div class="skill-values-main">
+                            {% set s_names = [] %}
+                            {% for s in skills %}{% set _ = s_names.append(s.name) %}{% endfor %}
+                            {{ s_names | join(', ') }}
+                        </div>
                     </div>
-                    <div class="dev-date">{{ cert.year or cert.date }}</div>
+                    {% endif %}
                 </div>
-                {% endfor %}
             </section>
-            {% else %}
-            <section class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Certifications</h2>
-                </div>
-                <div class="dev-item">
-                    <div class="dev-info">
-                        <div class="dev-name">Certification Name</div>
-                        <div class="dev-inst">Issuing Organization</div>
-                    </div>
-                    <div class="dev-date">Year</div>
-                </div>
-                <div class="dev-item">
-                    <div class="dev-info">
-                        <div class="dev-name">Certification Name</div>
-                        <div class="dev-inst">Issuing Organization</div>
-                    </div>
-                    <div class="dev-date">Year</div>
-                </div>
-            </section>
-            {% endif %}
         </main>
     </div>
 </body>

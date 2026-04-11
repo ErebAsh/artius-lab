@@ -433,6 +433,17 @@ def _detect_has_hobbies(template_id: str) -> bool:
         return False
 
 
+def _detect_has_project_dates(template_id: str) -> bool:
+    """Auto-detect whether a template HTML supports project start/end dates."""
+    template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        return "project.start_date" in content or "<!-- has_project_dates -->" in content
+    except FileNotFoundError:
+        return False
+
+
 def get_template_by_id(template_id: str):
     for t in RESUME_TEMPLATES:
         if t["id"] == template_id:
@@ -442,7 +453,8 @@ def get_template_by_id(template_id: str):
                 "has_languages": _detect_has_languages(t["id"]),
                 "has_language_proficiency": _detect_has_language_proficiency(t["id"]),
                 "has_advanced_skills": _detect_has_advanced_skills(t["id"]),
-                "has_hobbies": _detect_has_hobbies(t["id"])
+                "has_hobbies": _detect_has_hobbies(t["id"]),
+                "has_project_dates": _detect_has_project_dates(t["id"])
             }
     return None
 
@@ -456,7 +468,8 @@ def get_all_templates():
             "has_languages": _detect_has_languages(t["id"]),
             "has_language_proficiency": _detect_has_language_proficiency(t["id"]),
             "has_advanced_skills": _detect_has_advanced_skills(t["id"]),
-            "has_hobbies": _detect_has_hobbies(t["id"])
+            "has_hobbies": _detect_has_hobbies(t["id"]),
+            "has_project_dates": _detect_has_project_dates(t["id"])
         } 
         for t in RESUME_TEMPLATES
     ]

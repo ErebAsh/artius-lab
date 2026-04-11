@@ -40,7 +40,7 @@
             padding: 40px 30px;
             display: flex;
             flex-direction: column;
-            gap: 21px;
+            gap: 25px;
         }
         .photo-section {
             display: flex;
@@ -330,30 +330,15 @@
                 {% endif %}
             </div>
 
-            <!-- Language -->
+            <!-- Education (Moved to Sidebar) -->
+            {% if education and education|length > 0 %}
             <div class="sidebar-section">
-                <h2>Language</h2>
-                <div class="language-item">
-                    <div class="lang-name"><span>French</span><span>90%</span></div>
-                    <div class="lang-bar"><div class="lang-fill" style="width: 90%;"></div></div>
-                </div>
-                <div class="language-item">
-                    <div class="lang-name"><span>Chinese</span><span>70%</span></div>
-                    <div class="lang-bar"><div class="lang-fill" style="width: 70%;"></div></div>
-                </div>
-                <div class="language-item">
-                    <div class="lang-name"><span>Spanish</span><span>60%</span></div>
-                    <div class="lang-bar"><div class="lang-fill" style="width: 60%;"></div></div>
-                </div>
-            </div>
-
-            {% if certifications and certifications|length > 0 %}
-            <div class="sidebar-section">
-                <h2>Certifications</h2>
-                {% for cert in certifications %}
-                <div style="margin-bottom: 15px;">
-                    <div style="font-weight: 700; color: #fff; font-size: 9.5pt;">{{ cert.name }}</div>
-                    <div style="font-size: 8.5pt; color: rgba(255,255,255,0.7);">{{ cert.issuer }} | {{ cert.year }}</div>
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div style="margin-bottom: 12px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 12px;">
+                    <div style="font-weight: 700; font-size: 9pt; color: #fff; text-transform: uppercase;">{{ edu.institution }}</div>
+                    <div style="font-size: 8.5pt; color: rgba(255,255,255,0.9); margin: 2px 0;">{{ edu.degree }}</div>
+                    <div style="font-size: 8pt; color: rgba(255,255,255,0.6); font-style: italic;">{{ edu.start_date }}{% if edu.end_date %} - {{ edu.end_date }}{% endif %}</div>
                 </div>
                 {% endfor %}
             </div>
@@ -365,15 +350,40 @@
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     {% if skills and skills|length > 0 %}
                         {% for skill in skills %}
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>{{ skill.name }}</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff; border-radius: 50%;"></div>{{ skill.name }}</div>
                         {% endfor %}
                     {% else %}
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Problem Solving</div>
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Communication</div>
-                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff;"></div>Critical Thinking</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff; border-radius: 50%;"></div>Analytical Thinking</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff; border-radius: 50%;"></div>Strategic Planning</div>
+                        <div class="skill-list-item"><div class="skill-dot" style="background: #fff; border-radius: 50%;"></div>Team Leadership</div>
                     {% endif %}
                 </div>
             </div>
+
+            {% if certifications and certifications|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Certifications</h2>
+                {% for cert in certifications %}
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 700; color: #fff; font-size: 9pt; text-transform: uppercase;">{{ cert.name }}</div>
+                    <div style="font-size: 8.5pt; color: rgba(255,255,255,0.7);">{{ cert.issuer }}{% if cert.year %} | {{ cert.year }}{% endif %}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Language -->
+            {% if languages and languages|length > 0 %}
+            <div class="sidebar-section">
+                <h2>Languages</h2>
+                {% for lang in languages %}
+                <div class="language-item">
+                    <div class="lang-name"><span>{{ lang.name }}</span><span>{{ lang.proficiency }}%</span></div>
+                    <div class="lang-bar"><div class="lang-fill" style="width: {{ lang.proficiency or 100 }}%;"></div></div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
 
         </aside>
 
@@ -392,25 +402,6 @@
             </div>
             {% endif %}
 
-            <!-- Education -->
-            {% if education and education|length > 0 %}
-            <div class="main-section">
-                <h2><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM3.88 9L12 4.57 20.12 9 12 13.43 3.88 9z"/></svg>Education</h2>
-                <div class="timeline">
-                    {% for edu in education %}
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-title">{{ edu.institution }}</div>
-                        <div class="timeline-subtitle">{{ edu.degree }}</div>
-                        <div class="timeline-date">({{ edu.start_date }}{% if edu.end_date %} - {{ edu.end_date }}{% endif %})</div>
-                        {% if edu.achievements %}
-                        <div class="timeline-desc">{{ edu.achievements }}</div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
 
             <!-- Experience -->
             {% if experience and experience|length > 0 %}
@@ -422,7 +413,7 @@
                         <div class="timeline-marker"></div>
                         <div class="timeline-title">{{ exp.company }}</div>
                         <div class="timeline-subtitle">{{ exp.title }}</div>
-                        <div class="timeline-date">({{ exp.start_date }} - {{ exp.end_date | default('Present', true) }})</div>
+                         <div class="timeline-date">{{ exp.start_date }}{% if exp.end_date %} - {{ exp.end_date }}{% endif %}</div>
                         <div class="timeline-desc">
                             {{ exp.description }}
                             {% if exp.highlights %}

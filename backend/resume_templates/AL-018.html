@@ -132,21 +132,10 @@
             color: #000;
         }
 
-        .skill-group {
-            margin-bottom: 5px; /* Reduced from 15px */
-        }
-        .skill-group-title {
-            font-size: 8.5pt;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #283593;
-            margin-bottom: 6px;
-            display: block;
-        }
         .skill-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 5px 0 0 0;
         }
         .skill-list li {
             position: relative;
@@ -160,6 +149,7 @@
             position: absolute;
             left: 0;
             color: #4fc3f7;
+            font-weight: bold;
         }
 
         .edu-item {
@@ -248,8 +238,32 @@
             color: #4fc3f7;
         }
 
+        .project-link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            background: transparent;
+            color: #283593;
+            border: 1px solid #283593;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .project-link-btn:hover {
+            background: #283593;
+            color: #fff;
+        }
+        .project-link-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
         @media print {
             .container { width: 210mm; height: 297mm; }
+            .project-link-btn { border-color: #283593 !important; color: #283593 !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -300,40 +314,6 @@
                 </div>
                 {% endif %}
 
-                <!-- Skills -->
-                <div class="sidebar-section">
-                    <h2 class="section-title">Skills</h2>
-                    
-                    <div class="skill-group">
-                        <span class="skill-group-title">Professional</span>
-                        <ul class="skill-list">
-                            {% if expertise.professional %}
-                                {% for item in expertise.professional %}<li>{{ item }}</li>{% endfor %}
-                            {% else %}
-                                <li>Design</li>
-                                <li>Development</li>
-                                <li>Marketing</li>
-                                <li>Webflow</li>
-                                <li>Apps</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                    <div class="skill-group">
-                        <span class="skill-group-title">Technical</span>
-                        <ul class="skill-list">
-                            {% if expertise.technical %}
-                                {% for item in expertise.technical %}<li>{{ item }}</li>{% endfor %}
-                            {% else %}
-                                <li>Web Design</li>
-                                <li>UI / UX</li>
-                                <li>Market Research</li>
-                                <li>Wireframing</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-
                 <!-- Education -->
                 {% if education and education|length > 0 %}
                 <div class="sidebar-section">
@@ -342,11 +322,36 @@
                     <div class="edu-item">
                         <div class="edu-degree">{{ edu.degree }}</div>
                         <div class="edu-school">{{ edu.institution }}</div>
-                        <div class="edu-year">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
+                        <div class="edu-year">{{ edu.start_date }} - {{ edu.end_date | default('', true) }}</div>
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
+
+                <!-- Skills -->
+                <div class="sidebar-section">
+                    <h2 class="section-title">Skills</h2>
+                    <ul class="skill-list">
+                        {% if skills and skills|length > 0 %}
+                            {% for skill in skills %}
+                                <li>{{ skill.name }}</li>
+                            {% endfor %}
+                        {% elif expertise and (expertise.technical or expertise.professional) %}
+                            {% for item in expertise.technical %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                            {% for item in expertise.professional %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>UI/UX Design</li>
+                            <li>Figma</li>
+                            <li>Web Development</li>
+                            <li>Communication</li>
+                            <li>Marketing</li>
+                        {% endif %}
+                    </ul>
+                </div>
  
 
             </aside>
@@ -362,7 +367,7 @@
                 <div class="exp-item">
                     <div class="exp-header-row">
                         <span class="exp-title">{{ exp.title }}</span>
-                        <span class="exp-date">{{ exp.start_date }} - {{ exp.end_date | default('Present', true) }}</span>
+                        <span class="exp-date">{% if exp.start_date %}{{ exp.start_date }}{% if exp.end_date %} - {{ exp.end_date }}{% endif %}{% elif exp.end_date %}{{ exp.end_date }}{% endif %}</span>
                     </div>
                     <div class="exp-company">{{ exp.company }}</div>
                     <p class="exp-description">{{ exp.description }}</p>
@@ -383,14 +388,16 @@
                     {% for project in projects %}
                     <div class="exp-item">
                         <div class="exp-header-row">
-                            <span class="exp-title">{{ project.name }}</span>
-                            <span class="exp-date">{% if project.start_date %}{{ project.start_date }} - {% endif %}{{ project.end_date | default('Present', true) }}</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="exp-title">{{ project.name }}</span>
+                                {% if project.link %}
+                                <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" class="project-link-btn" title="View Project">
+                                    <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                                </a>
+                                {% endif %}
+                            </div>
+                            <span class="exp-date">{% if project.start_date %}{{ project.start_date }}{% if project.end_date %} - {{ project.end_date }}{% endif %}{% elif project.end_date %}{{ project.end_date }}{% endif %}</span>
                         </div>
-                        {% if project.link %}
-                        <div class="exp-company" style="font-size: 8.5pt; color: #283593; text-transform: none; margin-bottom: 5px;">
-                            <a href="{% if 'http' not in project.link %}https://{% endif %}{{ project.link }}" style="color: inherit; text-decoration: none;">{{ project.link }}</a>
-                        </div>
-                        {% endif %}
                         {% if project.description %}
                         <p class="exp-description">{{ project.description }}</p>
                         {% endif %}

@@ -24,6 +24,7 @@ from database import (
     create_user,
     get_user_by_email,
     get_user_by_id,
+    update_user_api_key,
     save_user_settings,
     get_user_settings,
 )
@@ -78,6 +79,7 @@ async def register(data: UserRegister):
         email=data.email,
         password_hash=hashed,
         full_name=data.full_name or "",
+        gemini_api_key=data.gemini_api_key,
     )
 
     # Return token immediately (auto-login after register)
@@ -88,6 +90,7 @@ async def register(data: UserRegister):
             "id": user_id,
             "email": data.email.lower().strip(),
             "full_name": (data.full_name or "").strip(),
+            "has_api_key": bool(data.gemini_api_key),
         },
     }
 
@@ -109,6 +112,7 @@ async def login(data: UserLogin):
             "id": user["id"],
             "email": user["email"],
             "full_name": user["full_name"],
+            "has_api_key": bool(user.get("gemini_api_key")),
         },
     }
 
@@ -123,8 +127,28 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "id": user["id"],
         "email": user["email"],
         "full_name": user["full_name"],
+        "has_api_key": bool(user.get("gemini_api_key")),
         "created_at": user["created_at"],
     }
+
+
+@app.put("/api/auth/api-key")
+async def update_api_key_endpoint(
+    api_key: str = Form(None),
+    current_user: dict = Depends(get_current_user),
+):
+    """Update the authenticated user's Gemini API key."""
+    await update_user_api_key(current_user["user_id"], api_key)
+    return {"message": "API key updated.", "has_api_key": bool(api_key and api_key.strip())}
+
+
+# ── Helper: Get user's API key from DB ────────────────────────────
+async def _get_user_api_key(current_user: dict | None) -> str | None:
+    """Fetch the user's Gemini API key if they are logged in and have one."""
+    if not current_user:
+        return None
+    user = await get_user_by_id(current_user["user_id"])
+    return user.get("gemini_api_key") if user else None
 
 @app.get("/api/templates")
 def list_templates():
@@ -387,12 +411,13 @@ def preview_latex_template(template_id: str):
 # ===================== AI ENDPOINTS =====================
 
 @app.post("/api/ai/enhance")
-async def ai_enhance(data: ResumeData):
+async def ai_enhance(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
     """
     Accept basic resume data, use AI to generate summaries and professional details.
-    Returns the complete enhanced resume as JSON.
+    Uses Gemini if user has an API key, otherwise falls back to Qwen.
     """
-    result = await enhance_resume(data)
+    api_key = await _get_user_api_key(current_user)
+    result = await enhance_resume(data, api_key=api_key)
 
     # Log the enhancement to the database
     resume_dict = data.model_dump()
@@ -403,7 +428,7 @@ async def ai_enhance(data: ResumeData):
 
 
 @app.post("/api/generate")
-async def generate_resume_legacy(data: ResumeData):
+async def generate_resume_legacy(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
     """
     Legacy generation endpoint (direct to PDF).
     """
@@ -413,7 +438,8 @@ async def generate_resume_legacy(data: ResumeData):
         raise HTTPException(status_code=404, detail="Template not found")
 
     # AI-powered resume building/completion
-    ai_result = await enhance_resume(data)
+    api_key = await _get_user_api_key(current_user)
+    ai_result = await enhance_resume(data, api_key=api_key)
     enhanced_data = ai_result.get("enhanced_data", ai_result)
     layout_settings = ai_result.get("layout_settings", {})
 
@@ -436,7 +462,7 @@ async def generate_resume_legacy(data: ResumeData):
 
 
 @app.post("/api/ats/upload")
-async def ats_upload(file: UploadFile = File(...)):
+async def ats_upload(file: UploadFile = File(...), current_user: dict | None = Depends(get_optional_user)):
     """
     Accept a PDF resume, parse text, and evaluate for ATS compatibility.
     """
@@ -453,7 +479,8 @@ async def ats_upload(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="No readable text found in the PDF.")
         
         # Call AI service for ATS score
-        ats_result = await check_ats_score(text)
+        api_key = await _get_user_api_key(current_user)
+        ats_result = await check_ats_score(text, api_key=api_key)
 
         # Save to database
         score = ats_result.get("score", 0)
@@ -467,7 +494,7 @@ async def ats_upload(file: UploadFile = File(...)):
 
 
 @app.post("/api/generate/html")
-async def generate_resume_html(data: ResumeData):
+async def generate_resume_html(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
     """
     Accept resume data, enhance with AI, and generate HTML string.
     Returns the HTML content for preview.
@@ -477,7 +504,8 @@ async def generate_resume_html(data: ResumeData):
         raise HTTPException(status_code=404, detail="Template not found")
 
     # AI-powered resume building/completion
-    ai_result = await enhance_resume(data)
+    api_key = await _get_user_api_key(current_user)
+    ai_result = await enhance_resume(data, api_key=api_key)
     enhanced_data = ai_result.get("enhanced_data", ai_result)
     layout_settings = ai_result.get("layout_settings", {})
 
@@ -492,7 +520,7 @@ async def generate_resume_html(data: ResumeData):
 
 
 @app.post("/api/generate/latex")
-async def generate_resume_latex(data: ResumeData):
+async def generate_resume_latex(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
     """
     Accept resume data, enhance with AI, and generate LaTeX source.
     Returns the LaTeX source string for download or preview.
@@ -505,7 +533,8 @@ async def generate_resume_latex(data: ResumeData):
         raise HTTPException(status_code=404, detail="No LaTeX template available for this template.")
 
     # AI-powered resume building/completion
-    ai_result = await enhance_resume(data)
+    api_key = await _get_user_api_key(current_user)
+    ai_result = await enhance_resume(data, api_key=api_key)
     enhanced_data = ai_result.get("enhanced_data", ai_result)
 
     try:
@@ -542,7 +571,7 @@ async def generate_resume_pdf(data: HTMLData):
 # ===================== RESUME MODIFIER ENDPOINTS =====================
 
 @app.post("/api/resume/parse")
-async def parse_resume(file: UploadFile = File(...)):
+async def parse_resume(file: UploadFile = File(...), current_user: dict | None = Depends(get_optional_user)):
     """
     Accept a PDF resume, parse text, and use AI to structure it into editable JSON.
     """
@@ -565,7 +594,8 @@ async def parse_resume(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="No readable text found in the PDF.")
         
         # Use AI to parse into structured data
-        parsed_data = await parse_resume_text(text)
+        api_key = await _get_user_api_key(current_user)
+        parsed_data = await parse_resume_text(text, api_key=api_key)
         
         return {
             "parsed_data": parsed_data,
@@ -580,7 +610,7 @@ async def parse_resume(file: UploadFile = File(...)):
 
 
 @app.post("/api/resume/modify")
-async def modify_resume(instruction: str = Form(...), resume_data: str = Form(...)):
+async def modify_resume(instruction: str = Form(...), resume_data: str = Form(...), current_user: dict | None = Depends(get_optional_user)):
     """
     Accept structured resume data + a natural language instruction,
     and return the AI-modified resume data.
@@ -594,7 +624,8 @@ async def modify_resume(instruction: str = Form(...), resume_data: str = Form(..
         raise HTTPException(status_code=400, detail="Instruction cannot be empty.")
     
     try:
-        result = await modify_resume_with_ai(data, instruction)
+        api_key = await _get_user_api_key(current_user)
+        result = await modify_resume_with_ai(data, instruction, api_key=api_key)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Modification failed: {str(e)}")
