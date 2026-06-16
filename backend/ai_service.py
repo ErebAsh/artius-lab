@@ -1,7 +1,6 @@
 import os
 import json
 import asyncio
-import google.generativeai as genai
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project, Certification, Language
@@ -20,56 +19,8 @@ async def _call_ai(
     temperature: float = 0.7,
 ) -> dict:
     """
-    Unified AI caller with Gemini → Qwen auto-fallback.
-    
-    1. If api_key is provided → Try Gemini first
-    2. If Gemini hits 429/quota → Auto-fallback to Qwen
-    3. If no api_key → Use Qwen directly via Ollama
+    Unified AI caller using Qwen via Ollama exclusively.
     """
-
-    # ── Step 1: Try Gemini if user has a key ──────────────────────
-    if api_key:
-        max_retries = 3
-        base_delay = 2
-
-        for attempt in range(max_retries):
-            try:
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel(
-                    model_name="gemini-2.5-flash",
-                    system_instruction=system_prompt
-                )
-                response = await model.generate_content_async(
-                    user_prompt,
-                    generation_config=genai.GenerationConfig(
-                        response_mime_type="application/json",
-                        temperature=temperature,
-                    ),
-                )
-                return json.loads(response.text)  # ✅ Gemini succeeded
-
-            except Exception as e:
-                error_str = str(e)
-                is_rate_limit = (
-                    "429" in error_str
-                    or "ResourceExhausted" in error_str
-                    or "quota" in error_str.lower()
-                )
-
-                if is_rate_limit:
-                    if attempt < max_retries - 1:
-                        wait_time = base_delay * (2 ** attempt)
-                        print(f"⚠️  Gemini rate limit hit. Retry {attempt + 1}/{max_retries} in {wait_time}s...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        print("⚠️  Gemini quota exceeded after retries, falling back to Qwen...")
-                        break  # Fall through to Qwen
-                else:
-                    print(f"❌ Gemini error (non-quota): {e}, falling back to Qwen...")
-                    break  # Fall through to Qwen for any error
-
-    # ── Step 2: Use Qwen via Ollama (fallback or default) ─────────
     try:
         ollama_client = AsyncOpenAI(
             base_url=OLLAMA_BASE_URL,
@@ -87,7 +38,7 @@ async def _call_ai(
         result_text = response.choices[0].message.content
         return json.loads(result_text)
     except Exception as e:
-        print(f"❌ Qwen/Ollama also failed: {e}")
+        print(f"❌ Qwen/Ollama failed: {e}")
         raise
 
 

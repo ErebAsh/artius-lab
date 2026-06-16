@@ -90,7 +90,7 @@ async def register(data: UserRegister):
             "id": user_id,
             "email": data.email.lower().strip(),
             "full_name": (data.full_name or "").strip(),
-            "has_api_key": bool(data.gemini_api_key),
+            "has_api_key": False,
         },
     }
 
@@ -112,7 +112,7 @@ async def login(data: UserLogin):
             "id": user["id"],
             "email": user["email"],
             "full_name": user["full_name"],
-            "has_api_key": bool(user.get("gemini_api_key")),
+            "has_api_key": False,
         },
     }
 
@@ -127,7 +127,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "id": user["id"],
         "email": user["email"],
         "full_name": user["full_name"],
-        "has_api_key": bool(user.get("gemini_api_key")),
+        "has_api_key": False,
         "created_at": user["created_at"],
     }
 
@@ -144,11 +144,8 @@ async def update_api_key_endpoint(
 
 # ── Helper: Get user's API key from DB ────────────────────────────
 async def _get_user_api_key(current_user: dict | None) -> str | None:
-    """Fetch the user's Gemini API key if they are logged in and have one."""
-    if not current_user:
-        return None
-    user = await get_user_by_id(current_user["user_id"])
-    return user.get("gemini_api_key") if user else None
+    """Fetch the user's Gemini API key if they are logged in and have one. (Disabled, always returns None)"""
+    return None
 
 @app.get("/api/templates")
 def list_templates():

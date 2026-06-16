@@ -8,7 +8,6 @@ export default function AuthModal() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [geminiApiKey, setGeminiApiKey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -23,13 +22,12 @@ export default function AuthModal() {
       if (mode === "login") {
         await login(email, password);
       } else {
-        await register(email, password, fullName, geminiApiKey || undefined);
+        await register(email, password, fullName);
       }
       // Clear form
       setEmail("");
       setPassword("");
       setFullName("");
-      setGeminiApiKey("");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -147,38 +145,6 @@ export default function AuthModal() {
               />
             </div>
           </div>
-
-          {mode === "register" && (
-            <div className="auth-input-group">
-              <label className="auth-input-label">
-                Gemini API Key{" "}
-                <span style={{ opacity: 0.45, fontSize: "0.8em", fontWeight: 400 }}>(optional)</span>
-              </label>
-              <div className="auth-input-wrapper">
-                <svg className="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
-                </svg>
-                <input
-                  type="password"
-                  value={geminiApiKey}
-                  onChange={(e) => setGeminiApiKey(e.target.value)}
-                  placeholder="Leave blank to use free built-in AI"
-                  className="auth-input"
-                  autoComplete="off"
-                />
-              </div>
-              <p style={{
-                fontSize: "0.75rem",
-                color: "var(--text-secondary, #888)",
-                marginTop: "6px",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}>
-                🤖 No key? No problem — we use a built-in AI for free.
-              </p>
-            </div>
-          )}
 
           <button
             type="submit"
