@@ -85,7 +85,7 @@
 {\scriptsize\color{teal-pri}\textit{((( exp.location )))}}
 ((* if exp.highlights and exp.highlights|length > 0 *))
 \begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
-((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}((* endif *))
 ((* endfor *))
 \end{itemize}
 ((* endif *))

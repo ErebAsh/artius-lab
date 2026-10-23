@@ -84,7 +84,7 @@
 {\small\bfseries\color{white} ((( edu.institution )))}\\[2pt]
 {\small\color{gold} ((( edu.degree )))((* if edu.field_of_study *)) \textbar\ ((( edu.field_of_study )))((* endif *))}\\[2pt]
 {\scriptsize\color{white!50} ((( edu.start_date ))) --- ((( edu.end_date | default('Present', true) )))}
-((* if edu.gpa *))\\[1pt] {\scriptsize\color{white!70} GPA: ((( edu.gpa )))}(* endif *)
+((* if edu.gpa *))\\[1pt] {\scriptsize\color{white!70} GPA: ((( edu.gpa )))}((* endif *))
 ((* if edu.achievements *))\\[1pt] {\scriptsize\color{white!60}\textit{((( edu.achievements )))}}((* endif *))
 \\[12pt]
 ((* endfor *))
@@ -119,7 +119,7 @@
 ((* if exp.description *))\\[4pt] {\fontsize{8.5}{11.5}\selectfont ((( exp.description )))}((* endif *))
 ((* if exp.highlights and exp.highlights|length > 0 *))
 \begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
-((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}((* endif *))
 ((* endfor *))
 \end{itemize}
 ((* endif *))
@@ -133,7 +133,7 @@
 {\fontsize{12}{14}\selectfont\bfseries\color{black}\MakeUppercase{Recent Projects}}\\[2pt]
 {\color{black}\rule{\linewidth}{1.5pt}}\\[8pt]
 ((* for project in projects *))
-{\fontsize{10}{12}\selectfont\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{\color{gold}VIEW PROJECT \faExternalLinkAlt}}( (* endif *) )\\
+{\fontsize{10}{12}\selectfont\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{\color{gold}VIEW PROJECT \faExternalLinkAlt}}((* endif *))\\
 ((* if project.description *)){\fontsize{8.5}{11.5}\selectfont ((( project.description )))}\\((* endif *))
 ((* if project.technologies and project.technologies|length > 0 *))
 {\fontsize{8}{10}\selectfont\color{muted}\textbf{Technologies:} ((( project.technologies | join(', ') )))}

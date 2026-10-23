@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- has_photo -->
 <head>
     <meta charset="UTF-8">
     <title>{{ personal.full_name | default('Artius Lab', true) }} | {{ personal.title | default('Candidate Profile', true) }}</title>
@@ -326,6 +325,7 @@
                     <div class="edu-date">{{ edu.start_date }} - {{ edu.end_date | default('Present', true) }}</div>
                 </div>
                 {% endfor %}
+            </div>
             {% else %}
                 <div class="sidebar-section">
                     <span class="section-header">Education</span>
@@ -388,6 +388,7 @@
                     {% endif %}
                 </div>
                 {% endfor %}
+            </div>
             {% else %}
                 <div class="main-section">
                     <span class="main-section-header">Work Experience</span>

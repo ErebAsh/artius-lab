@@ -386,7 +386,8 @@
                             <div class="skill-item">
                                 <span>{{ skill.name }}</span>
                                 <div class="skill-stars">
-                                    {% set rating = (skill.level / 20) | round | int if skill.level else 5 %}
+                                    {% set num_level = skill.level | int if (skill.level | int > 0) else (100 if skill.level == 'Expert' else (80 if skill.level == 'Advanced' else (60 if skill.level == 'Intermediate' else 40))) %}
+                                    {% set rating = (num_level / 20) | round | int %}
                                     {% for i in range(5) %}
                                     <span class="star {{ 'empty' if i >= rating else '' }}">★</span>
                                     {% endfor %}

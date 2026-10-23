@@ -86,7 +86,7 @@
 ((* if exp.description *))\\[4pt] {\fontsize{8.5}{11.5}\selectfont ((( exp.description )))}((* endif *))
 ((* if exp.highlights and exp.highlights|length > 0 *))
 \begin{itemize}[leftmargin=12pt, itemsep=2pt, parsep=0pt, topsep=4pt]
-((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}(* endif *)
+((* for hl in exp.highlights *))((* if hl *))\item {\fontsize{8.5}{11.5}\selectfont ((( hl )))}((* endif *))
 ((* endfor *))
 \end{itemize}
 ((* endif *))
@@ -101,7 +101,7 @@
 {\color{divider}\rule{\linewidth}{1.5pt}}\\[8pt]
 ((* for project in projects *))
 \begin{minipage}{\linewidth}
-{\fontsize{10}{12}\selectfont\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{\color{muted}VIEW \faExternalLinkAlt}}( (* endif *) )\\
+{\fontsize{10}{12}\selectfont\bfseries ((( project.name )))}((* if project.link *)) \hfill {\scriptsize\href{((* if 'http' not in project.link *))https://((* endif *))((( project.link )))}{\color{muted}VIEW \faExternalLinkAlt}}((* endif *))\\
 ((* if project.description *)){\fontsize{8.5}{11.5}\selectfont ((( project.description )))}\\((* endif *))
 ((* if project.technologies and project.technologies|length > 0 *))
 {\fontsize{8}{10}\selectfont\color{muted}\textbf{Tech:} ((( project.technologies | join(', ') )))}

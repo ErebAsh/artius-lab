@@ -58,15 +58,23 @@ def generate_html(enhanced_data: dict, template_id: str, layout_settings: Option
     template_file = f"{template_id}.html"
     template = env.get_template(template_file)
 
+    personal_dict = enhanced_data.get("personal_info", {})
+    has_photo = bool(personal_dict.get("photo") or personal_dict.get("photo_url"))
+
     html_content = template.render(
-        personal=enhanced_data.get("personal_info", {}),
+        personal=personal_dict,
+        personal_info=personal_dict,
         education=enhanced_data.get("education", []),
         experience=enhanced_data.get("experience", []),
         skills=enhanced_data.get("skills", []),
         projects=enhanced_data.get("projects", []),
         expertise=enhanced_data.get("expertise", {}),
         certifications=enhanced_data.get("certifications", []),
+        languages=enhanced_data.get("languages", []),
         hobbies=enhanced_data.get("hobbies", []),
+        awards=enhanced_data.get("awards", []),
+        has_photo=has_photo,
+        photo_data=personal_dict.get("photo") or personal_dict.get("photo_url"),
     )
 
     if layout_settings:
@@ -128,6 +136,7 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
         "projects": enhanced_data.get("projects", []),
         "expertise": enhanced_data.get("expertise", {}),
         "certifications": enhanced_data.get("certifications", []),
+        "languages": enhanced_data.get("languages", []),
         "hobbies": enhanced_data.get("hobbies", []),
     })
 
@@ -139,6 +148,7 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
         projects=safe_data.get("projects", []),
         expertise=safe_data.get("expertise", {}),
         certifications=safe_data.get("certifications", []),
+        languages=safe_data.get("languages", []),
         hobbies=safe_data.get("hobbies", []),
     )
 
