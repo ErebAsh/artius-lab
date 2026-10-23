@@ -389,7 +389,7 @@ function BuilderContent() {
     } finally {
       setSaving(false);
     }
-  }, [requireAuth, token, personal, education, experience, skills, projects, expertise, hobbies, templateId, layout, resumeId, API_BASE]);
+  }, [requireAuth, token, personal, education, experience, skills, projects, expertise, certifications, languages, hobbies, templateId, layout, resumeId]);
 
   // Auto-save effect
   useEffect(() => {

@@ -3,9 +3,11 @@ import os
 
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
-from schemas import (
-    ResumeData,
-)
+
+try:
+    from backend.schemas import ResumeData
+except ImportError:
+    from schemas import ResumeData
 
 load_dotenv()
 

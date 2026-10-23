@@ -1,7 +1,10 @@
 import os
 
+# Suppress GLib GIO volume monitor and VFS warnings on Windows
+os.environ["GIO_USE_VOLUME_MONITOR"] = "unix"
+os.environ["GIO_USE_VFS"] = "local"
+
 from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "resume_templates")
 LATEX_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "latex_templates")
@@ -46,9 +49,9 @@ def _escape_data_recursive(data):
     """Recursively escape all string values in a nested dict/list structure."""
     if isinstance(data, str):
         return _escape_latex(data)
-    elif isinstance(data, dict):
+    if isinstance(data, dict):
         return {k: _escape_data_recursive(v) for k, v in data.items()}
-    elif isinstance(data, list):
+    if isinstance(data, list):
         return [_escape_data_recursive(item) for item in data]
     return data
 
@@ -144,7 +147,7 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
         }
     )
 
-    latex_source = template.render(
+    return template.render(
         personal=safe_data.get("personal_info", {}),
         education=safe_data.get("education", []),
         experience=safe_data.get("experience", []),
@@ -156,8 +159,6 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
         hobbies=safe_data.get("hobbies", []),
     )
 
-    return latex_source
-
 
 def has_latex_template(template_id: str) -> bool:
     """Check if a LaTeX template file exists for the given ID."""
@@ -166,6 +167,8 @@ def has_latex_template(template_id: str) -> bool:
 
 def generate_pdf_from_html(html_content: str) -> bytes:
     """Generate PDF bytes from HTML string using WeasyPrint."""
+    from weasyprint import HTML
+
     return HTML(string=html_content).write_pdf()
 
 

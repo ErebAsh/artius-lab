@@ -47,6 +47,10 @@ select = [
     "UP",  # pyupgrade
     "B",   # flake8-bugbear
     "RUF", # Ruff-specific rules
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "PIE", # flake8-pie
+    "RET", # flake8-return
 ]
 ignore = [
     "B008",   # FastAPI Depends() / Header() / Query() in argument defaults
@@ -61,3 +65,7 @@ ignore = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["backend", "tests"]
+
+[tool.pyright]
+extraPaths = ["backend", "tests"]
+

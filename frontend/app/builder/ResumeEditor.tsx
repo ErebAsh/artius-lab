@@ -21,20 +21,22 @@ const COLOR_PRESETS: { name: string; colors: ResumeColors }[] = [
   { name: "Warm Mocha", colors: { accent: "#78350f", headings: "#451a03", bodyText: "#44403c", sidebarBg: "#fef3c7", linkColor: "#92400e" } },
 ];
 
+export interface LayoutSettings {
+  margin: number;
+  fontSize: number;
+  lineHeight: number;
+  sectionGap: number;
+  columnGap: number;
+}
+
 interface ResumeEditorProps {
   previewHtml: string;
   templateId: string;
   onExit: () => void;
   personal: { full_name: string };
   API_BASE: string;
-  layout: {
-    margin: number;
-    fontSize: number;
-    lineHeight: number;
-    sectionGap: number;
-    columnGap: number;
-  };
-  setLayout: (layout: any) => void;
+  layout: LayoutSettings;
+  setLayout: React.Dispatch<React.SetStateAction<LayoutSettings>>;
 }
 
 const toolbarButtonStyle: React.CSSProperties = {

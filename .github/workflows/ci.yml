@@ -51,6 +51,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Lint Next.js Frontend
+        working-directory: frontend
+        run: npm run lint
+
       - name: Build Next.js Frontend
         working-directory: frontend
         run: npm run build

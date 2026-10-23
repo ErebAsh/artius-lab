@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import responseData from "../data/chatbotResponses.json";
 
 type Message = {
@@ -36,7 +36,7 @@ export default function Chatbot() {
 
   const toggleChat = () => setIsOpen((prev) => !prev);
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = useCallback((text: string) => {
     if (!text.trim()) return;
 
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -69,7 +69,7 @@ export default function Chatbot() {
       ]);
       setIsLoading(false);
     }, 1200);
-  };
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {

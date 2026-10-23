@@ -5,59 +5,47 @@ import { useAuth } from "./AuthProvider";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 
-const ThemeContext = createContext({
-  settings: {
-    theme: "creamy",
-    accentColor: "#10b981",
-    backgroundColor: "",
-    surfaceColor: "",
-    showBackgroundOrbs: true,
-    renderMode: "html",
-    selectedCategory: "All",
-    // Expanded settings from Settings page
-    density: "comfortable",
-    glassBlur: 20,
-    glassOpacity: 0.7,
-    fontFamily: "sans",
-    language: "en",
-    autoSave: true,
-    aiEnabled: true,
-    aiCreativity: "balanced",
-    experimental: false,
-    defaultTemplate: "modern",
-    exportFormat: "pdf",
-  },
-  updateSettings: (newSettings: any) => {},
+const defaultSettings = {
+  theme: "creamy",
+  accentColor: "#10b981",
+  backgroundColor: "",
+  surfaceColor: "",
+  showBackgroundOrbs: true,
+  renderMode: "html",
+  selectedCategory: "All",
+  // Expanded settings from Settings page
+  density: "comfortable",
+  glassBlur: 20,
+  glassOpacity: 0.7,
+  fontFamily: "sans",
+  language: "en",
+  autoSave: true,
+  aiEnabled: true,
+  aiCreativity: "balanced",
+  experimental: false,
+  defaultTemplate: "modern",
+  exportFormat: "pdf",
+};
+
+export type ThemeSettings = typeof defaultSettings;
+
+interface ThemeContextType {
+  settings: ThemeSettings;
+  updateSettings: (newSettings: Partial<ThemeSettings>) => void;
+  resetToDefaults: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType>({
+  settings: defaultSettings,
+  updateSettings: () => {},
   resetToDefaults: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState({
-    theme: "creamy",
-    accentColor: "#10b981",
-    backgroundColor: "",
-    surfaceColor: "",
-    showBackgroundOrbs: true,
-    renderMode: "html",
-    selectedCategory: "All",
-    // Expanded settings from Settings page
-    density: "comfortable",
-    glassBlur: 20,
-    glassOpacity: 0.7,
-    fontFamily: "sans",
-    language: "en",
-    autoSave: true,
-    aiEnabled: true,
-    aiCreativity: "balanced",
-    experimental: false,
-    defaultTemplate: "modern",
-    exportFormat: "pdf",
-  });
-
+  const [settings, setSettings] = useState<ThemeSettings>(defaultSettings);
   const { user, token } = useAuth();
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Load from LocalStorage first (for instant feedback)
   useEffect(() => {
@@ -65,7 +53,9 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     if (saved) {
       try {
         setSettings(prev => ({ ...prev, ...JSON.parse(saved) }));
-      } catch (e) {}
+      } catch {
+        // Ignore invalid JSON in localStorage
+      }
     }
   }, []);
 
@@ -85,10 +75,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
              });
           }
         })
-        .catch((err) => console.error("Failed to fetch UI settings:", err))
-        .finally(() => setIsInitialLoad(false));
-    } else {
-      setIsInitialLoad(false);
+        .catch((err) => console.error("Failed to fetch UI settings:", err));
     }
   }, [user, token]);
 
@@ -124,7 +111,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   }, [settings]);
 
-  const updateSettings = useCallback((newSettings: any) => {
+  const updateSettings = useCallback((newSettings: Partial<ThemeSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
       

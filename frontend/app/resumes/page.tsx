@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "../components/AuthProvider";
 
@@ -16,13 +16,13 @@ interface SavedResume {
 }
 
 export default function ResumesPage() {
-  const { user, token, requireAuth, setShowAuthModal } = useAuth();
+  const { user, token, setShowAuthModal } = useAuth();
   const [resumes, setResumes] = useState<SavedResume[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const fetchResumes = async () => {
+  const fetchResumes = useCallback(async () => {
     if (!token) {
       setLoading(false);
       return;
@@ -46,11 +46,11 @@ export default function ResumesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchResumes();
-  }, [token]);
+  }, [fetchResumes]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this resume?")) return;

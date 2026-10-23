@@ -38,6 +38,8 @@ if sys.platform == "win32":
     except Exception:
         pass
 
+os.environ.setdefault("GIO_USE_VOLUME_MONITOR", "dummy")
+
 # ── Paths ────────────────────────────────────────────────────────────
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(TESTS_DIR)
@@ -52,12 +54,14 @@ if TESTS_DIR not in sys.path:
 from mock_data import build_payload
 
 try:
-    from templates import RESUME_TEMPLATES, get_template_by_id
+    from backend.templates import get_template_by_id
 except ImportError:
-    RESUME_TEMPLATES = []
+    try:
+        from templates import get_template_by_id
+    except ImportError:
 
-    def get_template_by_id(tid):
-        return None
+        def get_template_by_id(tid):
+            return None
 
 
 # ── Color Output Helpers ─────────────────────────────────────────────

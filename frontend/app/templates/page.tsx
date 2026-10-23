@@ -34,7 +34,7 @@ export default function TemplatesPage() {
       })
       .catch(() => {
         // Fallback data if backend is not running
-        const fallbackTemplates: any[] = [
+        const fallbackTemplates: Template[] = [
           {
             id: "AL-004",
             name: "Navy Gold Corporate",
@@ -529,7 +529,7 @@ export default function TemplatesPage() {
               Crafting New Standards
             </h3>
             <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.6, maxWidth: 220 }}>
-              I'm currently meticulously refining a new series of elite templates to ensure your professional story remains ahead of the trend.
+              I&apos;m currently meticulously refining a new series of elite templates to ensure your professional story remains ahead of the trend.
             </p>
           </div>
         </div>

@@ -1,51 +1,108 @@
 import io
 import json
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any
 
-import PyPDF2
-from ai_service import (
-    check_ats_score,
-    enhance_resume,
-    modify_resume_with_ai,
-    parse_resume_text,
-)
-from auth import (
-    create_access_token,
-    get_current_user,
-    get_optional_user,
-    hash_password,
-    verify_password,
-)
-from database import (
-    create_user,
-    delete_resume,
-    get_resume,
-    get_user_by_email,
-    get_user_by_id,
-    get_user_settings,
-    init_db,
-    list_ats_checks,
-    list_resumes,
-    save_ats_check,
-    save_enhancement_log,
-    save_resume,
-    save_user_settings,
-    update_resume,
-    update_user_api_key,
-)
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from pdf_service import (
-    generate_html,
-    generate_latex,
-    generate_pdf,
-    generate_pdf_from_html,
-    has_latex_template,
-)
-from schemas import HTMLData, ResumeData, UserLogin, UserRegister
-from templates import get_all_templates, get_template_by_id
+
+# Ensure backend directory is in sys.path for both standalone and package imports
+_BACKEND_DIR = str(Path(__file__).resolve().parent)
+if _BACKEND_DIR not in sys.path:
+    sys.path.insert(0, _BACKEND_DIR)
+
+try:
+    import pypdf
+except ImportError:
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=DeprecationWarning)
+        import PyPDF2 as pypdf
+
+try:
+    from backend.ai_service import (
+        check_ats_score,
+        enhance_resume,
+        modify_resume_with_ai,
+        parse_resume_text,
+    )
+    from backend.auth import (
+        create_access_token,
+        get_current_user,
+        get_optional_user,
+        hash_password,
+        verify_password,
+    )
+    from backend.database import (
+        create_user,
+        delete_resume,
+        get_resume,
+        get_user_by_email,
+        get_user_by_id,
+        get_user_settings,
+        init_db,
+        list_ats_checks,
+        list_resumes,
+        save_ats_check,
+        save_enhancement_log,
+        save_resume,
+        save_user_settings,
+        update_resume,
+        update_user_api_key,
+    )
+    from backend.pdf_service import (
+        generate_html,
+        generate_latex,
+        generate_pdf,
+        generate_pdf_from_html,
+        has_latex_template,
+    )
+    from backend.schemas import HTMLData, ResumeData, UserLogin, UserRegister
+    from backend.templates import get_all_templates, get_template_by_id
+except ImportError:
+    from ai_service import (
+        check_ats_score,
+        enhance_resume,
+        modify_resume_with_ai,
+        parse_resume_text,
+    )
+    from auth import (
+        create_access_token,
+        get_current_user,
+        get_optional_user,
+        hash_password,
+        verify_password,
+    )
+    from database import (
+        create_user,
+        delete_resume,
+        get_resume,
+        get_user_by_email,
+        get_user_by_id,
+        get_user_settings,
+        init_db,
+        list_ats_checks,
+        list_resumes,
+        save_ats_check,
+        save_enhancement_log,
+        save_resume,
+        save_user_settings,
+        update_resume,
+        update_user_api_key,
+    )
+    from pdf_service import (
+        generate_html,
+        generate_latex,
+        generate_pdf,
+        generate_pdf_from_html,
+        has_latex_template,
+    )
+    from schemas import HTMLData, ResumeData, UserLogin, UserRegister
+    from templates import get_all_templates, get_template_by_id
 
 
 # ── App Lifecycle ──────────────────────────────────────────────────
@@ -279,8 +336,6 @@ def preview_template(template_id: str):
     }
 
     try:
-        from pdf_service import generate_html
-
         html_content = generate_html(dummy_data, template_id)
         return Response(content=html_content, media_type="text/html")
     except Exception as e:
@@ -466,7 +521,7 @@ async def ats_upload(
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
 
     try:
-        pdf_reader = PyPDF2.PdfReader(io.BytesIO(await file.read()))
+        pdf_reader = pypdf.PdfReader(io.BytesIO(await file.read()))
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text() + "\n"
@@ -587,7 +642,7 @@ async def parse_resume(
         raise HTTPException(status_code=400, detail="File too large (max 5MB).")
 
     try:
-        pdf_reader = PyPDF2.PdfReader(io.BytesIO(contents))
+        pdf_reader = pypdf.PdfReader(io.BytesIO(contents))
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text() + "\n"
@@ -631,8 +686,7 @@ async def modify_resume(
 
     try:
         api_key = await _get_user_api_key(current_user)
-        result = await modify_resume_with_ai(data, instruction, api_key=api_key)
-        return result
+        return await modify_resume_with_ai(data, instruction, api_key=api_key)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Modification failed: {e!s}")
 

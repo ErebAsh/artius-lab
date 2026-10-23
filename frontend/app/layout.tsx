@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
+import Script from "next/script";
+
+import "./globals.css";
+import AuthModal from "./components/AuthModal";
+import AuthProvider from "./components/AuthProvider";
+import Chatbot from "./components/Chatbot";
+import ConditionalLayout from "./components/ConditionalLayout";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import ThemeProvider from "./components/ThemeProvider";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-import { Inter, Playfair_Display } from "next/font/google";
-import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -23,12 +30,6 @@ export const metadata: Metadata = {
     "Craft stunning, ATS-optimized resumes with AI. Choose from premium templates, fill your details, and let AI refine your professional narrative.",
   keywords: ["resume builder", "AI resume", "professional resume", "ATS optimized"],
 };
-
-import ThemeProvider from "./components/ThemeProvider";
-import ConditionalLayout from "./components/ConditionalLayout";
-import AuthProvider from "./components/AuthProvider";
-import AuthModal from "./components/AuthModal";
-import Chatbot from "./components/Chatbot";
 
 export default function RootLayout({
   children,

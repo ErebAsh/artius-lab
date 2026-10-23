@@ -35,6 +35,8 @@ if sys.platform == "win32":
     except Exception:
         pass
 
+os.environ.setdefault("GIO_USE_VOLUME_MONITOR", "dummy")
+
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.join(PROJECT_ROOT, "backend")
 TESTS_DIR = os.path.join(PROJECT_ROOT, "tests")
@@ -47,14 +49,6 @@ for p in [PROJECT_ROOT, BACKEND_DIR, TESTS_DIR]:
 
 from tests.test_html_templates import audit_html_template, open_preview
 from tests.test_latex_templates import audit_latex_template, print_latex_dashboard
-
-try:
-    from templates import RESUME_TEMPLATES, get_template_by_id
-except ImportError:
-    RESUME_TEMPLATES = []
-
-    def get_template_by_id(tid):
-        return None
 
 
 class Colors:

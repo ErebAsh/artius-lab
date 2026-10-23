@@ -3,6 +3,7 @@ SQLite database module for Artius Lab.
 Uses aiosqlite for async operations with FastAPI.
 """
 
+import contextlib
 import json
 import os
 from datetime import datetime, timezone
@@ -86,18 +87,14 @@ async def init_db() -> None:
         """)
 
         # ── Add user_id column if missing (migration for existing DBs) ──
-        try:
+        with contextlib.suppress(Exception):
             await db.execute(
                 "ALTER TABLE resumes ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"
             )
-        except Exception:
-            pass  # Column already exists
 
         # ── Add gemini_api_key column if missing (migration for existing DBs) ──
-        try:
+        with contextlib.suppress(Exception):
             await db.execute("ALTER TABLE users ADD COLUMN gemini_api_key TEXT DEFAULT NULL")
-        except Exception:
-            pass  # Column already exists
 
         # ── ATS Checks history ─────────────────────────────────────
         await db.execute("""

@@ -86,7 +86,6 @@ export default function ModifierPage() {
   const [templates, setTemplates] = useState<Array<{ id: string; name: string }>>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isTemplateHovered, setIsTemplateHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
 
@@ -735,9 +734,7 @@ export default function ModifierPage() {
         {/* Center: Template Selector */}
         <div 
           style={{ display: "flex", alignItems: "center", gap: 12, position: "relative" }}
-          onMouseEnter={() => setIsTemplateHovered(true)}
           onMouseLeave={() => {
-            setIsTemplateHovered(false);
             setHoveredTemplateId(null);
           }}
         >

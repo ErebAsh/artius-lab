@@ -48,19 +48,20 @@ if TESTS_DIR not in sys.path:
 from mock_data import build_payload
 
 try:
-    from pdf_service import generate_latex, has_latex_template, latex_env
-    from templates import get_template_by_id
+    from backend.pdf_service import generate_latex, latex_env
+    from backend.templates import get_template_by_id
 except ImportError:
-    latex_env = None
+    try:
+        from pdf_service import generate_latex, latex_env
+        from templates import get_template_by_id
+    except ImportError:
+        latex_env = None
 
-    def generate_latex(d, tid):
-        return ""
+        def generate_latex(d, tid):
+            return ""
 
-    def has_latex_template(tid):
-        return False
-
-    def get_template_by_id(tid):
-        return None
+        def get_template_by_id(tid):
+            return None
 
 
 # ── Color Output Helpers ─────────────────────────────────────────────

@@ -8,7 +8,7 @@ pydantic
 jinja2
 python-dotenv
 aiosqlite
-PyPDF2
+pypdf
 bcrypt
 PyJWT
 cryptography

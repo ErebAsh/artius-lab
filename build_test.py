@@ -145,6 +145,14 @@ def main(argv: list[str] | None = None):
         if os.path.exists(node_modules) and npm_bin:
             steps.append(
                 {
+                    "name": "Frontend ESLint",
+                    "cmd": [npm_bin, "run", "lint"],
+                    "cwd": FRONTEND_DIR,
+                    "critical": True,
+                }
+            )
+            steps.append(
+                {
                     "name": "Frontend Next.js Build",
                     "cmd": [npm_bin, "run", "build"],
                     "cwd": FRONTEND_DIR,
@@ -193,12 +201,11 @@ def main(argv: list[str] | None = None):
         dur_str = f"{duration:.2f}s"
         print(f"  {step_name:<38} {dur_str:<12} {res_str}")
 
-        if not passed or args.verbose:
-            if output:
-                indent_out = "\n".join("    " + line for line in output.splitlines()[:25])
-                print(f"{Colors.DIM}{indent_out}{Colors.RESET}")
-                if len(output.splitlines()) > 25:
-                    print(f"    ... [truncated {len(output.splitlines()) - 25} lines]")
+        if (not passed or args.verbose) and output:
+            indent_out = "\n".join("    " + line for line in output.splitlines()[:25])
+            print(f"{Colors.DIM}{indent_out}{Colors.RESET}")
+            if len(output.splitlines()) > 25:
+                print(f"    ... [truncated {len(output.splitlines()) - 25} lines]")
 
     total_duration = time.time() - total_t0
     print("-" * 80)
