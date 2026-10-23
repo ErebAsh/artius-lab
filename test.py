@@ -17,12 +17,14 @@ Usage:
   python test.py --preview AL-005   # Open browser side-by-side comparison
   python test.py --markdown         # Export Markdown audit summary
   python test.py --json             # Export JSON report
+  python test.py --build            # Run full build test (lint, format, compile, unit tests)
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
+
 from jinja2 import Environment, FileSystemLoader
 
 # Fix Windows console cp1252 encoding
@@ -43,15 +45,16 @@ for p in [PROJECT_ROOT, BACKEND_DIR, TESTS_DIR]:
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from tests.mock_data import build_payload, MOCK_RESUME_DATA
-from tests.test_html_templates import audit_html_template, print_html_dashboard, open_preview
+from tests.test_html_templates import audit_html_template, open_preview
 from tests.test_latex_templates import audit_latex_template, print_latex_dashboard
 
 try:
     from templates import RESUME_TEMPLATES, get_template_by_id
 except ImportError:
     RESUME_TEMPLATES = []
-    def get_template_by_id(tid): return None
+
+    def get_template_by_id(tid):
+        return None
 
 
 class Colors:
@@ -71,21 +74,55 @@ def print_unified_dashboard(results: list, test_pdf: bool, test_latex: bool):
 
     pdf_hdr = f"{'PDF':<7}" if test_pdf else ""
     latex_hdr = f"{'LaTeX':<7}" if test_latex else ""
-    print(f"{Colors.BOLD}{'ID':<8} {'Template Name':<28} {'Photo Capable':<15} {'With Pic':<10} {'No Pic':<10} {'HTML':<8} {pdf_hdr}{latex_hdr}{'Status':<8}{Colors.RESET}")
+    print(
+        f"{Colors.BOLD}{'ID':<8} {'Template Name':<28} {'Photo Capable':<15} {'With Pic':<10} {'No Pic':<10} {'HTML':<8} {pdf_hdr}{latex_hdr}{'Status':<8}{Colors.RESET}"
+    )
     print("-" * 94)
 
     for r in results:
         tid = r["template_id"]
         tname = (r["name"][:25] + "..") if len(r["name"]) > 27 else r["name"]
-        photo_cap = f"{Colors.CYAN}YES (Photo){Colors.RESET}" if r["is_photo_supported"] else f"{Colors.DIM}NO (Text-Only){Colors.RESET}"
+        photo_cap = (
+            f"{Colors.CYAN}YES (Photo){Colors.RESET}"
+            if r["is_photo_supported"]
+            else f"{Colors.DIM}NO (Text-Only){Colors.RESET}"
+        )
 
-        pic_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["render_pic_ok"] else (f"{Colors.RED}FAIL{Colors.RESET}" if r["render_pic_ok"] is False else f"{Colors.DIM}SKIP{Colors.RESET}")
-        nopic_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["render_nopic_ok"] else (f"{Colors.RED}FAIL{Colors.RESET}" if r["render_nopic_ok"] is False else f"{Colors.DIM}SKIP{Colors.RESET}")
-        html_str = f"{Colors.GREEN}VALID{Colors.RESET}" if r["html_balanced"] else (f"{Colors.YELLOW}MISMATCH{Colors.RESET}" if r["html_balanced"] is False else f"{Colors.DIM}N/A{Colors.RESET}")
+        pic_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["render_pic_ok"]
+            else (
+                f"{Colors.RED}FAIL{Colors.RESET}"
+                if r["render_pic_ok"] is False
+                else f"{Colors.DIM}SKIP{Colors.RESET}"
+            )
+        )
+        nopic_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["render_nopic_ok"]
+            else (
+                f"{Colors.RED}FAIL{Colors.RESET}"
+                if r["render_nopic_ok"] is False
+                else f"{Colors.DIM}SKIP{Colors.RESET}"
+            )
+        )
+        html_str = (
+            f"{Colors.GREEN}VALID{Colors.RESET}"
+            if r["html_balanced"]
+            else (
+                f"{Colors.YELLOW}MISMATCH{Colors.RESET}"
+                if r["html_balanced"] is False
+                else f"{Colors.DIM}N/A{Colors.RESET}"
+            )
+        )
 
         pdf_str = ""
         if test_pdf:
-            pdf_str = f"{Colors.GREEN}PASS{Colors.RESET}   " if r["pdf_ok"] else f"{Colors.RED}FAIL{Colors.RESET}   "
+            pdf_str = (
+                f"{Colors.GREEN}PASS{Colors.RESET}   "
+                if r["pdf_ok"]
+                else f"{Colors.RED}FAIL{Colors.RESET}   "
+            )
 
         latex_str = ""
         if test_latex:
@@ -103,7 +140,9 @@ def print_unified_dashboard(results: list, test_pdf: bool, test_latex: bool):
         else:
             status_str = f"{Colors.RED}[BROKEN]{Colors.RESET}"
 
-        print(f"{tid:<8} {tname:<28} {photo_cap:<24} {pic_str:<19} {nopic_str:<19} {html_str:<17} {pdf_str}{latex_str}{status_str}")
+        print(
+            f"{tid:<8} {tname:<28} {photo_cap:<24} {pic_str:<19} {nopic_str:<19} {html_str:<17} {pdf_str}{latex_str}{status_str}"
+        )
 
     print("-" * 94)
     total = len(results)
@@ -116,7 +155,9 @@ def print_unified_dashboard(results: list, test_pdf: bool, test_latex: bool):
     print(f"  • {Colors.GREEN}{passed} Fully Working{Colors.RESET} (100% Passed)")
     print(f"  • {Colors.YELLOW}{warned} Working with Warnings{Colors.RESET}")
     print(f"  • {Colors.RED}{failed} Broken / Critical Failure{Colors.RESET}")
-    print(f"  • Layout Breakdown: {photo_count} Photo-Enabled | {total - photo_count} Text-Only (ATS/Standard)\n")
+    print(
+        f"  • Layout Breakdown: {photo_count} Photo-Enabled | {total - photo_count} Text-Only (ATS/Standard)\n"
+    )
 
 
 def export_markdown(results: list, path: str = "template_test_report.md"):
@@ -127,12 +168,18 @@ def export_markdown(results: list, path: str = "template_test_report.md"):
         f"**Audited:** {len(results)} | **Passed:** {passed} | **Failed:** {len(results) - passed}",
         "",
         "| ID | Template Name | Category | Photo Capable | With Pic | No Pic | HTML Balance | Status |",
-        "|---|---|---|---|---|---|---|---|"
+        "|---|---|---|---|---|---|---|---|",
     ]
     for r in results:
-        status_icon = "✅ PASSED" if r["status"] == "PASSED" else ("⚠️ WARNING" if r["status"] == "WARNING" else "❌ FAILED")
+        status_icon = (
+            "✅ PASSED"
+            if r["status"] == "PASSED"
+            else ("⚠️ WARNING" if r["status"] == "WARNING" else "❌ FAILED")
+        )
         photo_str = "Yes (Photo)" if r["is_photo_supported"] else "No (Text-Only)"
-        lines.append(f"| **{r['template_id']}** | {r['name']} | {r['category']} | {photo_str} | {'✅ Pass' if r['render_pic_ok'] else '❌ Fail'} | {'✅ Pass' if r['render_nopic_ok'] else '❌ Fail'} | {'✅ Valid' if r['html_balanced'] else '⚠️ Mismatch'} | {status_icon} |")
+        lines.append(
+            f"| **{r['template_id']}** | {r['name']} | {r['category']} | {photo_str} | {'✅ Pass' if r['render_pic_ok'] else '❌ Fail'} | {'✅ Pass' if r['render_nopic_ok'] else '❌ Fail'} | {'✅ Valid' if r['html_balanced'] else '⚠️ Mismatch'} | {status_icon} |"
+        )
 
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
@@ -144,19 +191,39 @@ def main():
     parser.add_argument("templates", nargs="*", help="Specific template IDs to audit")
     parser.add_argument("--html", action="store_true", help="Run only HTML template tests")
     parser.add_argument("--latex", action="store_true", help="Run only LaTeX template tests")
-    parser.add_argument("--pdf", action="store_true", help="Include WeasyPrint PDF compilation test")
+    parser.add_argument(
+        "--pdf", action="store_true", help="Include WeasyPrint PDF compilation test"
+    )
     parser.add_argument("--pics-only", action="store_true", help="Only audit with pictures")
     parser.add_argument("--no-pics-only", action="store_true", help="Only audit without pictures")
-    parser.add_argument("--preview", metavar="TEMPLATE_ID", help="Open browser preview for template")
+    parser.add_argument(
+        "--preview", metavar="TEMPLATE_ID", help="Open browser preview for template"
+    )
     parser.add_argument("--markdown", action="store_true", help="Save markdown audit report")
     parser.add_argument("--json", action="store_true", help="Output JSON results")
+    parser.add_argument(
+        "--build",
+        action="store_true",
+        help="Run full build test pipeline (Ruff lint, format check, compile, tests)",
+    )
 
     args = parser.parse_args()
+
+    if args.build:
+        import build_test
+
+        build_test.main(argv=[])
+        return
+
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
     # Fast delegation if user requested only LaTeX
     if args.latex and not args.html:
-        latex_targets = [f"{t}.tex" if not t.endswith(".tex") else t for t in args.templates] if args.templates else sorted([f for f in os.listdir(LATEX_TEMPLATE_DIR) if f.endswith(".tex")])
+        latex_targets = (
+            [f"{t}.tex" if not t.endswith(".tex") else t for t in args.templates]
+            if args.templates
+            else sorted([f for f in os.listdir(LATEX_TEMPLATE_DIR) if f.endswith(".tex")])
+        )
         print(f"\n🔍 Auditing {len(latex_targets)} LaTeX Templates...")
         latex_results = [audit_latex_template(t) for t in latex_targets]
         print_latex_dashboard(latex_results)
@@ -183,7 +250,9 @@ def main():
 
     for t_file in targets:
         tid = t_file.replace(".html", "")
-        h_res = audit_html_template(env, t_file, test_pdf=args.pdf, pics_only=args.pics_only, no_pics_only=args.no_pics_only)
+        h_res = audit_html_template(
+            env, t_file, test_pdf=args.pdf, pics_only=args.pics_only, no_pics_only=args.no_pics_only
+        )
 
         # Check corresponding LaTeX template if exists
         tex_path = os.path.join(LATEX_TEMPLATE_DIR, f"{tid}.tex")

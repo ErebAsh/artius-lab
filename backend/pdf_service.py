@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
 
@@ -53,7 +53,9 @@ def _escape_data_recursive(data):
     return data
 
 
-def generate_html(enhanced_data: dict, template_id: str, layout_settings: Optional[dict] = None) -> str:
+def generate_html(
+    enhanced_data: dict, template_id: str, layout_settings: dict | None = None
+) -> str:
     """Render resume data into a styled HTML using Jinja2."""
     template_file = f"{template_id}.html"
     template = env.get_template(template_file)
@@ -81,21 +83,21 @@ def generate_html(enhanced_data: dict, template_id: str, layout_settings: Option
         # Inject layout settings into the HTML head
         layout_style = f"""
         <style>
-            body {{ 
-                font-size: {layout_settings.get('fontSize', 11)}pt !important; 
-                line-height: {layout_settings.get('lineHeight', 1.5)} !important; 
+            body {{
+                font-size: {layout_settings.get("fontSize", 11)}pt !important;
+                line-height: {layout_settings.get("lineHeight", 1.5)} !important;
             }}
-            .container {{ 
-                padding-top: {layout_settings.get('margin', 24)}mm !important; 
-                padding-bottom: {layout_settings.get('margin', 24)}mm !important;
-                padding-left: {layout_settings.get('margin', 24)}mm !important;
-                padding-right: {layout_settings.get('margin', 24)}mm !important;
+            .container {{
+                padding-top: {layout_settings.get("margin", 24)}mm !important;
+                padding-bottom: {layout_settings.get("margin", 24)}mm !important;
+                padding-left: {layout_settings.get("margin", 24)}mm !important;
+                padding-right: {layout_settings.get("margin", 24)}mm !important;
             }}
-            .section, .main-section {{ 
-                margin-bottom: {layout_settings.get('sectionGap', 24)}px !important; 
+            .section, .main-section {{
+                margin-bottom: {layout_settings.get("sectionGap", 24)}px !important;
             }}
             .exp-item, .edu-item, .project-item {{
-                margin-bottom: {float(layout_settings.get('sectionGap', 24)) * 0.7}px !important;
+                margin-bottom: {float(layout_settings.get("sectionGap", 24)) * 0.7}px !important;
             }}
             .exp-highlights, .skill-list {{
                 margin-top: 4px !important;
@@ -105,7 +107,7 @@ def generate_html(enhanced_data: dict, template_id: str, layout_settings: Option
                 margin-bottom: 2px !important;
             }}
             .right-column, .sidebar {{
-                padding-left: {layout_settings.get('columnGap', 30)}px !important;
+                padding-left: {layout_settings.get("columnGap", 30)}px !important;
             }}
         </style>
         """
@@ -128,17 +130,19 @@ def generate_latex(enhanced_data: dict, template_id: str) -> str:
     template = latex_env.get_template(template_file)
 
     # Escape all user data for LaTeX safety
-    safe_data = _escape_data_recursive({
-        "personal_info": enhanced_data.get("personal_info", {}),
-        "education": enhanced_data.get("education", []),
-        "experience": enhanced_data.get("experience", []),
-        "skills": enhanced_data.get("skills", []),
-        "projects": enhanced_data.get("projects", []),
-        "expertise": enhanced_data.get("expertise", {}),
-        "certifications": enhanced_data.get("certifications", []),
-        "languages": enhanced_data.get("languages", []),
-        "hobbies": enhanced_data.get("hobbies", []),
-    })
+    safe_data = _escape_data_recursive(
+        {
+            "personal_info": enhanced_data.get("personal_info", {}),
+            "education": enhanced_data.get("education", []),
+            "experience": enhanced_data.get("experience", []),
+            "skills": enhanced_data.get("skills", []),
+            "projects": enhanced_data.get("projects", []),
+            "expertise": enhanced_data.get("expertise", {}),
+            "certifications": enhanced_data.get("certifications", []),
+            "languages": enhanced_data.get("languages", []),
+            "hobbies": enhanced_data.get("hobbies", []),
+        }
+    )
 
     latex_source = template.render(
         personal=safe_data.get("personal_info", {}),
@@ -165,7 +169,9 @@ def generate_pdf_from_html(html_content: str) -> bytes:
     return HTML(string=html_content).write_pdf()
 
 
-def generate_pdf(enhanced_data: dict, template_id: str, layout_settings: Optional[dict] = None) -> bytes:
+def generate_pdf(
+    enhanced_data: dict, template_id: str, layout_settings: dict | None = None
+) -> bytes:
     """Render resume data into a styled PDF using Jinja2 + WeasyPrint."""
     html_content = generate_html(enhanced_data, template_id, layout_settings)
     return generate_pdf_from_html(html_content)

@@ -19,15 +19,15 @@ Usage:
   python -m unittest tests/test_html_templates.py   # Standard unittest / CI discovery
 """
 
+import argparse
 import os
 import sys
-import io
-import argparse
-import unittest
 import tempfile
+import unittest
 import webbrowser
-from typing import Dict, Any, List, Optional
 from html.parser import HTMLParser
+from typing import Any
+
 from jinja2 import Environment, FileSystemLoader, exceptions
 
 # Fix Windows console cp1252 encoding for Unicode/ANSI
@@ -49,13 +49,15 @@ if BACKEND_DIR not in sys.path:
 if TESTS_DIR not in sys.path:
     sys.path.insert(0, TESTS_DIR)
 
-from mock_data import build_payload, MOCK_RESUME_DATA
+from mock_data import build_payload
 
 try:
     from templates import RESUME_TEMPLATES, get_template_by_id
 except ImportError:
     RESUME_TEMPLATES = []
-    def get_template_by_id(tid): return None
+
+    def get_template_by_id(tid):
+        return None
 
 
 # ── Color Output Helpers ─────────────────────────────────────────────
@@ -72,18 +74,48 @@ class Colors:
 # ── Strict HTML Tag Balance Checker ──────────────────────────────────
 class HTMLStructureChecker(HTMLParser):
     """Verifies that all opened HTML tags are properly balanced and closed."""
+
     def __init__(self):
         super().__init__()
-        self.stack: List[str] = []
-        self.errors: List[str] = []
+        self.stack: list[str] = []
+        self.errors: list[str] = []
         self.void_elements = {
-            'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-            'link', 'meta', 'param', 'source', 'track', 'wbr'
+            "area",
+            "base",
+            "br",
+            "col",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "link",
+            "meta",
+            "param",
+            "source",
+            "track",
+            "wbr",
         }
         self.tracked_tags = {
-            'div', 'span', 'section', 'article', 'aside', 'main', 'header',
-            'footer', 'nav', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th',
-            'p', 'html', 'head', 'body'
+            "div",
+            "span",
+            "section",
+            "article",
+            "aside",
+            "main",
+            "header",
+            "footer",
+            "nav",
+            "ul",
+            "ol",
+            "li",
+            "table",
+            "tr",
+            "td",
+            "th",
+            "p",
+            "html",
+            "head",
+            "body",
         }
 
     def handle_starttag(self, tag: str, attrs):
@@ -111,7 +143,7 @@ class HTMLStructureChecker(HTMLParser):
             else:
                 self.errors.append(f"Unexpected closing tag </{t}> (not in active scope)")
 
-    def check_final(self) -> List[str]:
+    def check_final(self) -> list[str]:
         if self.stack:
             unclosed_str = ", ".join([f"<{t}>" for t in reversed(self.stack)])
             self.errors.append(f"Unclosed tag(s) remaining at end of file: {unclosed_str}")
@@ -122,6 +154,7 @@ class HTMLStructureChecker(HTMLParser):
 def offline_weasyprint_fetcher(url: str, timeout: int = 2, ssl_context=None):
     if url.startswith("data:"):
         import weasyprint
+
         return weasyprint.default_url_fetcher(url, timeout=timeout, ssl_context=ssl_context)
     return {
         "string": b"/* offline mock font */",
@@ -137,30 +170,34 @@ def audit_html_template(
     template_name: str,
     test_pdf: bool = False,
     pics_only: bool = False,
-    no_pics_only: bool = False
-) -> Dict[str, Any]:
+    no_pics_only: bool = False,
+) -> dict[str, Any]:
     """Audit a single HTML template and return structured results."""
     template_id = template_name.replace(".html", "")
     template_path = os.path.join(TEMPLATE_DIR, template_name)
 
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             raw_content = f.read()
     except Exception as e:
         return {
             "template_id": template_id,
             "status": "FAILED",
             "errors": [f"Cannot read file: {e}"],
-            "passed": False
+            "passed": False,
         }
 
     meta = get_template_by_id(template_id) or {}
     has_photo_marker = "<!-- has_photo -->" in raw_content
     has_img_tag = "<img" in raw_content.lower()
-    references_photo = ("personal.photo" in raw_content or "personal.photo_url" in raw_content or "photo_data" in raw_content)
+    references_photo = (
+        "personal.photo" in raw_content
+        or "personal.photo_url" in raw_content
+        or "photo_data" in raw_content
+    )
     is_photo_supported = has_photo_marker or has_img_tag or references_photo
 
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "template_id": template_id,
         "name": meta.get("name", template_id),
         "category": meta.get("category", "General"),
@@ -172,7 +209,7 @@ def audit_html_template(
         "pdf_ok": None,
         "errors": [],
         "warnings": [],
-        "passed": True
+        "passed": True,
     }
 
     try:
@@ -183,7 +220,7 @@ def audit_html_template(
         result["status"] = "FAILED"
         return result
     except Exception as e:
-        result["errors"].append(f"LoadError: {str(e)}")
+        result["errors"].append(f"LoadError: {e!s}")
         result["passed"] = False
         result["status"] = "FAILED"
         return result
@@ -198,10 +235,12 @@ def audit_html_template(
             html_pic = template.render(**payload_pic)
             result["render_pic_ok"] = True
             if is_photo_supported and "<img" not in html_pic:
-                result["warnings"].append("Template marked for photo support, but no <img> found in rendered output.")
+                result["warnings"].append(
+                    "Template marked for photo support, but no <img> found in rendered output."
+                )
         except Exception as e:
             result["render_pic_ok"] = False
-            result["errors"].append(f"Render [WITH PIC] failed: {type(e).__name__}: {str(e)}")
+            result["errors"].append(f"Render [WITH PIC] failed: {type(e).__name__}: {e!s}")
             result["passed"] = False
 
     # Test Without Pictures
@@ -211,11 +250,13 @@ def audit_html_template(
             html_nopic = template.render(**payload_nopic)
             result["render_nopic_ok"] = True
             if '<img src="None"' in html_nopic or '<img src=""' in html_nopic:
-                result["errors"].append("Render [NO PIC] outputs broken image (<img src='None' or empty src).")
+                result["errors"].append(
+                    "Render [NO PIC] outputs broken image (<img src='None' or empty src)."
+                )
                 result["passed"] = False
         except Exception as e:
             result["render_nopic_ok"] = False
-            result["errors"].append(f"Render [NO PIC] failed: {type(e).__name__}: {str(e)}")
+            result["errors"].append(f"Render [NO PIC] failed: {type(e).__name__}: {e!s}")
             result["passed"] = False
 
     # Test Minimal/Sparse Data
@@ -225,7 +266,7 @@ def audit_html_template(
         result["render_minimal_ok"] = True
     except Exception as e:
         result["render_minimal_ok"] = False
-        result["warnings"].append(f"Sparse data render failed: {type(e).__name__}: {str(e)}")
+        result["warnings"].append(f"Sparse data render failed: {type(e).__name__}: {e!s}")
 
     # HTML Tag Balancing Check
     target_html = html_pic if html_pic else html_nopic
@@ -244,6 +285,7 @@ def audit_html_template(
     if test_pdf and target_html and result["passed"]:
         try:
             from weasyprint import HTML
+
             pdf_bytes = HTML(string=target_html, url_fetcher=offline_weasyprint_fetcher).write_pdf()
             if pdf_bytes and pdf_bytes.startswith(b"%PDF-"):
                 result["pdf_ok"] = True
@@ -253,7 +295,7 @@ def audit_html_template(
                 result["passed"] = False
         except Exception as pe:
             result["pdf_ok"] = False
-            result["errors"].append(f"WeasyPrint PDF failed: {type(pe).__name__}: {str(pe)}")
+            result["errors"].append(f"WeasyPrint PDF failed: {type(pe).__name__}: {pe!s}")
             result["passed"] = False
 
     if not result["passed"] or len(result["errors"]) > 0:
@@ -267,27 +309,61 @@ def audit_html_template(
 
 
 # ── CLI Table Printer ────────────────────────────────────────────────
-def print_html_dashboard(results: List[Dict[str, Any]], test_pdf: bool):
+def print_html_dashboard(results: list[dict[str, Any]], test_pdf: bool):
     print("\n" + "=" * 88)
     print(f"{Colors.BOLD}  ARTIUS LAB — HTML RESUME TEMPLATES AUDIT{Colors.RESET}")
     print("=" * 88)
 
     pdf_hdr = f"{'PDF':<7}" if test_pdf else ""
-    print(f"{Colors.BOLD}{'ID':<8} {'Template Name':<28} {'Photo Capable':<15} {'With Pic':<10} {'No Pic':<10} {'HTML':<8} {pdf_hdr}{'Status':<8}{Colors.RESET}")
+    print(
+        f"{Colors.BOLD}{'ID':<8} {'Template Name':<28} {'Photo Capable':<15} {'With Pic':<10} {'No Pic':<10} {'HTML':<8} {pdf_hdr}{'Status':<8}{Colors.RESET}"
+    )
     print("-" * 88)
 
     for r in results:
         tid = r["template_id"]
         tname = (r["name"][:25] + "..") if len(r["name"]) > 27 else r["name"]
-        photo_cap = f"{Colors.CYAN}YES (Photo){Colors.RESET}" if r["is_photo_supported"] else f"{Colors.DIM}NO (Text-Only){Colors.RESET}"
-        
-        pic_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["render_pic_ok"] else (f"{Colors.RED}FAIL{Colors.RESET}" if r["render_pic_ok"] is False else f"{Colors.DIM}SKIP{Colors.RESET}")
-        nopic_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["render_nopic_ok"] else (f"{Colors.RED}FAIL{Colors.RESET}" if r["render_nopic_ok"] is False else f"{Colors.DIM}SKIP{Colors.RESET}")
-        html_str = f"{Colors.GREEN}VALID{Colors.RESET}" if r["html_balanced"] else (f"{Colors.YELLOW}MISMATCH{Colors.RESET}" if r["html_balanced"] is False else f"{Colors.DIM}N/A{Colors.RESET}")
-        
+        photo_cap = (
+            f"{Colors.CYAN}YES (Photo){Colors.RESET}"
+            if r["is_photo_supported"]
+            else f"{Colors.DIM}NO (Text-Only){Colors.RESET}"
+        )
+
+        pic_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["render_pic_ok"]
+            else (
+                f"{Colors.RED}FAIL{Colors.RESET}"
+                if r["render_pic_ok"] is False
+                else f"{Colors.DIM}SKIP{Colors.RESET}"
+            )
+        )
+        nopic_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["render_nopic_ok"]
+            else (
+                f"{Colors.RED}FAIL{Colors.RESET}"
+                if r["render_nopic_ok"] is False
+                else f"{Colors.DIM}SKIP{Colors.RESET}"
+            )
+        )
+        html_str = (
+            f"{Colors.GREEN}VALID{Colors.RESET}"
+            if r["html_balanced"]
+            else (
+                f"{Colors.YELLOW}MISMATCH{Colors.RESET}"
+                if r["html_balanced"] is False
+                else f"{Colors.DIM}N/A{Colors.RESET}"
+            )
+        )
+
         pdf_str = ""
         if test_pdf:
-            pdf_str = f"{Colors.GREEN}PASS{Colors.RESET}   " if r["pdf_ok"] else f"{Colors.RED}FAIL{Colors.RESET}   "
+            pdf_str = (
+                f"{Colors.GREEN}PASS{Colors.RESET}   "
+                if r["pdf_ok"]
+                else f"{Colors.RED}FAIL{Colors.RESET}   "
+            )
 
         if r["status"] == "PASSED":
             status_str = f"{Colors.GREEN}[WORKING]{Colors.RESET}"
@@ -296,13 +372,17 @@ def print_html_dashboard(results: List[Dict[str, Any]], test_pdf: bool):
         else:
             status_str = f"{Colors.RED}[BROKEN]{Colors.RESET}"
 
-        print(f"{tid:<8} {tname:<28} {photo_cap:<24} {pic_str:<19} {nopic_str:<19} {html_str:<17} {pdf_str}{status_str}")
+        print(
+            f"{tid:<8} {tname:<28} {photo_cap:<24} {pic_str:<19} {nopic_str:<19} {html_str:<17} {pdf_str}{status_str}"
+        )
 
     print("-" * 88)
     passed = sum(1 for r in results if r["status"] == "PASSED")
     warned = sum(1 for r in results if r["status"] == "WARNING")
     failed = sum(1 for r in results if r["status"] == "FAILED")
-    print(f"{Colors.BOLD}HTML Templates: {len(results)} Total | {Colors.GREEN}{passed} Passed{Colors.RESET} | {Colors.YELLOW}{warned} Warnings{Colors.RESET} | {Colors.RED}{failed} Failed{Colors.RESET}\n")
+    print(
+        f"{Colors.BOLD}HTML Templates: {len(results)} Total | {Colors.GREEN}{passed} Passed{Colors.RESET} | {Colors.YELLOW}{warned} Warnings{Colors.RESET} | {Colors.RED}{failed} Failed{Colors.RESET}\n"
+    )
 
 
 # ── Interactive Browser Preview ──────────────────────────────────────
@@ -331,17 +411,17 @@ def open_preview(env: Environment, template_name: str):
     <div class="wrap">
         <div>
             <div class="badge" style="color: #38bdf8;">📸 With Picture</div>
-            <div class="box"><iframe srcdoc="{html_pic.replace('"', '&quot;')}"></iframe></div>
+            <div class="box"><iframe srcdoc="{html_pic.replace('"', "&quot;")}"></iframe></div>
         </div>
         <div>
             <div class="badge" style="color: #c084fc;">📄 Without Picture</div>
-            <div class="box"><iframe srcdoc="{html_nopic.replace('"', '&quot;')}"></iframe></div>
+            <div class="box"><iframe srcdoc="{html_nopic.replace('"', "&quot;")}"></iframe></div>
         </div>
     </div>
 </body>
 </html>"""
     fd, path = tempfile.mkstemp(suffix=".html", prefix=f"preview_{template_id}_")
-    with os.fdopen(fd, 'w', encoding='utf-8') as f:
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
         f.write(composite)
     print(f"-> Opened browser preview: {path}")
     webbrowser.open(f"file://{os.path.abspath(path)}")
@@ -368,17 +448,23 @@ class TestHTMLTemplates(unittest.TestCase):
         for t_file in self.templates:
             with self.subTest(template=t_file):
                 res = audit_html_template(self.env, t_file)
-                self.assertTrue(res["html_balanced"], f"{t_file} has unbalanced tags: {res['warnings']}")
+                self.assertTrue(
+                    res["html_balanced"], f"{t_file} has unbalanced tags: {res['warnings']}"
+                )
 
 
 # ── CLI Runner ───────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="HTML Resume Template Test Suite")
     parser.add_argument("templates", nargs="*", help="Specific template IDs (e.g. AL-001 AL-005)")
-    parser.add_argument("--pdf", action="store_true", help="Include WeasyPrint PDF compilation test")
+    parser.add_argument(
+        "--pdf", action="store_true", help="Include WeasyPrint PDF compilation test"
+    )
     parser.add_argument("--pics-only", action="store_true", help="Only test with pictures")
     parser.add_argument("--no-pics-only", action="store_true", help="Only test without pictures")
-    parser.add_argument("--preview", metavar="TEMPLATE_ID", help="Open browser side-by-side preview")
+    parser.add_argument(
+        "--preview", metavar="TEMPLATE_ID", help="Open browser side-by-side preview"
+    )
 
     args = parser.parse_args()
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
@@ -396,7 +482,12 @@ def main():
         targets = all_files
 
     print(f"\n🔍 Auditing {len(targets)} HTML Resume Templates...")
-    results = [audit_html_template(env, t, test_pdf=args.pdf, pics_only=args.pics_only, no_pics_only=args.no_pics_only) for t in targets]
+    results = [
+        audit_html_template(
+            env, t, test_pdf=args.pdf, pics_only=args.pics_only, no_pics_only=args.no_pics_only
+        )
+        for t in targets
+    ]
     print_html_dashboard(results, test_pdf=args.pdf)
 
     failed = sum(1 for r in results if r["status"] == "FAILED")

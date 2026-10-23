@@ -1,17 +1,16 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel
 
 
 class PersonalInfo(BaseModel):
     full_name: str
-    title: Optional[str] = None
+    title: str | None = None
     email: str
     phone: str
     location: str
-    linkedin: Optional[str] = None
-    portfolio: Optional[str] = None
-    summary: Optional[str] = None
-    photo: Optional[str] = None
+    linkedin: str | None = None
+    portfolio: str | None = None
+    summary: str | None = None
+    photo: str | None = None
 
 
 class Education(BaseModel):
@@ -19,42 +18,42 @@ class Education(BaseModel):
     degree: str
     field_of_study: str
     start_date: str
-    end_date: Optional[str] = "Present"
-    gpa: Optional[str] = None
-    achievements: Optional[str] = None
+    end_date: str | None = "Present"
+    gpa: str | None = None
+    achievements: str | None = None
 
 
 class Experience(BaseModel):
     company: str
     title: str
     start_date: str
-    end_date: Optional[str] = "Present"
+    end_date: str | None = "Present"
     description: str
-    highlights: Optional[list[str]] = []
+    highlights: list[str] | None = []
 
 
 class Skill(BaseModel):
     name: str
-    level: Optional[str] = "Intermediate"  # Beginner, Intermediate, Advanced, Expert
+    level: str | None = "Intermediate"  # Beginner, Intermediate, Advanced, Expert
 
 
 class Certification(BaseModel):
     name: str
     issuer: str
-    year: Optional[str] = None
-    date: Optional[str] = None
+    year: str | None = None
+    date: str | None = None
 
 
 class Language(BaseModel):
     name: str
-    proficiency: Optional[str] = "Fluent"  # Native, Fluent, Conversational, Basic
+    proficiency: str | None = "Fluent"  # Native, Fluent, Conversational, Basic
 
 
 class Project(BaseModel):
     name: str
     description: str
-    technologies: Optional[list[str]] = []
-    link: Optional[str] = None
+    technologies: list[str] | None = []
+    link: str | None = None
 
 
 class Expertise(BaseModel):
@@ -71,7 +70,7 @@ class ResumeData(BaseModel):
     projects: list[Project] = []
     certifications: list[Certification] = []
     languages: list[Language] = []
-    expertise: Optional[Expertise] = None
+    expertise: Expertise | None = None
     hobbies: list[str] = []
 
 
@@ -83,22 +82,23 @@ class EnhancedResumeData(BaseModel):
     projects: list[Project] = []
     certifications: list[Certification] = []
     languages: list[Language] = []
-    expertise: Optional[Expertise] = None
+    expertise: Expertise | None = None
     hobbies: list[str] = []
 
 
 class HTMLData(BaseModel):
     html: str
-    filename: Optional[str] = "Resume.pdf"
+    filename: str | None = "Resume.pdf"
 
 
 # ── Auth Schemas ──────────────────────────────────────────────────
 
+
 class UserRegister(BaseModel):
     email: str
     password: str
-    full_name: Optional[str] = ""
-    gemini_api_key: Optional[str] = None
+    full_name: str | None = ""
+    gemini_api_key: str | None = None
 
 
 class UserLogin(BaseModel):

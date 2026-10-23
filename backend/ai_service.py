@@ -1,9 +1,11 @@
-import os
 import json
-import asyncio
-from openai import AsyncOpenAI
+import os
+
 from dotenv import load_dotenv
-from schemas import ResumeData, EnhancedResumeData, PersonalInfo, Education, Experience, Skill, Project, Certification, Language
+from openai import AsyncOpenAI
+from schemas import (
+    ResumeData,
+)
 
 load_dotenv()
 
@@ -68,8 +70,8 @@ Rules for Completion:
 
 ATS_SYSTEM_PROMPT = "You are an expert ATS (Applicant Tracking System) parser and evaluator. Analyze the given resume text, identify the likely target industry or role, and provide an ATS score out of 100 based on formatting, action verbs, quantification, and standard sections. Also list keyword matches, missing keywords (general industry standards for what this resume seems to target), improvements, and a brief summary."
 
-PARSE_SYSTEM_PROMPT = """You are an expert resume parser. Given raw text extracted from a PDF resume, 
-parse and structure it into a clean JSON object. Be precise — extract EXACTLY what's written, 
+PARSE_SYSTEM_PROMPT = """You are an expert resume parser. Given raw text extracted from a PDF resume,
+parse and structure it into a clean JSON object. Be precise — extract EXACTLY what's written,
 don't embellish or add content that isn't present in the original text.
 
 Return JSON with these keys:
@@ -96,7 +98,7 @@ apply the requested changes and return the COMPLETE modified resume data.
 
 Rules:
 1. Apply ONLY the changes the user requested
-2. Keep all other data exactly as is  
+2. Keep all other data exactly as is
 3. Maintain the same JSON structure
 4. If the user asks to improve/enhance text, make it more professional and impactful
 5. If the user asks to add something, add it to the appropriate section
@@ -111,13 +113,14 @@ Rules:
 #  PUBLIC API FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════
 
+
 async def enhance_resume(data: ResumeData, api_key: str | None = None) -> dict:
     """Use AI to enhance resume content. Gemini if key provided, else Qwen."""
 
     resume_dict = data.model_dump()
     del resume_dict["template_id"]
 
-    prompt = f"""Enhance the following resume data. Improve descriptions, bullet points, and summary to be more professional and ATS-optimized. 
+    prompt = f"""Enhance the following resume data. Improve descriptions, bullet points, and summary to be more professional and ATS-optimized.
     ALSO, determine the best `layout_settings` based on how much content is present.
 
     Resume Data:
@@ -138,7 +141,7 @@ async def check_ats_score(resume_text: str, api_key: str | None = None) -> dict:
     prompt = f"""Evaluate this Resume:
 {resume_text}
 
-Return the analysis strictly as valid JSON with these keys: 
+Return the analysis strictly as valid JSON with these keys:
 - "score": integer (0-100)
 - "keyword_matches": list of strings (strong keywords found)
 - "missing_keywords": list of strings (important keywords missing for the implied role)
@@ -154,7 +157,7 @@ Return the analysis strictly as valid JSON with these keys:
             "keyword_matches": [],
             "missing_keywords": [],
             "improvements": ["Failed to analyze resume using AI service.", str(e)],
-            "summary": "Error analyzing resume."
+            "summary": "Error analyzing resume.",
         }
 
 
@@ -172,7 +175,16 @@ Return ONLY valid JSON matching the schema described. Do not wrap in markdown co
     except Exception as e:
         print(f"Resume parsing failed: {e}")
         return {
-            "personal_info": {"full_name": "", "title": "", "email": "", "phone": "", "location": "", "linkedin": "", "portfolio": "", "summary": ""},
+            "personal_info": {
+                "full_name": "",
+                "title": "",
+                "email": "",
+                "phone": "",
+                "location": "",
+                "linkedin": "",
+                "portfolio": "",
+                "summary": "",
+            },
             "education": [],
             "experience": [],
             "skills": [],
@@ -180,11 +192,13 @@ Return ONLY valid JSON matching the schema described. Do not wrap in markdown co
             "expertise": {"technical": [], "professional": []},
             "certifications": [],
             "languages": [],
-            "error": f"Failed to parse resume: {str(e)}"
+            "error": f"Failed to parse resume: {e!s}",
         }
 
 
-async def modify_resume_with_ai(resume_data: dict, instruction: str, api_key: str | None = None) -> dict:
+async def modify_resume_with_ai(
+    resume_data: dict, instruction: str, api_key: str | None = None
+) -> dict:
     """Apply natural language modifications to structured resume data."""
 
     prompt = f"""Current resume data:
@@ -200,5 +214,5 @@ Apply the requested changes and return the complete modified resume data as JSON
         print(f"Resume modification failed: {e}")
         return {
             "modified_data": resume_data,
-            "changes_summary": f"Modification failed. The AI service is currently unavailable."
+            "changes_summary": "Modification failed. The AI service is currently unavailable.",
         }

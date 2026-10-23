@@ -12,3 +12,5 @@ PyPDF2
 bcrypt
 PyJWT
 cryptography
+ruff
+pytest

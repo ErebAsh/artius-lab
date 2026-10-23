@@ -3,11 +3,12 @@ SQLite database module for Artius Lab.
 Uses aiosqlite for async operations with FastAPI.
 """
 
-import os
-import aiosqlite  # type: ignore[import-untyped]
 import json
+import os
 from datetime import datetime, timezone
 from typing import Any
+
+import aiosqlite  # type: ignore[import-untyped]
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
@@ -18,11 +19,13 @@ load_dotenv()
 _CRYPTO_KEY = os.getenv("ENCRYPTION_MASTER_KEY")
 _fernet = Fernet(_CRYPTO_KEY.encode()) if _CRYPTO_KEY else None
 
+
 def encrypt_data(data: str | None) -> str | None:
     """Encrypt a string using the master key."""
     if not data or not _fernet:
         return data
     return _fernet.encrypt(data.encode()).decode()
+
 
 def decrypt_data(data: str | None) -> str | None:
     """Decrypt a string using the master key."""
@@ -33,6 +36,7 @@ def decrypt_data(data: str | None) -> str | None:
     except Exception:
         # If decryption fails (e.g. key changed or data wasn't encrypted), return original
         return data
+
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "artius.db")
 
@@ -83,7 +87,9 @@ async def init_db() -> None:
 
         # ── Add user_id column if missing (migration for existing DBs) ──
         try:
-            await db.execute("ALTER TABLE resumes ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE")
+            await db.execute(
+                "ALTER TABLE resumes ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"
+            )
         except Exception:
             pass  # Column already exists
 
@@ -134,6 +140,7 @@ async def init_db() -> None:
 # ═══════════════════════════════════════════════════════════════════
 #  RESUME CRUD
 # ═══════════════════════════════════════════════════════════════════
+
 
 async def save_resume(
     title: str,
@@ -231,7 +238,9 @@ async def get_resume(resume_id: int) -> dict[str, Any] | None:
         await db.close()
 
 
-async def list_resumes(limit: int = 50, offset: int = 0, user_id: int | None = None) -> list[dict[str, Any]]:
+async def list_resumes(
+    limit: int = 50, offset: int = 0, user_id: int | None = None
+) -> list[dict[str, Any]]:
     """List saved resumes, newest first. Optionally filter by user_id."""
     db = await aiosqlite.connect(DB_PATH)
     db.row_factory = aiosqlite.Row
@@ -281,7 +290,10 @@ def _row_to_resume(row: Any) -> dict[str, Any]:
 #  ATS CHECK HISTORY
 # ═══════════════════════════════════════════════════════════════════
 
-async def save_ats_check(score: int, result_data: dict[str, Any], resume_id: int | None = None) -> int:
+
+async def save_ats_check(
+    score: int, result_data: dict[str, Any], resume_id: int | None = None
+) -> int:
     """Save an ATS check result. Returns the new check ID."""
     db = await aiosqlite.connect(DB_PATH)
     try:
@@ -327,6 +339,7 @@ async def list_ats_checks(limit: int = 20) -> list[dict[str, Any]]:
 #  ENHANCEMENT LOG
 # ═══════════════════════════════════════════════════════════════════
 
+
 async def save_enhancement_log(
     original_data: dict[str, Any], enhanced_data: dict[str, Any], resume_id: int | None = None
 ) -> int:
@@ -352,7 +365,10 @@ async def save_enhancement_log(
 #  USER CRUD
 # ═══════════════════════════════════════════════════════════════════
 
-async def create_user(email: str, password_hash: str, full_name: str = "", gemini_api_key: str | None = None) -> int:
+
+async def create_user(
+    email: str, password_hash: str, full_name: str = "", gemini_api_key: str | None = None
+) -> int:
     """Create a new user. Returns the new user ID."""
     db = await aiosqlite.connect(DB_PATH)
     try:
@@ -362,7 +378,14 @@ async def create_user(email: str, password_hash: str, full_name: str = "", gemin
             INSERT INTO users (email, password_hash, full_name, gemini_api_key, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (email.lower().strip(), password_hash, full_name.strip(), encrypt_data(gemini_api_key), now, now),
+            (
+                email.lower().strip(),
+                password_hash,
+                full_name.strip(),
+                encrypt_data(gemini_api_key),
+                now,
+                now,
+            ),
         )
         await db.commit()
         row_id: int = cursor.lastrowid  # type: ignore[assignment]
@@ -376,9 +399,7 @@ async def get_user_by_email(email: str) -> dict[str, Any] | None:
     db = await aiosqlite.connect(DB_PATH)
     db.row_factory = aiosqlite.Row
     try:
-        cursor = await db.execute(
-            "SELECT * FROM users WHERE email = ?", (email.lower().strip(),)
-        )
+        cursor = await db.execute("SELECT * FROM users WHERE email = ?", (email.lower().strip(),))
         row = await cursor.fetchone()
         if row is None:
             return None
@@ -439,6 +460,7 @@ async def update_user_api_key(user_id: int, api_key: str | None) -> bool:
 #  USER SETTINGS
 # ═══════════════════════════════════════════════════════════════════
 
+
 async def save_user_settings(user_id: int, settings_dict: dict[str, Any]) -> bool:
     """Save user UI settings. Upserts if they already exist."""
     db = await aiosqlite.connect(DB_PATH)
@@ -465,7 +487,9 @@ async def get_user_settings(user_id: int) -> dict[str, Any] | None:
     db = await aiosqlite.connect(DB_PATH)
     db.row_factory = aiosqlite.Row
     try:
-        cursor = await db.execute("SELECT settings_json FROM user_settings WHERE user_id = ?", (user_id,))
+        cursor = await db.execute(
+            "SELECT settings_json FROM user_settings WHERE user_id = ?", (user_id,)
+        )
         row = await cursor.fetchone()
         if row is None:
             return None

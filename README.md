@@ -173,6 +173,30 @@ artius-lab/
 
 <br>
 
+## 🧪 Testing & Quality Assurance
+
+Artius Lab includes an automated testing, compilation, and linting pipeline:
+
+```bash
+# 1. Full Build & CI Quality Assurance Pipeline
+python build_test.py
+# or
+python test.py --build
+
+# 2. Code Linting & Formatting with Ruff
+ruff check .               # Run linter
+ruff format --check .      # Verify code formatting
+ruff check . --fix         # Automatically fix lint issues
+ruff format .              # Automatically format code
+
+# 3. Universal Template Audit Suite
+python test.py             # Audit all 41 templates (dual-photo mode + LaTeX)
+python test.py --html      # Audit HTML templates only
+python test.py --latex     # Audit LaTeX templates only
+python test.py AL-001      # Test specific template
+python -m unittest discover tests  # Run unit test discovery
+```
+
 ## 🗺️ Inspiration Behind the Project
 
 When I was creating my resume for the first time, I got confused about the section format and what to write in each section. I also struggled to find a good free tool to create a simple resume. I found many tools, but they were either paid or had very limited free features. Free tools lacked automated summary and content enhancement features, while manual tools led to issues with grammar, punctuation, and formatting.

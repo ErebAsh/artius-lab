@@ -20,12 +20,11 @@ Usage:
   python -m unittest tests/test_latex_templates.py   # Standard unittest / CI discovery
 """
 
+import argparse
 import os
 import sys
-import io
-import argparse
 import unittest
-from typing import Dict, Any, List
+from typing import Any
 
 # Fix Windows console cp1252 encoding for Unicode/ANSI
 if sys.platform == "win32":
@@ -46,16 +45,22 @@ if BACKEND_DIR not in sys.path:
 if TESTS_DIR not in sys.path:
     sys.path.insert(0, TESTS_DIR)
 
-from mock_data import build_payload, MOCK_RESUME_DATA
+from mock_data import build_payload
 
 try:
-    from pdf_service import latex_env, generate_latex, has_latex_template
-    from templates import RESUME_TEMPLATES, get_template_by_id
+    from pdf_service import generate_latex, has_latex_template, latex_env
+    from templates import get_template_by_id
 except ImportError:
     latex_env = None
-    def generate_latex(d, tid): return ""
-    def has_latex_template(tid): return False
-    def get_template_by_id(tid): return None
+
+    def generate_latex(d, tid):
+        return ""
+
+    def has_latex_template(tid):
+        return False
+
+    def get_template_by_id(tid):
+        return None
 
 
 # ── Color Output Helpers ─────────────────────────────────────────────
@@ -70,13 +75,12 @@ class Colors:
 
 
 # ── Core Audit Function ──────────────────────────────────────────────
-def audit_latex_template(template_name: str) -> Dict[str, Any]:
+def audit_latex_template(template_name: str) -> dict[str, Any]:
     """Audit a single LaTeX template and return validation results."""
     template_id = template_name.replace(".tex", "")
-    template_path = os.path.join(LATEX_TEMPLATE_DIR, template_name)
 
     meta = get_template_by_id(template_id) or {}
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "template_id": template_id,
         "name": meta.get("name", template_id),
         "category": meta.get("category", "General"),
@@ -87,15 +91,15 @@ def audit_latex_template(template_name: str) -> Dict[str, Any]:
         "structure_valid": None,
         "errors": [],
         "warnings": [],
-        "passed": True
+        "passed": True,
     }
 
     # 1. Template Compilation / Parsing Test
     try:
-        tmpl = latex_env.get_template(template_name)
+        latex_env.get_template(template_name)
     except Exception as e:
         result["syntax_ok"] = False
-        result["errors"].append(f"LaTeX Jinja Syntax Error: {type(e).__name__}: {str(e)}")
+        result["errors"].append(f"LaTeX Jinja Syntax Error: {type(e).__name__}: {e!s}")
         result["passed"] = False
         result["status"] = "FAILED"
         return result
@@ -107,7 +111,7 @@ def audit_latex_template(template_name: str) -> Dict[str, Any]:
         result["render_pic_ok"] = True
     except Exception as e:
         result["render_pic_ok"] = False
-        result["errors"].append(f"Render [WITH PIC] failed: {type(e).__name__}: {str(e)}")
+        result["errors"].append(f"Render [WITH PIC] failed: {type(e).__name__}: {e!s}")
         result["passed"] = False
 
     # 3. Render Without Pictures
@@ -117,7 +121,7 @@ def audit_latex_template(template_name: str) -> Dict[str, Any]:
         result["render_nopic_ok"] = True
     except Exception as e:
         result["render_nopic_ok"] = False
-        result["errors"].append(f"Render [NO PIC] failed: {type(e).__name__}: {str(e)}")
+        result["errors"].append(f"Render [NO PIC] failed: {type(e).__name__}: {e!s}")
         result["passed"] = False
 
     # 4. Render with Special LaTeX Characters
@@ -127,14 +131,18 @@ def audit_latex_template(template_name: str) -> Dict[str, Any]:
         result["render_special_chars_ok"] = True
         # Verify unescaped raw '&' or '%' wasn't leaked directly into LaTeX command position
         if "Alice & Bob" in tex_special:
-            result["warnings"].append("Unescaped '&' found in LaTeX output! Character escaping might have failed.")
+            result["warnings"].append(
+                "Unescaped '&' found in LaTeX output! Character escaping might have failed."
+            )
     except Exception as e:
         result["render_special_chars_ok"] = False
-        result["errors"].append(f"Special chars render failed: {type(e).__name__}: {str(e)}")
+        result["errors"].append(f"Special chars render failed: {type(e).__name__}: {e!s}")
         result["passed"] = False
 
     # 5. LaTeX Document Structure Check
-    target_tex = tex_pic if result["render_pic_ok"] else (tex_nopic if result["render_nopic_ok"] else "")
+    target_tex = (
+        tex_pic if result["render_pic_ok"] else (tex_nopic if result["render_nopic_ok"] else "")
+    )
     if target_tex:
         has_doc_class = "\\documentclass" in target_tex
         has_begin_doc = "\\begin{document}" in target_tex
@@ -145,9 +153,12 @@ def audit_latex_template(template_name: str) -> Dict[str, Any]:
         else:
             result["structure_valid"] = False
             missing = []
-            if not has_doc_class: missing.append("\\documentclass")
-            if not has_begin_doc: missing.append("\\begin{document}")
-            if not has_end_doc: missing.append("\\end{document}")
+            if not has_doc_class:
+                missing.append("\\documentclass")
+            if not has_begin_doc:
+                missing.append("\\begin{document}")
+            if not has_end_doc:
+                missing.append("\\end{document}")
             result["warnings"].append(f"Missing standard LaTeX tags: {', '.join(missing)}")
 
     if not result["passed"] or len(result["errors"]) > 0:
@@ -161,20 +172,38 @@ def audit_latex_template(template_name: str) -> Dict[str, Any]:
 
 
 # ── Terminal Dashboard Renderer ──────────────────────────────────────
-def print_latex_dashboard(results: List[Dict[str, Any]]):
+def print_latex_dashboard(results: list[dict[str, Any]]):
     print("\n" + "=" * 80)
     print(f"{Colors.BOLD}  ARTIUS LAB — LATEX RESUME TEMPLATES AUDIT{Colors.RESET}")
     print("=" * 80)
-    print(f"{Colors.BOLD}{'ID':<8} {'Template Name':<28} {'Syntax':<10} {'With Pic':<10} {'No Pic':<10} {'Escaping':<10} {'Status':<8}{Colors.RESET}")
+    print(
+        f"{Colors.BOLD}{'ID':<8} {'Template Name':<28} {'Syntax':<10} {'With Pic':<10} {'No Pic':<10} {'Escaping':<10} {'Status':<8}{Colors.RESET}"
+    )
     print("-" * 80)
 
     for r in results:
         tid = r["template_id"]
         tname = (r["name"][:25] + "..") if len(r["name"]) > 27 else r["name"]
-        syntax_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["syntax_ok"] else f"{Colors.RED}FAIL{Colors.RESET}"
-        pic_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["render_pic_ok"] else f"{Colors.RED}FAIL{Colors.RESET}"
-        nopic_str = f"{Colors.GREEN}PASS{Colors.RESET}" if r["render_nopic_ok"] else f"{Colors.RED}FAIL{Colors.RESET}"
-        esc_str = f"{Colors.GREEN}SAFE{Colors.RESET}" if r["render_special_chars_ok"] else f"{Colors.RED}FAIL{Colors.RESET}"
+        syntax_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["syntax_ok"]
+            else f"{Colors.RED}FAIL{Colors.RESET}"
+        )
+        pic_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["render_pic_ok"]
+            else f"{Colors.RED}FAIL{Colors.RESET}"
+        )
+        nopic_str = (
+            f"{Colors.GREEN}PASS{Colors.RESET}"
+            if r["render_nopic_ok"]
+            else f"{Colors.RED}FAIL{Colors.RESET}"
+        )
+        esc_str = (
+            f"{Colors.GREEN}SAFE{Colors.RESET}"
+            if r["render_special_chars_ok"]
+            else f"{Colors.RED}FAIL{Colors.RESET}"
+        )
 
         if r["status"] == "PASSED":
             status_str = f"{Colors.GREEN}[WORKING]{Colors.RESET}"
@@ -183,13 +212,17 @@ def print_latex_dashboard(results: List[Dict[str, Any]]):
         else:
             status_str = f"{Colors.RED}[BROKEN]{Colors.RESET}"
 
-        print(f"{tid:<8} {tname:<28} {syntax_str:<19} {pic_str:<19} {nopic_str:<19} {esc_str:<19} {status_str}")
+        print(
+            f"{tid:<8} {tname:<28} {syntax_str:<19} {pic_str:<19} {nopic_str:<19} {esc_str:<19} {status_str}"
+        )
 
     print("-" * 80)
     passed = sum(1 for r in results if r["status"] == "PASSED")
     warned = sum(1 for r in results if r["status"] == "WARNING")
     failed = sum(1 for r in results if r["status"] == "FAILED")
-    print(f"{Colors.BOLD}LaTeX Templates: {len(results)} Total | {Colors.GREEN}{passed} Passed{Colors.RESET} | {Colors.YELLOW}{warned} Warnings{Colors.RESET} | {Colors.RED}{failed} Failed{Colors.RESET}\n")
+    print(
+        f"{Colors.BOLD}LaTeX Templates: {len(results)} Total | {Colors.GREEN}{passed} Passed{Colors.RESET} | {Colors.YELLOW}{warned} Warnings{Colors.RESET} | {Colors.RED}{failed} Failed{Colors.RESET}\n"
+    )
 
     if failed > 0:
         for r in results:
@@ -220,14 +253,18 @@ class TestLaTeXTemplates(unittest.TestCase):
         for t_file in self.templates:
             with self.subTest(template=t_file):
                 res = audit_latex_template(t_file)
-                self.assertTrue(res["render_special_chars_ok"], f"{t_file} failed on special character escaping")
+                self.assertTrue(
+                    res["render_special_chars_ok"], f"{t_file} failed on special character escaping"
+                )
 
 
 # ── CLI Runner ───────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="LaTeX Resume Template Test Suite")
     parser.add_argument("templates", nargs="*", help="Specific template IDs (e.g. AL-001 AL-015)")
-    parser.add_argument("--export", metavar="TEMPLATE_ID", help="Render and export .tex source to file")
+    parser.add_argument(
+        "--export", metavar="TEMPLATE_ID", help="Render and export .tex source to file"
+    )
 
     args = parser.parse_args()
 

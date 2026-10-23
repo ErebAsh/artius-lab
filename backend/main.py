@@ -1,33 +1,51 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
-from contextlib import asynccontextmanager
-from typing import Any, Optional
 import io
 import json
+from contextlib import asynccontextmanager
+from typing import Any
+
 import PyPDF2
-from schemas import ResumeData, HTMLData, UserRegister, UserLogin
-from templates import RESUME_TEMPLATES, get_template_by_id, get_all_templates
-from ai_service import enhance_resume, check_ats_score, parse_resume_text, modify_resume_with_ai
-from pdf_service import generate_pdf, generate_html, generate_pdf_from_html, generate_latex, has_latex_template
-from auth import hash_password, verify_password, create_access_token, get_current_user, get_optional_user
+from ai_service import (
+    check_ats_score,
+    enhance_resume,
+    modify_resume_with_ai,
+    parse_resume_text,
+)
+from auth import (
+    create_access_token,
+    get_current_user,
+    get_optional_user,
+    hash_password,
+    verify_password,
+)
 from database import (
-    init_db,
-    save_resume,
-    update_resume,
-    get_resume,
-    list_resumes,
-    delete_resume,
-    save_ats_check,
-    list_ats_checks,
-    save_enhancement_log,
     create_user,
+    delete_resume,
+    get_resume,
     get_user_by_email,
     get_user_by_id,
-    update_user_api_key,
-    save_user_settings,
     get_user_settings,
+    init_db,
+    list_ats_checks,
+    list_resumes,
+    save_ats_check,
+    save_enhancement_log,
+    save_resume,
+    save_user_settings,
+    update_resume,
+    update_user_api_key,
 )
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
+from pdf_service import (
+    generate_html,
+    generate_latex,
+    generate_pdf,
+    generate_pdf_from_html,
+    has_latex_template,
+)
+from schemas import HTMLData, ResumeData, UserLogin, UserRegister
+from templates import get_all_templates, get_template_by_id
 
 
 # ── App Lifecycle ──────────────────────────────────────────────────
@@ -58,6 +76,7 @@ app.add_middleware(
 # ═══════════════════════════════════════════════════════════════════
 #  AUTH ENDPOINTS
 # ═══════════════════════════════════════════════════════════════════
+
 
 @app.post("/api/auth/register")
 async def register(data: UserRegister):
@@ -147,6 +166,7 @@ async def _get_user_api_key(current_user: dict | None) -> str | None:
     """Fetch the user's Gemini API key if they are logged in and have one. (Disabled, always returns None)"""
     return None
 
+
 @app.get("/api/templates")
 def list_templates():
     """Return all available resume templates with has_photo auto-detection."""
@@ -168,7 +188,7 @@ def preview_template(template_id: str):
     template = get_template_by_id(template_id)
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
-        
+
     dummy_data = {
         "personal_info": {
             "full_name": "EMMA WATSON",
@@ -178,9 +198,8 @@ def preview_template(template_id: str):
             "location": "New York, USA",
             "linkedin": "linkedin.com/in/emmawatson",
             "portfolio": "emmawatson.dev",
-            "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience."
+            "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience.",
         },
-
         "experience": [
             {
                 "company": "Tech Solutions Inc.",
@@ -192,8 +211,8 @@ def preview_template(template_id: str):
                 "highlights": [
                     "Built full-stack applications using React and FastAPI.",
                     "Improved system performance by 30% through optimization.",
-                    "Collaborated with designers and product teams."
-                ]
+                    "Collaborated with designers and product teams.",
+                ],
             },
             {
                 "company": "Innovate Labs",
@@ -205,79 +224,63 @@ def preview_template(template_id: str):
                 "highlights": [
                     "Developed REST APIs using Python and Flask.",
                     "Integrated third-party services and APIs.",
-                    "Maintained code quality with unit testing."
-                ]
-            }
+                    "Maintained code quality with unit testing.",
+                ],
+            },
         ],
-
         "education": [
             {
                 "institution": "Stanford University",
                 "degree": "Bachelor of Science",
                 "field_of_study": "Computer Science",
                 "start_date": "2016",
-                "end_date": "2020"
+                "end_date": "2020",
             }
         ],
-
         "skills": [
             {"name": "Python"},
             {"name": "JavaScript"},
             {"name": "React"},
             {"name": "FastAPI"},
             {"name": "Docker"},
-            {"name": "Git"}
+            {"name": "Git"},
         ],
-
         "expertise": {
             "professional": [
                 "Leadership",
                 "Team Collaboration",
                 "Problem Solving",
-                "Agile Development"
+                "Agile Development",
             ],
             "technical": [
                 "Web Development",
                 "API Design",
                 "Database Management",
-                "Cloud Deployment"
-            ]
+                "Cloud Deployment",
+            ],
         },
-
         "certifications": [
-            {
-                "name": "AWS Certified Developer",
-                "issuer": "Amazon",
-                "year": "2023"
-            },
-            {
-                "name": "Full Stack Web Development",
-                "issuer": "Coursera",
-                "year": "2022"
-            }
+            {"name": "AWS Certified Developer", "issuer": "Amazon", "year": "2023"},
+            {"name": "Full Stack Web Development", "issuer": "Coursera", "year": "2022"},
         ],
         "projects": [
             {
                 "name": "AI Resume Builder",
                 "description": "An AI-powered platform using FastAPI and Next.js to generate optimized resumes and analyze ATS compatibility.",
-                "link": "github.com/emmawatson/resumebuilder"
+                "link": "github.com/emmawatson/resumebuilder",
             },
             {
                 "name": "E-commerce Microservices",
                 "description": "Designed a scalable e-commerce architecture using Docker and Kubernetes, resulting in 40% faster deployment cycles.",
-                "link": "github.com/emmawatson/ecommerce"
-            }
+                "link": "github.com/emmawatson/ecommerce",
+            },
         ],
-        "hobbies": [
-            "Photography",
-            "Hiking",
-            "Open Source Contributing",
-            "Digital Illustration"
-        ]
+        "hobbies": ["Photography", "Hiking", "Open Source Contributing", "Digital Illustration"],
     }
-    
+
     try:
         from pdf_service import generate_html
+
         html_content = generate_html(dummy_data, template_id)
         return Response(content=html_content, media_type="text/html")
     except Exception as e:
@@ -292,7 +295,9 @@ def preview_latex_template(template_id: str):
         raise HTTPException(status_code=404, detail="Template not found")
 
     if not has_latex_template(template_id):
-        raise HTTPException(status_code=404, detail="No LaTeX template available for this template.")
+        raise HTTPException(
+            status_code=404, detail="No LaTeX template available for this template."
+        )
 
     dummy_data = {
         "personal_info": {
@@ -303,7 +308,7 @@ def preview_latex_template(template_id: str):
             "location": "New York, USA",
             "linkedin": "linkedin.com/in/emmawatson",
             "portfolio": "emmawatson.dev",
-            "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience."
+            "summary": "Results-driven software engineer with 3+ years of experience building scalable web applications. Skilled in Python, React, and cloud technologies with a strong focus on performance and user experience.",
         },
         "experience": [
             {
@@ -316,8 +321,8 @@ def preview_latex_template(template_id: str):
                 "highlights": [
                     "Built full-stack applications using React and FastAPI.",
                     "Improved system performance by 30 percent through optimization.",
-                    "Collaborated with designers and product teams."
-                ]
+                    "Collaborated with designers and product teams.",
+                ],
             },
             {
                 "company": "Innovate Labs",
@@ -329,9 +334,9 @@ def preview_latex_template(template_id: str):
                 "highlights": [
                     "Developed REST APIs using Python and Flask.",
                     "Integrated third-party services and APIs.",
-                    "Maintained code quality with unit testing."
-                ]
-            }
+                    "Maintained code quality with unit testing.",
+                ],
+            },
         ],
         "education": [
             {
@@ -339,7 +344,7 @@ def preview_latex_template(template_id: str):
                 "degree": "Bachelor of Science",
                 "field_of_study": "Computer Science",
                 "start_date": "2016",
-                "end_date": "2020"
+                "end_date": "2020",
             }
         ],
         "skills": [
@@ -348,52 +353,39 @@ def preview_latex_template(template_id: str):
             {"name": "React"},
             {"name": "FastAPI"},
             {"name": "Docker"},
-            {"name": "Git"}
+            {"name": "Git"},
         ],
         "expertise": {
             "professional": [
                 "Leadership",
                 "Team Collaboration",
                 "Problem Solving",
-                "Agile Development"
+                "Agile Development",
             ],
             "technical": [
                 "Web Development",
                 "API Design",
                 "Database Management",
-                "Cloud Deployment"
-            ]
+                "Cloud Deployment",
+            ],
         },
         "certifications": [
-            {
-                "name": "AWS Certified Developer",
-                "issuer": "Amazon",
-                "year": "2023"
-            },
-            {
-                "name": "Full Stack Web Development",
-                "issuer": "Coursera",
-                "year": "2022"
-            }
+            {"name": "AWS Certified Developer", "issuer": "Amazon", "year": "2023"},
+            {"name": "Full Stack Web Development", "issuer": "Coursera", "year": "2022"},
         ],
         "projects": [
             {
                 "name": "AI Resume Builder",
                 "description": "An AI-powered platform using FastAPI and Next.js to generate optimized resumes and analyze ATS compatibility.",
-                "link": "github.com/emmawatson/resumebuilder"
+                "link": "github.com/emmawatson/resumebuilder",
             },
             {
                 "name": "E-commerce Microservices",
                 "description": "Designed a scalable e-commerce architecture using Docker and Kubernetes, resulting in 40 percent faster deployment cycles.",
-                "link": "github.com/emmawatson/ecommerce"
-            }
+                "link": "github.com/emmawatson/ecommerce",
+            },
         ],
-        "hobbies": [
-            "Photography",
-            "Hiking",
-            "Open Source Contributing",
-            "Digital Illustration"
-        ]
+        "hobbies": ["Photography", "Hiking", "Open Source Contributing", "Digital Illustration"],
     }
 
     try:
@@ -403,9 +395,8 @@ def preview_latex_template(template_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
-
 # ===================== AI ENDPOINTS =====================
+
 
 @app.post("/api/ai/enhance")
 async def ai_enhance(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
@@ -425,7 +416,9 @@ async def ai_enhance(data: ResumeData, current_user: dict | None = Depends(get_o
 
 
 @app.post("/api/generate")
-async def generate_resume_legacy(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
+async def generate_resume_legacy(
+    data: ResumeData, current_user: dict | None = Depends(get_optional_user)
+):
     """
     Legacy generation endpoint (direct to PDF).
     """
@@ -444,9 +437,13 @@ async def generate_resume_legacy(data: ResumeData, current_user: dict | None = D
     try:
         pdf_bytes = generate_pdf(enhanced_data, data.template_id, layout_settings)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e!s}")
 
-    name_slug = data.personal_info.full_name.strip().replace(" ", "_") if data.personal_info.full_name else "Candidate"
+    name_slug = (
+        data.personal_info.full_name.strip().replace(" ", "_")
+        if data.personal_info.full_name
+        else "Candidate"
+    )
     filename = f"{name_slug}_Resume.pdf"
 
     return Response(
@@ -459,22 +456,24 @@ async def generate_resume_legacy(data: ResumeData, current_user: dict | None = D
 
 
 @app.post("/api/ats/upload")
-async def ats_upload(file: UploadFile = File(...), current_user: dict | None = Depends(get_optional_user)):
+async def ats_upload(
+    file: UploadFile = File(...), current_user: dict | None = Depends(get_optional_user)
+):
     """
     Accept a PDF resume, parse text, and evaluate for ATS compatibility.
     """
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-    
+
     try:
         pdf_reader = PyPDF2.PdfReader(io.BytesIO(await file.read()))
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text() + "\n"
-        
+
         if not text.strip():
             raise HTTPException(status_code=400, detail="No readable text found in the PDF.")
-        
+
         # Call AI service for ATS score
         api_key = await _get_user_api_key(current_user)
         ats_result = await check_ats_score(text, api_key=api_key)
@@ -486,12 +485,13 @@ async def ats_upload(file: UploadFile = File(...), current_user: dict | None = D
         return ats_result
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
-
+        raise HTTPException(status_code=500, detail=f"Error processing document: {e!s}")
 
 
 @app.post("/api/generate/html")
-async def generate_resume_html(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
+async def generate_resume_html(
+    data: ResumeData, current_user: dict | None = Depends(get_optional_user)
+):
     """
     Accept resume data, enhance with AI, and generate HTML string.
     Returns the HTML content for preview.
@@ -508,16 +508,15 @@ async def generate_resume_html(data: ResumeData, current_user: dict | None = Dep
 
     try:
         html_content = generate_html(enhanced_data, data.template_id)
-        return {
-            "html": html_content,
-            "layout_settings": layout_settings
-        }
+        return {"html": html_content, "layout_settings": layout_settings}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"HTML generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"HTML generation failed: {e!s}")
 
 
 @app.post("/api/generate/latex")
-async def generate_resume_latex(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
+async def generate_resume_latex(
+    data: ResumeData, current_user: dict | None = Depends(get_optional_user)
+):
     """
     Accept resume data, enhance with AI, and generate LaTeX source.
     Returns the LaTeX source string for download or preview.
@@ -527,7 +526,9 @@ async def generate_resume_latex(data: ResumeData, current_user: dict | None = De
         raise HTTPException(status_code=404, detail="Template not found")
 
     if not has_latex_template(data.template_id):
-        raise HTTPException(status_code=404, detail="No LaTeX template available for this template.")
+        raise HTTPException(
+            status_code=404, detail="No LaTeX template available for this template."
+        )
 
     # AI-powered resume building/completion
     api_key = await _get_user_api_key(current_user)
@@ -541,7 +542,8 @@ async def generate_resume_latex(data: ResumeData, current_user: dict | None = De
             "template_id": data.template_id,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"LaTeX generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"LaTeX generation failed: {e!s}")
+
 
 @app.post("/api/generate/pdf")
 async def generate_resume_pdf(data: HTMLData):
@@ -552,7 +554,7 @@ async def generate_resume_pdf(data: HTMLData):
     try:
         pdf_bytes = generate_pdf_from_html(data.html)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e!s}")
 
     filename = data.filename.replace(" ", "_") if data.filename else "Resume.pdf"
 
@@ -567,47 +569,54 @@ async def generate_resume_pdf(data: HTMLData):
 
 # ===================== RESUME MODIFIER ENDPOINTS =====================
 
+
 @app.post("/api/resume/parse")
-async def parse_resume(file: UploadFile = File(...), current_user: dict | None = Depends(get_optional_user)):
+async def parse_resume(
+    file: UploadFile = File(...), current_user: dict | None = Depends(get_optional_user)
+):
     """
     Accept a PDF resume, parse text, and use AI to structure it into editable JSON.
     """
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-    
+
     contents = await file.read()
-    
+
     # File size limit (5MB)
     if len(contents) > 5 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File too large (max 5MB).")
-    
+
     try:
         pdf_reader = PyPDF2.PdfReader(io.BytesIO(contents))
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text() + "\n"
-        
+
         if not text.strip():
             raise HTTPException(status_code=400, detail="No readable text found in the PDF.")
-        
+
         # Use AI to parse into structured data
         api_key = await _get_user_api_key(current_user)
         parsed_data = await parse_resume_text(text, api_key=api_key)
-        
+
         return {
             "parsed_data": parsed_data,
             "raw_text": text.strip(),
-            "page_count": len(pdf_reader.pages)
+            "page_count": len(pdf_reader.pages),
         }
 
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing document: {e!s}")
 
 
 @app.post("/api/resume/modify")
-async def modify_resume(instruction: str = Form(...), resume_data: str = Form(...), current_user: dict | None = Depends(get_optional_user)):
+async def modify_resume(
+    instruction: str = Form(...),
+    resume_data: str = Form(...),
+    current_user: dict | None = Depends(get_optional_user),
+):
     """
     Accept structured resume data + a natural language instruction,
     and return the AI-modified resume data.
@@ -616,21 +625,22 @@ async def modify_resume(instruction: str = Form(...), resume_data: str = Form(..
         data = json.loads(resume_data)
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid resume data JSON.")
-    
+
     if not instruction.strip():
         raise HTTPException(status_code=400, detail="Instruction cannot be empty.")
-    
+
     try:
         api_key = await _get_user_api_key(current_user)
         result = await modify_resume_with_ai(data, instruction, api_key=api_key)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Modification failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Modification failed: {e!s}")
 
 
 # ═══════════════════════════════════════════════════════════════════
 #  SAVED RESUMES — CRUD ENDPOINTS
 # ═══════════════════════════════════════════════════════════════════
+
 
 @app.get("/api/resumes")
 async def api_list_resumes(
@@ -738,6 +748,7 @@ async def api_delete_resume(resume_id: int):
 #  ATS CHECK HISTORY
 # ═══════════════════════════════════════════════════════════════════
 
+
 @app.get("/api/ats/history")
 async def api_ats_history(limit: int = Query(20, ge=1, le=100)):
     """Get recent ATS check history."""
@@ -749,25 +760,20 @@ async def api_ats_history(limit: int = Query(20, ge=1, le=100)):
 #  USER UI SETTINGS
 # ═══════════════════════════════════════════════════════════════════
 
+
 @app.get("/api/user/settings")
 async def api_get_user_settings(current_user: dict = Depends(get_current_user)):
     """Fetch the authenticated user's UI preferences."""
-    from typing import Any
     settings = await get_user_settings(current_user["user_id"])
     if settings is None:
         # Return default settings
-        return {
-            "theme": "creamy",
-            "accentColor": "#10b981",
-            "showBackgroundOrbs": True
-        }
+        return {"theme": "creamy", "accentColor": "#10b981", "showBackgroundOrbs": True}
     return settings
 
 
 @app.post("/api/user/settings")
 async def api_save_user_settings(
-    settings: dict[str, Any],
-    current_user: dict = Depends(get_current_user)
+    settings: dict[str, Any], current_user: dict = Depends(get_current_user)
 ):
     """Save the authenticated user's UI preferences."""
     success = await save_user_settings(current_user["user_id"], settings)

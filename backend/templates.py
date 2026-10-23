@@ -1,45 +1,65 @@
 import os
-
-from typing import List, Dict, Any
+from typing import Any
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "resume_templates")
 LATEX_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "latex_templates")
 
-RESUME_TEMPLATES: List[Dict[str, Any]] = [
+RESUME_TEMPLATES: list[dict[str, Any]] = [
     {
         "id": "AL-001",
         "name": "Artius Lab - ATS Standard Pro",
         "description": "A high-scoring ATS-optimized template focusing on clarity and single-column structure. Ideal for technical and corporate roles.",
         "accent_color": "#000000",
-        "features": ["Single-column layout", "Maximum ATS readability", "Clean structure", "Professional typography", "Certifications Section"],
+        "features": [
+            "Single-column layout",
+            "Maximum ATS readability",
+            "Clean structure",
+            "Professional typography",
+            "Certifications Section",
+        ],
         "category": "Technical",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-002",
         "name": "Artius Lab - Modern Timeline Sidebar",
         "description": "A stylish two-column resume with a side panel for personal details and expertise, featuring a clean timeline for work history.",
         "accent_color": "#666666",
-        "features": ["Sidebar Layout", "Experience Timeline", "Modern Typography", "Premium Design"],
+        "features": [
+            "Sidebar Layout",
+            "Experience Timeline",
+            "Modern Typography",
+            "Premium Design",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-003",
         "name": "Artius Lab - Minimalist Serif",
         "description": "A sophisticated right-sidebar layout with high-end serif typography and a clean professional aesthetic.",
         "accent_color": "#4b5463",
-        "features": ["Right Sidebar", "Serif Typography", "Professional Layout", "Minimalist Style"],
-        "category": "Minimalist"
+        "features": [
+            "Right Sidebar",
+            "Serif Typography",
+            "Professional Layout",
+            "Minimalist Style",
+        ],
+        "category": "Minimalist",
     },
     {
-         "id": "AL-004",
+        "id": "AL-004",
         "name": "Artius Lab - Navy Gold Corporate",
         "description": "A sophisticated two-column template perfect for experienced professionals. Features a sharp navy header with gold typography, and clean multi-column sections.",
         "accent_color": "#1e2538",
-        "features": ["Two-column layout", "ATS-friendly", "Projects & Certifications", "Expertise Section"],
+        "features": [
+            "Two-column layout",
+            "ATS-friendly",
+            "Projects & Certifications",
+            "Expertise Section",
+        ],
         "category": "Professional",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-005",
@@ -47,16 +67,21 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "description": "A modern two-column template with a dark sidebar featuring a circular profile photo. Ideal for creative and marketing professionals.",
         "accent_color": "#3d4555",
         "features": ["Profile Photo", "Dark Sidebar", "Timeline Layout", "Creative Design"],
-        "category": "Creative"
+        "category": "Creative",
     },
     {
         "id": "AL-006",
         "name": "Artius Lab - Executive Pure White",
         "description": "A clean, minimalist template with a crisp white sidebar and sophisticated typography. Perfect for corporate and executive roles.",
         "accent_color": "#000000",
-        "features": ["White Sidebar", "Clean Divider", "Executive Typography", "Professional Layout"],
+        "features": [
+            "White Sidebar",
+            "Clean Divider",
+            "Executive Typography",
+            "Professional Layout",
+        ],
         "category": "Executive",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-007",
@@ -65,41 +90,63 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#333333",
         "features": ["Dark Sidebar", "Contrast Header", "Modern Skills Bar", "High Impact"],
         "category": "Creative",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-008",
         "name": "Artius Lab - Management Classic",
         "description": "A classic sidebar template with sophisticated section dividers and a clean professional aesthetic. Perfect for management and client-facing roles.",
         "accent_color": "#555555",
-        "features": ["Light Sidebar", "Section Dividers", "Modern Typography", "Professional Layout"],
-        "category": "Professional"
+        "features": [
+            "Light Sidebar",
+            "Section Dividers",
+            "Modern Typography",
+            "Professional Layout",
+        ],
+        "category": "Professional",
     },
     {
         "id": "AL-009",
         "name": "Artius Lab - Beige Architectural",
         "description": "A sophisticated palette of beige and charcoal with a bold header. Features a unique circular photo placement and structured expertise sections.",
         "accent_color": "#5a5a5a",
-        "features": ["Dual-tone Header", "Circular Photo", "Beige Sidebar", "Structured Content", "Projects Section"],
+        "features": [
+            "Dual-tone Header",
+            "Circular Photo",
+            "Beige Sidebar",
+            "Structured Content",
+            "Projects Section",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-010",
         "name": "Artius Lab - Designer Soft Pink",
         "description": "A clean, modern layout with soft pink accents and a strong focus on skills visualization. Ideal for designers and fashion industry professionals.",
         "accent_color": "#f3e1e1",
-        "features": ["Soft Pink Sidebar", "Skill Progress Bars", "Modular Grid Header", "Elegant Layout", "Projects Section"],
-        "category": "Creative"
+        "features": [
+            "Soft Pink Sidebar",
+            "Skill Progress Bars",
+            "Modular Grid Header",
+            "Elegant Layout",
+            "Projects Section",
+        ],
+        "category": "Creative",
     },
     {
         "id": "AL-011",
         "name": "Artius Lab - Technical Navy Focus",
         "description": "A powerful high-contrast design with a deep navy sidebar and timeline-based experience tracking. Perfect for technical leaders and engineers.",
         "accent_color": "#002d44",
-        "features": ["Navy Sidebar", "Timeline Experience", "Language Proficiency Bars", "Technical Focus"],
+        "features": [
+            "Navy Sidebar",
+            "Timeline Experience",
+            "Language Proficiency Bars",
+            "Technical Focus",
+        ],
         "category": "Technical",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-012",
@@ -108,79 +155,130 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#8cc8bc",
         "features": ["Overlapping Photo", "Numbered Timeline", "Sidebar Bullets", "Language Dots"],
         "category": "Professional",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-013",
         "name": "Artius Lab - Angular High Contrast",
         "description": "A bold, angular design with high-contrast yellow and black themes. Perfect for creative directors and forward-thinking professionals.",
         "accent_color": "#ffc107",
-        "features": ["Angular Design", "High Contrast", "Yellow Sidebar", "Modern Typography", "Projects Section"],
+        "features": [
+            "Angular Design",
+            "High Contrast",
+            "Yellow Sidebar",
+            "Modern Typography",
+            "Projects Section",
+        ],
         "category": "Creative",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-014",
         "name": "Artius Lab - Grayscale Structural",
         "description": "A sophisticated grayscale layout with a strong structural sidebar and integrated expertise sections. Great for designers and UI/UX specialists.",
         "accent_color": "#444444",
-        "features": ["Grayscale Theme", "Structural Sidebar", "Skill Progress Bars", "Enhanced Organization", "Full-width Sections", "Projects Section"],
+        "features": [
+            "Grayscale Theme",
+            "Structural Sidebar",
+            "Skill Progress Bars",
+            "Enhanced Organization",
+            "Full-width Sections",
+            "Projects Section",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-015",
         "name": "Artius Lab - Black Banner Executive",
         "description": "A high-impact black-banner design with a clean right sidebar and elegant serif typography. Ideal for managers and creative directors.",
         "accent_color": "#212121",
-        "features": ["Black Header Banner", "Right Sidebar", "Serif Typography", "Horizontal Skill Bars"],
+        "features": [
+            "Black Header Banner",
+            "Right Sidebar",
+            "Serif Typography",
+            "Horizontal Skill Bars",
+        ],
         "category": "Executive",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-016",
         "name": "Artius Lab - Hyper-Clean Minimalist",
         "description": "A minimalist, hyper-clean template with generous whitespace and subtle dividers. Perfect for modern, sleek professional profiles.",
         "accent_color": "#666666",
-        "features": ["Minimalist Design", "Clean Typography", "Subtle Dividers", "Whitespace Focused"],
+        "features": [
+            "Minimalist Design",
+            "Clean Typography",
+            "Subtle Dividers",
+            "Whitespace Focused",
+        ],
         "category": "Minimalist",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-017",
         "name": "Artius Lab - Purple Capsule Sidebar",
         "description": "A striking dual-column design with a deep purple theme and capsule-shaped white sidebar. Features a bold and modern layout for freshes and professionals.",
         "accent_color": "#4b2c5e",
-        "features": ["Deep Purple Theme", "Capsule Sidebar", "High Contrast", "Modern Icons", "Experience Section", "Projects Section"],
+        "features": [
+            "Deep Purple Theme",
+            "Capsule Sidebar",
+            "High Contrast",
+            "Modern Icons",
+            "Experience Section",
+            "Projects Section",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-018",
         "name": "Artius Lab - Blue Logic Blocks",
         "description": "A clean, contemporary layout with professional blue accent blocks and a strong emphasis on profile and skills. Ideal for tech and design roles.",
         "accent_color": "#283593",
-        "features": ["Blue Accent Blocks", "Bold Header", "Two-column Layout", "Modern Typography", "Projects Section"],
+        "features": [
+            "Blue Accent Blocks",
+            "Bold Header",
+            "Two-column Layout",
+            "Modern Typography",
+            "Projects Section",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-019",
         "name": "Artius Lab - Forest Green Angular",
         "description": "A forest green design with beige accents and sharp angular section dividers. Excellent for candidates looking for a unique, nature-inspired professional look.",
         "accent_color": "#1b431c",
-        "features": ["Forest Green Theme", "Beige Accents", "Angular Dividers", "Structured Profile", "Projects Section", "Experience Section", "Sidebar Education"],
+        "features": [
+            "Forest Green Theme",
+            "Beige Accents",
+            "Angular Dividers",
+            "Structured Profile",
+            "Projects Section",
+            "Experience Section",
+            "Sidebar Education",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-020",
         "name": "Artius Lab - Earth Tone Rounded",
         "description": "A warm, sophisticated template with earthy brown tones and rounded card layouts. Perfect for artisanal and service-oriented professionals.",
         "accent_color": "#9b846b",
-        "features": ["Earth Tones", "Rounded Layout", "Star Skill Ratings", "Elegant Cards", "Experience Section", "Projects Section"],
+        "features": [
+            "Earth Tones",
+            "Rounded Layout",
+            "Star Skill Ratings",
+            "Elegant Cards",
+            "Experience Section",
+            "Projects Section",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-021",
@@ -189,7 +287,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#e74c3c",
         "features": ["Hexagon Photo Frame", "Red Accents", "Rounded Sidebar", "High Contrast"],
         "category": "Creative",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-022",
@@ -198,16 +296,21 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#B35C1E",
         "features": ["Dark Sidebar", "Curved Header", "Vertical Section Headers", "Photo Support"],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-023",
         "name": "Artius Lab - Premium Dark Purple",
         "description": "A striking dark-themed template with purple accents, featuring a bold two-column layout, background typography, and structured projects. Ideal for tech leads and creative managers.",
         "accent_color": "#9d70ff",
-        "features": ["Dark Theme", "Purple Accents", "Simplified Skill Tags", "Dedicated Projects Section"],
+        "features": [
+            "Dark Theme",
+            "Purple Accents",
+            "Simplified Skill Tags",
+            "Dedicated Projects Section",
+        ],
         "category": "Minimalist",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-024",
@@ -216,7 +319,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#000000",
         "features": ["Centered Header", "Initials Badge", "Two-column Layout", "Circular Icons"],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-025",
@@ -225,7 +328,7 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#EAE3D9",
         "features": ["Horizontal Bands", "Script Typography", "Circular Photo", "Contrast Layout"],
         "category": "Creative",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-026",
@@ -234,16 +337,21 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#2c3e50",
         "features": ["Initials Badge", "Navy Header", "Circular Photo", "Skill Progress Dots"],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-027",
         "name": "Artius Lab - Overlapping Block Layout",
         "description": "A sophisticated cream and slate design with a unique overlapping square photo and strong architectural block structure.",
         "accent_color": "#625f68",
-        "features": ["Overlapping Photo", "Cream Sidebar", "Slate Header Block", "Expertise Bullets"],
+        "features": [
+            "Overlapping Photo",
+            "Cream Sidebar",
+            "Slate Header Block",
+            "Expertise Bullets",
+        ],
         "category": "Creative",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-028",
@@ -252,124 +360,195 @@ RESUME_TEMPLATES: List[Dict[str, Any]] = [
         "accent_color": "#3d3d3d",
         "features": ["Initials Badge", "Dual-tone Header", "Beige Sidebar", "Skill Progress Bars"],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-029",
         "name": "Artius Lab - Yellow Frame Contemporary",
         "description": "A bold contemporary layout with large typography and a unique yellow photo frame. Perfect for creative and modern professional profiles.",
         "accent_color": "#f7b42c",
-        "features": ["Yellow Photo Frame", "Large Typography", "Vertical Accent Bar", "Clean Footer"],
+        "features": [
+            "Yellow Photo Frame",
+            "Large Typography",
+            "Vertical Accent Bar",
+            "Clean Footer",
+        ],
         "category": "Creative",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-030",
         "name": "Artius Lab - Navy Gold Architectural",
         "description": "A premium two-column template with a dark navy sidebar and elegant gold accents. Features a clean architectural layout for high-level professionals.",
         "accent_color": "#b49e85",
-        "features": ["Dark Sidebar", "Gold Accents", "Architectural Layout", "Professional Typography"],
+        "features": [
+            "Dark Sidebar",
+            "Gold Accents",
+            "Architectural Layout",
+            "Professional Typography",
+        ],
         "category": "Executive",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-031",
         "name": "Artius Lab - Black Gold Serif",
         "description": "A sophisticated high-contrast template with a black sidebar and stunning gold serif typography. Features a circular profile photo and structured profile summary.",
         "accent_color": "#c59d5f",
-        "features": ["Black Sidebar", "Gold Name Branding", "Circular Photo", "Elegant Serif Typography"],
+        "features": [
+            "Black Sidebar",
+            "Gold Name Branding",
+            "Circular Photo",
+            "Elegant Serif Typography",
+        ],
         "category": "Executive",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-032",
         "name": "Artius Lab - Beige Minimalist Slash",
         "description": "A warm, modern template with a light beige sidebar and sharp minimalist typography. Features unique prefix-based headings and a clean structured layout.",
         "accent_color": "#e6d5c8",
-        "features": ["Beige Sidebar", "Minimalist Typography", "Slash Headings", "Circular Photo", "Education Section", "Skills Section", "Certifications Section"],
+        "features": [
+            "Beige Sidebar",
+            "Minimalist Typography",
+            "Slash Headings",
+            "Circular Photo",
+            "Education Section",
+            "Skills Section",
+            "Certifications Section",
+        ],
         "category": "Minimalist",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-033",
         "name": "Artius Lab - Dual-tone Modern Manager",
         "description": "An elegant template with a dual-tone header, beige accent line, and structured two-column content. Perfect for marketing and management roles.",
         "accent_color": "#c3b091",
-        "features": ["Dual-tone Header", "Beige Accent line", "Light Gray Sidebar", "Clean Grid Layout"],
+        "features": [
+            "Dual-tone Header",
+            "Beige Accent line",
+            "Light Gray Sidebar",
+            "Clean Grid Layout",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-034",
         "name": "Artius Lab - Cream Tan Sidebar",
         "description": "A sophisticated dual-tone template with a cream sidebar and elegant background-bar headers. Features a large circular photo and structured expertise sections.",
         "accent_color": "#c1a182",
-        "features": ["Cream Sidebar", "Background-bar Headers", "Circular Photo", "Structured Expertise"],
+        "features": [
+            "Cream Sidebar",
+            "Background-bar Headers",
+            "Circular Photo",
+            "Structured Expertise",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-035",
         "name": "Artius Lab - Deep Red Border Classic",
         "description": "A classic professional template with deep red top and bottom borders, featuring a clean two-column layout and elegant serif typography. Perfect for corporate and executive roles.",
         "accent_color": "#8B0000",
-        "features": ["Deep Red Borders", "Serif Typography", "Two-column Layout", "Professional Design"],
+        "features": [
+            "Deep Red Borders",
+            "Serif Typography",
+            "Two-column Layout",
+            "Professional Design",
+        ],
         "category": "Professional",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-036",
         "name": "Artius Lab - Lavender Bar Modern",
         "description": "A modern, sophisticated template with a unique lavender horizontal bar header and a clean structured layout. Ideal for administrative and management professionals.",
         "accent_color": "#E8EAF6",
-        "features": ["Lavender Header Bar", "Structured Side Panel", "Clean Layout", "Modern Typography"],
+        "features": [
+            "Lavender Header Bar",
+            "Structured Side Panel",
+            "Clean Layout",
+            "Modern Typography",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-037",
         "name": "Artius Lab - Neutral Grey Icon-Bar",
         "description": "A minimalist, hyper-clean template with a neutral grey theme and integrated contact icon bar. Features a structured multi-section layout for experienced professionals.",
         "accent_color": "#666666",
-        "features": ["Minimalist Grey Theme", "Contact Icon Bar", "Multi-section Sidebar", "Clean Architecture"],
+        "features": [
+            "Minimalist Grey Theme",
+            "Contact Icon Bar",
+            "Multi-section Sidebar",
+            "Clean Architecture",
+        ],
         "category": "Minimalist",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-038",
         "name": "Artius Lab - Horizontal Sidebar Bars",
         "description": "A sophisticated two-column template with a circular profile photo and thick horizontal sidebar bars. Designed for clear professional history tracking and skills breakdown.",
         "accent_color": "#ececec",
-        "features": ["Circular Profile Photo", "Horizontal Sidebar Bars", "Prefix-based Headings", "Dual-column Skills"],
+        "features": [
+            "Circular Profile Photo",
+            "Horizontal Sidebar Bars",
+            "Prefix-based Headings",
+            "Dual-column Skills",
+        ],
         "category": "Modern",
-        "has_latex": False
+        "has_latex": False,
     },
     {
         "id": "AL-039",
         "name": "Artius Lab - Geometric Network Pro",
         "description": "A premium professional template with a geometric network background, blue accent headers, and a structured sidebar. Features a bold blue name box and clean project-based layout.",
         "accent_color": "#3b6bb0",
-        "features": ["Geometric Pattern Header", "Blue Name Box", "Circular Profile Photo", "Accent Section Headers", "Projects Section"],
+        "features": [
+            "Geometric Pattern Header",
+            "Blue Name Box",
+            "Circular Profile Photo",
+            "Accent Section Headers",
+            "Projects Section",
+        ],
         "category": "Professional",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-040",
         "name": "Artius Lab - Teal Vertical Timeline",
         "description": "A sophisticated teal-themed template featuring a bold summary banner and vertical timeline connectors. Ideal for experienced leaders and managers.",
         "accent_color": "#1aa094",
-        "features": ["Teal Summary Banner", "Vertical Timeline", "Contact Icon Bar", "Two-column Structure", "Projects Section"],
+        "features": [
+            "Teal Summary Banner",
+            "Vertical Timeline",
+            "Contact Icon Bar",
+            "Two-column Structure",
+            "Projects Section",
+        ],
         "category": "Executive",
-        "has_latex": True
+        "has_latex": True,
     },
     {
         "id": "AL-041",
         "name": "Artius Lab - Soft Bubble Modern",
         "description": "A clean modern design featuring soft background orbs and a structured two-column timeline. Perfect for modern professionals seeking a tech-focused layout.",
         "accent_color": "#66cccc",
-        "features": ["Background Orbs", "Timeline Layout", "Modern Typography", "Two-column Structure", "Projects Section"],
+        "features": [
+            "Background Orbs",
+            "Timeline Layout",
+            "Modern Typography",
+            "Two-column Structure",
+            "Projects Section",
+        ],
         "category": "Modern",
-        "has_latex": True
+        "has_latex": True,
     },
 ]
 
@@ -378,7 +557,7 @@ def _detect_has_languages(template_id: str) -> bool:
     """Auto-detect whether a template HTML contains a section for languages."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             content = f.read()
         return "languages" in content or "<!-- has_languages -->" in content
     except FileNotFoundError:
@@ -389,13 +568,15 @@ def _detect_has_language_proficiency(template_id: str) -> bool:
     """Auto-detect whether a template HTML uses proficiency levels for languages."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             content = f.read()
         # Look for proficiency usage in jinja or specific markers
-        return (".proficiency" in content or 
-                "lang-fill" in content or 
-                "lang-bar" in content or 
-                "<!-- has_language_proficiency -->" in content)
+        return (
+            ".proficiency" in content
+            or "lang-fill" in content
+            or "lang-bar" in content
+            or "<!-- has_language_proficiency -->" in content
+        )
     except FileNotFoundError:
         return False
 
@@ -404,7 +585,7 @@ def _detect_has_photo(template_id: str) -> bool:
     """Auto-detect whether a template HTML contains the <!-- has_photo --> marker."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             content = f.read()
         return "<!-- has_photo -->" in content
     except FileNotFoundError:
@@ -415,9 +596,13 @@ def _detect_has_advanced_skills(template_id: str) -> bool:
     """Auto-detect whether a template HTML contains an expertise/advanced skills section."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             content = f.read()
-        return "expertise.technical" in content or "expertise.professional" in content or "<!-- has_advanced_skills -->" in content
+        return (
+            "expertise.technical" in content
+            or "expertise.professional" in content
+            or "<!-- has_advanced_skills -->" in content
+        )
     except FileNotFoundError:
         return False
 
@@ -426,7 +611,7 @@ def _detect_has_hobbies(template_id: str) -> bool:
     """Auto-detect whether a template HTML contains a section for hobbies."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             content = f.read()
         return "hobbies" in content or "<!-- has_hobbies -->" in content
     except FileNotFoundError:
@@ -437,7 +622,7 @@ def _detect_has_project_dates(template_id: str) -> bool:
     """Auto-detect whether a template HTML supports project start/end dates."""
     template_path = os.path.join(TEMPLATE_DIR, f"{template_id}.html")
     try:
-        with open(template_path, "r", encoding="utf-8") as f:
+        with open(template_path, encoding="utf-8") as f:
             content = f.read()
         return "project.start_date" in content or "<!-- has_project_dates -->" in content
     except FileNotFoundError:
@@ -448,13 +633,13 @@ def get_template_by_id(template_id: str):
     for t in RESUME_TEMPLATES:
         if t["id"] == template_id:
             return {
-                **t, 
+                **t,
                 "has_photo": _detect_has_photo(t["id"]),
                 "has_languages": _detect_has_languages(t["id"]),
                 "has_language_proficiency": _detect_has_language_proficiency(t["id"]),
                 "has_advanced_skills": _detect_has_advanced_skills(t["id"]),
                 "has_hobbies": _detect_has_hobbies(t["id"]),
-                "has_project_dates": _detect_has_project_dates(t["id"])
+                "has_project_dates": _detect_has_project_dates(t["id"]),
             }
     return None
 
@@ -463,13 +648,13 @@ def get_all_templates():
     """Return all templates with feature flags auto-detected."""
     return [
         {
-            **t, 
+            **t,
             "has_photo": _detect_has_photo(t["id"]),
             "has_languages": _detect_has_languages(t["id"]),
             "has_language_proficiency": _detect_has_language_proficiency(t["id"]),
             "has_advanced_skills": _detect_has_advanced_skills(t["id"]),
             "has_hobbies": _detect_has_hobbies(t["id"]),
-            "has_project_dates": _detect_has_project_dates(t["id"])
-        } 
+            "has_project_dates": _detect_has_project_dates(t["id"]),
+        }
         for t in RESUME_TEMPLATES
     ]
