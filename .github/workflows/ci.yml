@@ -63,7 +63,7 @@ jobs:
 
       - name: Install Frontend Dependencies
         working-directory: frontend
-        run: npm ci
+        run: npm install
 
       - name: Lint Next.js Frontend
         working-directory: frontend
