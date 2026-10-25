@@ -5,14 +5,27 @@ import { useAuth } from "../components/AuthProvider";
 
 export default function SettingsPage() {
   const { settings: globalSettings, updateSettings, resetToDefaults } = useTheme();
-  const { user, updateApiKey } = useAuth();
+  const { user, updateApiKey, updateProfile, changePassword, setShowAuthModal } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [personalApiKey, setPersonalApiKey] = useState("");
   const [apiKeyMessage, setApiKeyMessage] = useState("");
+
+  // Profile Form State
+  const [fullName, setFullName] = useState("");
+  const [contactNo, setContactNo] = useState("");
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileStatus, setProfileStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Security / Password State
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordStatus, setPasswordStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   const [settings, setSettings] = useState({
     ...globalSettings,
-    userName: "John Doe",
-    userEmail: "john.doe@example.com",
     density: "comfortable",
     glassBlur: 20,
     glassOpacity: 0.7,
@@ -29,7 +42,6 @@ export default function SettingsPage() {
   const [saveStatus, setSaveStatus] = useState("");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
-
   useEffect(() => {
     setMounted(true);
     // Initialize draft from global settings (which handles localStorage and DB)
@@ -38,6 +50,17 @@ export default function SettingsPage() {
       ...globalSettings 
     }));
   }, [globalSettings]);
+
+  // Sync profile fields from authenticated user
+  useEffect(() => {
+    if (user) {
+      setFullName(user.full_name || "");
+      setContactNo(user.contact_no || "");
+    } else {
+      setFullName("");
+      setContactNo("");
+    }
+  }, [user]);
 
   // Apply theme and colors globally
   useEffect(() => {
@@ -75,11 +98,80 @@ export default function SettingsPage() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
+  const handleSaveProfile = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!user) return;
+    if (!fullName.trim()) {
+      setProfileStatus({ type: "error", text: "Full name is required." });
+      return;
+    }
+    setProfileSaving(true);
+    setProfileStatus(null);
+    try {
+      await updateProfile({ full_name: fullName.trim(), contact_no: contactNo.trim() || undefined });
+      setProfileStatus({ type: "success", text: "Profile updated successfully!" });
+      setTimeout(() => setProfileStatus(null), 3500);
+    } catch (err: unknown) {
+      setProfileStatus({
+        type: "error",
+        text: err instanceof Error ? err.message : "Failed to update profile",
+      });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword) {
+      setPasswordStatus({ type: "error", text: "Current password is required." });
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordStatus({ type: "error", text: "New password must be at least 6 characters." });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordStatus({ type: "error", text: "New passwords do not match." });
+      return;
+    }
+    setPasswordSaving(true);
+    setPasswordStatus(null);
+    try {
+      await changePassword(currentPassword, newPassword);
+      setPasswordStatus({ type: "success", text: "Password changed successfully!" });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setTimeout(() => setPasswordStatus(null), 3500);
+    } catch (err: unknown) {
+      setPasswordStatus({
+        type: "error",
+        text: err instanceof Error ? err.message : "Failed to change password",
+      });
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
+  const handleSave = async () => {
     updateSettings(settings);
+
+    // Save profile if changed
+    if (user && (fullName.trim() !== (user.full_name || "") || contactNo.trim() !== (user.contact_no || ""))) {
+      if (fullName.trim()) {
+        try {
+          await updateProfile({ full_name: fullName.trim(), contact_no: contactNo.trim() || undefined });
+        } catch {
+          // Handled silently
+        }
+      }
+    }
+
     setSaveStatus("Settings saved successfully!");
     setTimeout(() => setSaveStatus(""), 3000);
   };
+
 
   if (!mounted) return null;
 
@@ -108,33 +200,230 @@ export default function SettingsPage() {
       <div className="animate-fade-in-up" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 32, animationDelay: "0.1s" }}>
         
         {/* Profile Section */}
-        <section className="glass" style={{ padding: 32, borderRadius: 20 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 24, display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: 24 }}>👤</span> Profile Settings
-          </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
-            <div>
-              <label className="input-label">Full Name</label>
-              <input 
-                type="text" 
-                className="input-field" 
-                value={settings.userName} 
-                onChange={(e) => handleChange("userName", e.target.value)}
-                placeholder="Ex. John Doe"
-              />
+        {user ? (
+          <section className="glass" style={{ padding: 32, borderRadius: 20 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", gap: 12, margin: 0 }}>
+                <span style={{ fontSize: 24 }}>👤</span> Account & Profile
+              </h2>
+              <span style={{
+                fontSize: 12,
+                padding: "4px 12px",
+                borderRadius: 12,
+                background: user.auth_provider === "google" ? "rgba(66, 133, 244, 0.15)" : "rgba(16, 185, 129, 0.15)",
+                color: user.auth_provider === "google" ? "#4285f4" : "#10b981",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: 6
+              }}>
+                {user.auth_provider === "google" ? "Google Account" : "Verified Email Account"}
+              </span>
             </div>
-            <div>
-              <label className="input-label">Email Address</label>
-              <input 
-                type="email" 
-                className="input-field" 
-                value={settings.userEmail} 
-                onChange={(e) => handleChange("userEmail", e.target.value)}
-                placeholder="Ex. john@example.com"
-              />
+
+            <form onSubmit={handleSaveProfile}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20, marginBottom: 24 }}>
+                <div>
+                  <label className="input-label">Full Name</label>
+                  <input 
+                    type="text" 
+                    className="input-field" 
+                    value={fullName} 
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Ex. Jane Doe"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="input-label">Contact Number (Optional)</label>
+                  <input 
+                    type="text" 
+                    className="input-field" 
+                    value={contactNo} 
+                    onChange={(e) => setContactNo(e.target.value)}
+                    placeholder="Ex. +1 (555) 000-0000"
+                  />
+                </div>
+                <div>
+                  <label className="input-label" style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>Email Address</span>
+                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Primary Identity</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    className="input-field" 
+                    value={user.email} 
+                    disabled
+                    style={{ opacity: 0.7, cursor: "not-allowed", backgroundColor: "rgba(255,255,255,0.03)" }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  {profileStatus && (
+                    <span style={{
+                      fontSize: 13,
+                      color: profileStatus.type === "success" ? "#10b981" : "#ef4444",
+                      fontWeight: 500
+                    }}>
+                      {profileStatus.type === "success" ? "✓ " : "⚠️ "} {profileStatus.text}
+                    </span>
+                  )}
+                </div>
+                <button 
+                  type="submit" 
+                  className="btn-primary" 
+                  style={{ padding: "8px 24px", fontSize: 14 }}
+                  disabled={profileSaving}
+                >
+                  {profileSaving ? "Saving..." : "Save Profile"}
+                </button>
+              </div>
+            </form>
+
+            {/* Security / Password section for local auth accounts */}
+            {user.auth_provider === "local" && (
+              <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid var(--border)" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordSection(!showPasswordSection)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "var(--accent-light)",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: 0
+                  }}
+                >
+                  <span>🔒 Security & Password</span>
+                  <span style={{ fontSize: 12 }}>{showPasswordSection ? "▲ Hide" : "▼ Change Password"}</span>
+                </button>
+
+                {showPasswordSection && (
+                  <form onSubmit={handleChangePassword} style={{ marginTop: 16 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 16 }}>
+                      <div>
+                        <label className="input-label">Current Password</label>
+                        <input
+                          type="password"
+                          className="input-field"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="input-label">New Password (min 6 chars)</label>
+                        <input
+                          type="password"
+                          className="input-field"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="input-label">Confirm New Password</label>
+                        <input
+                          type="password"
+                          className="input-field"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                      <div>
+                        {passwordStatus && (
+                          <span style={{
+                            fontSize: 13,
+                            color: passwordStatus.type === "success" ? "#10b981" : "#ef4444",
+                            fontWeight: 500
+                          }}>
+                            {passwordStatus.type === "success" ? "✓ " : "⚠️ "} {passwordStatus.text}
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="submit"
+                        className="btn-secondary"
+                        style={{ padding: "8px 20px", fontSize: 13 }}
+                        disabled={passwordSaving}
+                      >
+                        {passwordSaving ? "Updating..." : "Update Password"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+          </section>
+        ) : (
+          <section className="glass" style={{ padding: 32, borderRadius: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "flex-start" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "rgba(99, 102, 241, 0.15)",
+                  border: "1px solid var(--accent)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 22
+                }}>
+                  👤
+                </div>
+                <div>
+                  <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "var(--foreground)" }}>
+                    Account & Profile Settings
+                  </h2>
+                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                    You are currently browsing as a Guest
+                  </span>
+                </div>
+              </div>
+
+              <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6, maxWidth: 650, margin: 0 }}>
+                Sign in or create a free account to personalize your profile, securely sync your resume preferences across devices, and manage your personal Groq API key.
+              </p>
+
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", margin: "4px 0 8px" }}>
+                <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)" }}>
+                  ✓ Profile Identity
+                </span>
+                <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)" }}>
+                  ✓ Cloud Sync Across Devices
+                </span>
+                <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)" }}>
+                  ✓ Personal Groq API Key
+                </span>
+              </div>
+
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => setShowAuthModal(true)}
+                style={{ padding: "10px 24px", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}
+              >
+                <span>Sign In / Create Account</span>
+                <span>→</span>
+              </button>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Preferences Section */}
         <section className="glass" style={{ padding: 32, borderRadius: 20 }}>
@@ -490,7 +779,7 @@ export default function SettingsPage() {
             </div>
 
             <div style={{ padding: "16px 0", borderTop: "1px solid var(--border)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
                 <div>
                   <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>AI Engine</h3>
                   <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Groq Cloud LPU • Qwen 27B (Default)</p>
@@ -499,14 +788,14 @@ export default function SettingsPage() {
                   fontSize: 12,
                   padding: "4px 10px",
                   borderRadius: 12,
-                  background: "rgba(16, 185, 129, 0.15)",
-                  color: "#10b981",
+                  background: user?.has_api_key ? "rgba(16, 185, 129, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                  color: user?.has_api_key ? "#10b981" : "var(--text-muted)",
                   fontWeight: 600
                 }}>
-                  {user?.has_api_key ? "Custom Key Active" : "Server Free Tier"}
+                  {user ? (user.has_api_key ? "Custom Key Active" : "Server Free Tier") : "Sign in to activate"}
                 </span>
               </div>
-              {user && (
+              {user ? (
                 <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                   <input
                     type="password"
@@ -532,6 +821,20 @@ export default function SettingsPage() {
                     style={{ whiteSpace: "nowrap" }}
                   >
                     Save Key
+                  </button>
+                </div>
+              ) : (
+                <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+                  <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>
+                    Sign in to connect your own Groq API key for dedicated inference quota.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => setShowAuthModal(true)}
+                    style={{ padding: "6px 14px", fontSize: 13 }}
+                  >
+                    Sign In
                   </button>
                 </div>
               )}

@@ -42,6 +42,7 @@ try:
         delete_resume,
         get_or_create_oauth_user,
         get_resume,
+        get_user_auth_by_id,
         get_user_by_email,
         get_user_by_id,
         get_user_settings,
@@ -54,6 +55,8 @@ try:
         save_user_settings,
         update_resume,
         update_user_api_key,
+        update_user_password,
+        update_user_profile,
     )
     from backend.pdf_service import (
         generate_html,
@@ -62,7 +65,15 @@ try:
         generate_pdf_from_html,
         has_latex_template,
     )
-    from backend.schemas import GoogleAuthRequest, HTMLData, ResumeData, UserLogin, UserRegister
+    from backend.schemas import (
+        GoogleAuthRequest,
+        HTMLData,
+        PasswordChangeRequest,
+        ProfileUpdateRequest,
+        ResumeData,
+        UserLogin,
+        UserRegister,
+    )
     from backend.templates import get_all_templates, get_template_by_id
 except ImportError:
     from ai_service import (
@@ -83,6 +94,7 @@ except ImportError:
         delete_resume,
         get_or_create_oauth_user,
         get_resume,
+        get_user_auth_by_id,
         get_user_by_email,
         get_user_by_id,
         get_user_settings,
@@ -95,6 +107,8 @@ except ImportError:
         save_user_settings,
         update_resume,
         update_user_api_key,
+        update_user_password,
+        update_user_profile,
     )
     from pdf_service import (
         generate_html,
@@ -103,7 +117,15 @@ except ImportError:
         generate_pdf_from_html,
         has_latex_template,
     )
-    from schemas import GoogleAuthRequest, HTMLData, ResumeData, UserLogin, UserRegister
+    from schemas import (
+        GoogleAuthRequest,
+        HTMLData,
+        PasswordChangeRequest,
+        ProfileUpdateRequest,
+        ResumeData,
+        UserLogin,
+        UserRegister,
+    )
     from templates import get_all_templates, get_template_by_id
 
 
@@ -261,6 +283,74 @@ async def update_api_key_endpoint(
     """Update the authenticated user's Groq API key."""
     await update_user_api_key(current_user["user_id"], api_key)
     return {"message": "API key updated.", "has_api_key": bool(api_key and api_key.strip())}
+
+
+@app.put("/api/auth/profile")
+async def update_profile(
+    body: ProfileUpdateRequest,
+    current_user: dict = Depends(get_current_user),
+):
+    """Update authenticated user's profile details (full_name, contact_no)."""
+    if not body.full_name or not body.full_name.strip():
+        raise HTTPException(status_code=400, detail="Full name is required.")
+
+    success = await update_user_profile(
+        user_id=current_user["user_id"],
+        full_name=body.full_name,
+        contact_no=body.contact_no,
+    )
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to update profile.")
+
+    # Return updated user matching /api/auth/me structure
+    user = await get_user_by_id(current_user["user_id"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    has_key = bool(user.get("groq_api_key") or user.get("gemini_api_key") or user.get("api_key"))
+    return {
+        "message": "Profile updated successfully.",
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "full_name": user["full_name"],
+            "contact_no": user.get("contact_no"),
+            "avatar_url": user.get("avatar_url"),
+            "auth_provider": user.get("auth_provider", "local"),
+            "has_api_key": has_key,
+            "created_at": user["created_at"],
+        },
+    }
+
+
+@app.put("/api/auth/change-password")
+async def change_password(
+    body: PasswordChangeRequest,
+    current_user: dict = Depends(get_current_user),
+):
+    """Change authenticated user's password for local accounts."""
+    user_auth = await get_user_auth_by_id(current_user["user_id"])
+    if not user_auth:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    if user_auth.get("auth_provider") == "google":
+        raise HTTPException(
+            status_code=400,
+            detail="Accounts created with Google cannot set or change passwords here.",
+        )
+
+    current_hash = user_auth.get("password_hash")
+    if not current_hash or not verify_password(body.current_password, current_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect.")
+
+    if len(body.new_password) < 6:
+        raise HTTPException(status_code=400, detail="New password must be at least 6 characters.")
+
+    new_hash = hash_password(body.new_password)
+    success = await update_user_password(current_user["user_id"], new_hash)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to update password.")
+
+    return {"message": "Password changed successfully."}
 
 
 # ── Helper: Get user's API key from DB ────────────────────────────

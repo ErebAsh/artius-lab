@@ -25,6 +25,8 @@ interface AuthContextType {
   ) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   updateApiKey: (apiKey: string | null) => Promise<void>;
+  updateProfile: (profile: { full_name: string; contact_no?: string }) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   logout: () => void;
   showAuthModal: boolean;
   setShowAuthModal: (show: boolean) => void;
@@ -40,6 +42,8 @@ const AuthContext = createContext<AuthContextType>({
   register: async () => {},
   loginWithGoogle: async () => {},
   updateApiKey: async () => {},
+  updateProfile: async () => {},
+  changePassword: async () => {},
   logout: () => {},
   showAuthModal: false,
   setShowAuthModal: () => {},
@@ -200,6 +204,62 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     });
   }, [token]);
 
+  const updateProfile = useCallback(
+    async (profile: { full_name: string; contact_no?: string }) => {
+      const currentToken = token || localStorage.getItem("artius_token");
+      if (!currentToken) throw new Error("Authentication required");
+
+      const res = await fetch("/api/auth/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${currentToken}`,
+        },
+        body: JSON.stringify({
+          full_name: profile.full_name.trim(),
+          contact_no: profile.contact_no?.trim() || null,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Failed to update profile" }));
+        throw new Error(err.detail || "Failed to update profile");
+      }
+
+      const data = await res.json();
+      if (data.user) {
+        setUser(data.user);
+        localStorage.setItem("artius_user", JSON.stringify(data.user));
+      }
+    },
+    [token]
+  );
+
+  const changePassword = useCallback(
+    async (currentPassword: string, newPassword: string) => {
+      const currentToken = token || localStorage.getItem("artius_token");
+      if (!currentToken) throw new Error("Authentication required");
+
+      const res = await fetch("/api/auth/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${currentToken}`,
+        },
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Failed to change password" }));
+        throw new Error(err.detail || "Failed to change password");
+      }
+    },
+    [token]
+  );
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
@@ -223,6 +283,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         register,
         loginWithGoogle,
         updateApiKey,
+        updateProfile,
+        changePassword,
         logout,
         showAuthModal,
         setShowAuthModal,

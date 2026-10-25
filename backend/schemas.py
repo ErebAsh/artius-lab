@@ -114,3 +114,13 @@ class GoogleAuthRequest(BaseModel):
     avatar_url: str | None = None
     contact_no: str | None = None
     sub: str | None = None
+
+
+class ProfileUpdateRequest(BaseModel):
+    full_name: str
+    contact_no: str | None = None
+
+
+class PasswordChangeRequest(BaseModel):
+    current_password: str
+    new_password: str

@@ -524,6 +524,57 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
         await db.close()
 
 
+async def get_user_auth_by_id(user_id: int) -> dict[str, Any] | None:
+    """Find a user by ID including password_hash for authentication/password verification."""
+    db = await aiosqlite.connect(DB_PATH)
+    db.row_factory = aiosqlite.Row
+    try:
+        cursor = await db.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        row = await cursor.fetchone()
+        if row is None:
+            return None
+        return dict(row)
+    finally:
+        await db.close()
+
+
+async def update_user_profile(
+    user_id: int,
+    full_name: str,
+    contact_no: str | None = None,
+) -> bool:
+    """Update a user's full name and contact number."""
+    db = await aiosqlite.connect(DB_PATH)
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        cursor = await db.execute(
+            "UPDATE users SET full_name = ?, contact_no = ?, updated_at = ? WHERE id = ?",
+            (full_name.strip(), contact_no.strip() if contact_no else None, now, user_id),
+        )
+        await db.commit()
+        return cursor.rowcount > 0
+    finally:
+        await db.close()
+
+
+async def update_user_password(
+    user_id: int,
+    new_password_hash: str,
+) -> bool:
+    """Update a user's password hash."""
+    db = await aiosqlite.connect(DB_PATH)
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        cursor = await db.execute(
+            "UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?",
+            (new_password_hash, now, user_id),
+        )
+        await db.commit()
+        return cursor.rowcount > 0
+    finally:
+        await db.close()
+
+
 async def update_user_api_key(user_id: int, api_key: str | None) -> bool:
     """Update a user's Groq API key."""
     db = await aiosqlite.connect(DB_PATH)

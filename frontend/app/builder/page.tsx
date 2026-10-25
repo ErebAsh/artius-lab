@@ -283,8 +283,27 @@ function BuilderContent() {
       const rd = data.resume_data;
 
       if (rd.personal_info) setPersonal((prev: typeof personal) => ({ ...prev, ...rd.personal_info }));
-      if (rd.education?.length) setEducation(rd.education);
-      if (rd.experience?.length) setExperience(rd.experience);
+      if (rd.education?.length) {
+        setEducation(rd.education.map((e: Partial<Education>) => ({
+          institution: e.institution || "",
+          degree: e.degree || "",
+          field_of_study: e.field_of_study || "",
+          start_date: e.start_date || "",
+          end_date: e.end_date || "",
+          gpa: e.gpa || "",
+          achievements: e.achievements || "",
+        })));
+      }
+      if (rd.experience?.length) {
+        setExperience(rd.experience.map((e: Partial<Experience>) => ({
+          company: e.company || "",
+          title: e.title || "",
+          start_date: e.start_date || "",
+          end_date: e.end_date || "",
+          description: e.description || "",
+          highlights: Array.isArray(e.highlights) ? e.highlights : [""],
+        })));
+      }
       if (rd.skills?.length) setSkills(rd.skills);
       if (rd.projects?.length) setProjects(rd.projects);
       if (rd.certifications?.length) setCertifications(rd.certifications);
@@ -318,6 +337,86 @@ function BuilderContent() {
     if (resumeId) loadResumeFromDB(resumeId);
   }, [resumeId, loadResumeFromDB]);
 
+  // ── Clean & Safe Resume Data Builder ──
+  const buildCleanResumeData = useCallback(() => {
+    return {
+      template_id: templateId,
+      personal_info: personal,
+      education: (education || [])
+        .filter((e) => Boolean(e?.institution && typeof e.institution === "string" && e.institution.trim() !== ""))
+        .map((e) => ({
+          ...e,
+          institution: (e.institution || "").trim(),
+          degree: (e.degree || "").trim(),
+          field_of_study: (e.field_of_study || "").trim(),
+          start_date: (e.start_date || "").trim(),
+          end_date: (e.end_date || "").trim(),
+          gpa: (e.gpa || "").trim(),
+          achievements: (e.achievements || "").trim(),
+        })),
+      experience: (experience || [])
+        .filter((e) => Boolean(e?.company && typeof e.company === "string" && e.company.trim() !== ""))
+        .map((e) => ({
+          ...e,
+          company: (e.company || "").trim(),
+          title: (e.title || "").trim(),
+          start_date: (e.start_date || "").trim(),
+          end_date: (e.end_date || "").trim(),
+          description: (e.description || "").trim(),
+          highlights: Array.isArray(e.highlights)
+            ? e.highlights.filter((h) => typeof h === "string" && h.trim() !== "").map((h) => h.trim())
+            : [],
+        })),
+      skills: (skills || [])
+        .filter((s) => Boolean(s?.name && typeof s.name === "string" && s.name.trim() !== ""))
+        .map((s) => ({
+          ...s,
+          name: (s.name || "").trim(),
+          level: (s.level || "Intermediate").trim(),
+        })),
+      projects: (projects || [])
+        .filter((p) => Boolean(p?.name && typeof p.name === "string" && p.name.trim() !== ""))
+        .map((p) => ({
+          ...p,
+          name: (p.name || "").trim(),
+          description: (p.description || "").trim(),
+          link: (p.link || "").trim(),
+          technologies: Array.isArray(p.technologies)
+            ? p.technologies.filter((t) => typeof t === "string" && t.trim() !== "").map((t) => t.trim())
+            : [],
+        })),
+      certifications: (certifications || [])
+        .filter((c) => Boolean(c?.name && typeof c.name === "string" && c.name.trim() !== ""))
+        .map((c) => ({
+          ...c,
+          name: (c.name || "").trim(),
+          issuer: (c.issuer || "").trim(),
+          year: (c.year || "").trim(),
+          date: (c.date || "").trim(),
+        })),
+      languages: (languages || [])
+        .filter((l) => Boolean(l?.name && typeof l.name === "string" && l.name.trim() !== ""))
+        .map((l) => ({
+          ...l,
+          name: (l.name || "").trim(),
+          proficiency: (l.proficiency || "Native").trim(),
+        })),
+      hobbies: hobbies?.enabled && Array.isArray(hobbies.list)
+        ? hobbies.list.filter((h) => typeof h === "string" && h.trim() !== "").map((h) => h.trim())
+        : [],
+      expertise: expertise?.enabled
+        ? {
+            technical: Array.isArray(expertise.technical)
+              ? expertise.technical.filter((t) => typeof t === "string" && t.trim() !== "").map((t) => t.trim())
+              : [],
+            professional: Array.isArray(expertise.professional)
+              ? expertise.professional.filter((p) => typeof p === "string" && p.trim() !== "").map((p) => p.trim())
+              : [],
+          }
+        : null,
+    };
+  }, [templateId, personal, education, experience, skills, projects, certifications, languages, hobbies, expertise]);
+
   // ── Save / Update resume draft ──
   const handleSaveDraft = useCallback(async (isAutoSave = false) => {
     // Gate: require login to save
@@ -331,26 +430,8 @@ function BuilderContent() {
     setSaveMessage("");
     setError("");
 
-    const resumeData = {
-      personal_info: personal,
-      education: education.filter((e) => e.institution.trim() !== ""),
-      experience: experience
-        .filter((e) => e.company.trim() !== "")
-        .map(e => ({ ...e, highlights: e.highlights.filter(h => h.trim() !== "") })),
-      skills: skills.filter((s) => s.name.trim() !== ""),
-      projects: projects
-        .filter((p) => p.name.trim() !== "")
-        .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
-      certifications: certifications.filter((c) => c.name.trim() !== ""),
-      languages: languages.filter((l) => l.name.trim() !== ""),
-      hobbies: hobbies.enabled ? hobbies.list.filter(h => h.trim() !== "") : [],
-      expertise: expertise.enabled ? {
-        technical: expertise.technical.filter(t => t.trim() !== ""),
-        professional: expertise.professional.filter(p => p.trim() !== "")
-      } : null
-    };
-
-    const title = personal.full_name.trim() || "Untitled Resume";
+    const resumeData = buildCleanResumeData();
+    const title = (personal?.full_name || "").trim() || "Untitled Resume";
 
     try {
       const formData = new FormData();
@@ -390,14 +471,19 @@ function BuilderContent() {
     } finally {
       setSaving(false);
     }
-  }, [requireAuth, token, personal, education, experience, skills, projects, expertise, certifications, languages, hobbies, templateId, layout, resumeId]);
+  }, [requireAuth, token, buildCleanResumeData, personal, templateId, layout, resumeId]);
 
   // Auto-save effect
   useEffect(() => {
     if (!token || generating || enhancing) return;
     
     // Check if there is at least some data to save
-    const hasData = personal.full_name || personal.email || education[0].institution || experience[0].company;
+    const hasData = Boolean(
+      personal?.full_name?.trim() ||
+      personal?.email?.trim() ||
+      education?.[0]?.institution?.trim() ||
+      experience?.[0]?.company?.trim()
+    );
     if (!hasData) return;
 
     const timer = setTimeout(() => {
@@ -411,25 +497,7 @@ function BuilderContent() {
     setEnhancing(true);
     setError("");
 
-    const resumeData = {
-      template_id: templateId,
-      personal_info: personal,
-      education: education.filter((e) => e.institution.trim() !== ""),
-      experience: experience
-        .filter((e) => e.company.trim() !== "")
-        .map(e => ({ ...e, highlights: e.highlights.filter(h => h.trim() !== "") })),
-      skills: skills.filter((s) => s.name.trim() !== ""),
-      projects: projects
-        .filter((p) => p.name.trim() !== "")
-        .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
-      certifications: certifications.filter((c) => c.name.trim() !== ""),
-      languages: languages.filter((l) => l.name.trim() !== ""),
-      hobbies: hobbies.enabled ? hobbies.list.filter(h => h.trim() !== "") : [],
-      expertise: expertise.enabled ? {
-        technical: expertise.technical.filter(t => t.trim() !== ""),
-        professional: expertise.professional.filter(p => p.trim() !== "")
-      } : null
-    };
+    const resumeData = buildCleanResumeData();
 
     try {
       const res = await fetch(`${API_BASE}/api/ai/enhance`, {
@@ -451,10 +519,25 @@ function BuilderContent() {
         setPersonal((prev) => ({ ...prev, ...enhanced.personal_info }));
       }
       if (enhanced.education && enhanced.education.length > 0) {
-        setEducation(enhanced.education);
+        setEducation(enhanced.education.map((e: Partial<Education>) => ({
+          institution: e.institution || "",
+          degree: e.degree || "",
+          field_of_study: e.field_of_study || "",
+          start_date: e.start_date || "",
+          end_date: e.end_date || "",
+          gpa: e.gpa || "",
+          achievements: e.achievements || "",
+        })));
       }
       if (enhanced.experience && enhanced.experience.length > 0) {
-        setExperience(enhanced.experience);
+        setExperience(enhanced.experience.map((e: Partial<Experience>) => ({
+          company: e.company || "",
+          title: e.title || "",
+          start_date: e.start_date || "",
+          end_date: e.end_date || "",
+          description: e.description || "",
+          highlights: Array.isArray(e.highlights) ? e.highlights : [""],
+        })));
       }
       if (enhanced.skills && enhanced.skills.length > 0) {
         setSkills(enhanced.skills);
@@ -511,25 +594,7 @@ function BuilderContent() {
     setGenerating(true);
     setError("");
 
-    const resumeData = {
-      template_id: templateId,
-      personal_info: personal,
-      education: education.filter((e) => e.institution.trim() !== ""),
-      experience: experience
-        .filter((e) => e.company.trim() !== "")
-        .map(e => ({ ...e, highlights: e.highlights.filter(h => h.trim() !== "") })),
-      skills: skills.filter((s) => s.name.trim() !== ""),
-      projects: projects
-        .filter((p) => p.name.trim() !== "")
-        .map(p => ({ ...p, technologies: p.technologies.filter(t => t.trim() !== "") })),
-      certifications: certifications.filter((c) => c.name.trim() !== ""),
-      languages: languages.filter((l) => l.name.trim() !== ""),
-      hobbies: hobbies.enabled ? hobbies.list.filter(h => h.trim() !== "") : [],
-      expertise: expertise.enabled ? {
-        technical: expertise.technical.filter(t => t.trim() !== ""),
-        professional: expertise.professional.filter(p => p.trim() !== "")
-      } : null
-    };
+    const resumeData = buildCleanResumeData();
 
     try {
       const res = await fetch(`${API_BASE}/api/generate/html`, {
