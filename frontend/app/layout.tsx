@@ -2,29 +2,23 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import Script from "next/script";
 
-import dynamic from "next/dynamic";
-
 import "./globals.css";
+import AuthModal from "./components/AuthModal";
 import AuthProvider from "./components/AuthProvider";
+import Chatbot from "./components/Chatbot";
 import ConditionalLayout from "./components/ConditionalLayout";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ThemeProvider from "./components/ThemeProvider";
 
-// Lazy-load non-critical interactive components to drastically reduce initial bundle size
-const AuthModal = dynamic(() => import("./components/AuthModal"));
-const Chatbot = dynamic(() => import("./components/Chatbot"));
-
 const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap",
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  display: "swap",
 });
 
 export const metadata: Metadata = {
