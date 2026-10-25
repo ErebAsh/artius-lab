@@ -154,6 +154,14 @@ app.add_middleware(
 )
 
 
+# ── Health check endpoint for Render & cron-job.org ───────────────
+@app.get("/")
+@app.get("/health")
+async def health_check():
+    """Health check endpoint to keep Render instance awake and verify service status."""
+    return {"status": "ok", "app": "Artius Lab API"}
+
+
 # ═══════════════════════════════════════════════════════════════════
 #  AUTH ENDPOINTS
 # ═══════════════════════════════════════════════════════════════════
