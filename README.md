@@ -12,7 +12,7 @@
 
   <img src="https://img.shields.io/badge/Next.js_16-000?style=for-the-badge&logo=next.js" height="40">
   <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" height="40">
-  <img src="https://img.shields.io/badge/Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white" height="40">
+  <img src="https://img.shields.io/badge/Groq_AI-F55036?style=for-the-badge&logoColor=white" height="40">
   <br>
   <img src="https://img.shields.io/badge/WeasyPrint-PDF-red?style=for-the-badge" height="40">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" height="40">
@@ -66,7 +66,7 @@ Artius Lab now features **a variety of high-fidelity templates** from our premiu
 ```
 Frontend                          Backend
 ├── Next.js 16 (App Router)       ├── FastAPI (Python)
-├── TypeScript                    ├── Google Gemini 2.5 Flash
+├── TypeScript                    ├── Groq Cloud (Qwen 27B)
 ├── Tailwind CSS v4               ├── WeasyPrint (PDF Engine)
 ├── Lucide Icons                  ├── Jinja2 (HTML Templates)
 └── Glassmorphism UI              └── SQLite (Database)
@@ -80,7 +80,7 @@ Frontend                          Backend
 
 - **Node.js** 18+
 - **Python** 3.9+
-- **Google Gemini API Key** — [Get one here](https://aistudio.google.com/apikey)
+- **Groq API Key** — [Get free key here](https://console.groq.com/keys)
 
 ### 1. Clone
 
@@ -99,7 +99,8 @@ pip install -r requirements.txt
 Create a `.env` file in the `backend/` directory:
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=qwen/qwen3.8-27b
 JWT_SECRET=your_secret_key_here
 ```
 
@@ -150,7 +151,7 @@ artius-lab/
 │   ├── main.py                  # API Gateway
 │   ├── auth.py                  # JWT & Auth Logic
 │   ├── database.py              # SQLite & SQLModel/CRUD
-│   ├── ai_service.py            # Gemini Integration
+│   ├── ai_service.py            # Groq AI Integration (Qwen 27B: qwen/qwen3.8-27b)
 │   ├── pdf_service.py           # HTML/PDF Rendering
 │   └── resume_templates/        # 38+ Jinja2 Templates (AL-Series)
 │

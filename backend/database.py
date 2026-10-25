@@ -92,7 +92,9 @@ async def init_db() -> None:
                 "ALTER TABLE resumes ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"
             )
 
-        # ── Add gemini_api_key column if missing (migration for existing DBs) ──
+        # ── Add groq_api_key / gemini_api_key column if missing (migration for existing DBs) ──
+        with contextlib.suppress(Exception):
+            await db.execute("ALTER TABLE users ADD COLUMN groq_api_key TEXT DEFAULT NULL")
         with contextlib.suppress(Exception):
             await db.execute("ALTER TABLE users ADD COLUMN gemini_api_key TEXT DEFAULT NULL")
 
@@ -364,9 +366,19 @@ async def save_enhancement_log(
 
 
 async def create_user(
-    email: str, password_hash: str, full_name: str = "", gemini_api_key: str | None = None
+    email: str,
+    password_hash: str,
+    full_name: str = "",
+    groq_api_key: str | None = None,
+    gemini_api_key: str | None = None,
 ) -> int:
     """Create a new user. Returns the new user ID."""
+    api_key = (
+        (groq_api_key and groq_api_key.strip())
+        or (gemini_api_key and gemini_api_key.strip())
+        or None
+    )
+    encrypted_key = encrypt_data(api_key)
     db = await aiosqlite.connect(DB_PATH)
     try:
         now = datetime.now(timezone.utc).isoformat()
@@ -379,7 +391,7 @@ async def create_user(
                 email.lower().strip(),
                 password_hash,
                 full_name.strip(),
-                encrypt_data(gemini_api_key),
+                encrypted_key,
                 now,
                 now,
             ),
@@ -400,12 +412,15 @@ async def get_user_by_email(email: str) -> dict[str, Any] | None:
         row = await cursor.fetchone()
         if row is None:
             return None
+        decrypted_key = decrypt_data(row["gemini_api_key"])
         return {
             "id": row["id"],
             "email": row["email"],
             "password_hash": row["password_hash"],
             "full_name": row["full_name"],
-            "gemini_api_key": decrypt_data(row["gemini_api_key"]),
+            "groq_api_key": decrypted_key,
+            "gemini_api_key": decrypted_key,
+            "api_key": decrypted_key,
             "created_at": row["created_at"],
             "updated_at": row["updated_at"],
         }
@@ -425,11 +440,14 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
         row = await cursor.fetchone()
         if row is None:
             return None
+        decrypted_key = decrypt_data(row["gemini_api_key"])
         return {
             "id": row["id"],
             "email": row["email"],
             "full_name": row["full_name"],
-            "gemini_api_key": decrypt_data(row["gemini_api_key"]),
+            "groq_api_key": decrypted_key,
+            "gemini_api_key": decrypted_key,
+            "api_key": decrypted_key,
             "created_at": row["created_at"],
             "updated_at": row["updated_at"],
         }
@@ -438,7 +456,7 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
 
 
 async def update_user_api_key(user_id: int, api_key: str | None) -> bool:
-    """Update a user's Gemini API key."""
+    """Update a user's Groq API key."""
     db = await aiosqlite.connect(DB_PATH)
     try:
         now = datetime.now(timezone.utc).isoformat()

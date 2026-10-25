@@ -151,11 +151,12 @@ async def register(data: UserRegister):
 
     # Create user
     hashed = hash_password(data.password)
+    user_api_key = data.groq_api_key or data.gemini_api_key
     user_id = await create_user(
         email=data.email,
         password_hash=hashed,
         full_name=data.full_name or "",
-        gemini_api_key=data.gemini_api_key,
+        groq_api_key=user_api_key,
     )
 
     # Return token immediately (auto-login after register)
@@ -166,7 +167,7 @@ async def register(data: UserRegister):
             "id": user_id,
             "email": data.email.lower().strip(),
             "full_name": (data.full_name or "").strip(),
-            "has_api_key": False,
+            "has_api_key": bool(user_api_key and user_api_key.strip()),
         },
     }
 
@@ -182,13 +183,14 @@ async def login(data: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
     token = create_access_token(user["id"], user["email"])
+    has_key = bool(user.get("groq_api_key") or user.get("gemini_api_key") or user.get("api_key"))
     return {
         "token": token,
         "user": {
             "id": user["id"],
             "email": user["email"],
             "full_name": user["full_name"],
-            "has_api_key": False,
+            "has_api_key": has_key,
         },
     }
 
@@ -199,11 +201,12 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     user = await get_user_by_id(current_user["user_id"])
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
+    has_key = bool(user.get("groq_api_key") or user.get("gemini_api_key") or user.get("api_key"))
     return {
         "id": user["id"],
         "email": user["email"],
         "full_name": user["full_name"],
-        "has_api_key": False,
+        "has_api_key": has_key,
         "created_at": user["created_at"],
     }
 
@@ -213,15 +216,20 @@ async def update_api_key_endpoint(
     api_key: str = Form(None),
     current_user: dict = Depends(get_current_user),
 ):
-    """Update the authenticated user's Gemini API key."""
+    """Update the authenticated user's Groq API key."""
     await update_user_api_key(current_user["user_id"], api_key)
     return {"message": "API key updated.", "has_api_key": bool(api_key and api_key.strip())}
 
 
 # ── Helper: Get user's API key from DB ────────────────────────────
 async def _get_user_api_key(current_user: dict | None) -> str | None:
-    """Fetch the user's Gemini API key if they are logged in and have one. (Disabled, always returns None)"""
-    return None
+    """Fetch the user's Groq API key if they are logged in and have one."""
+    if not current_user:
+        return None
+    user = await get_user_by_id(current_user["user_id"])
+    if not user:
+        return None
+    return user.get("groq_api_key") or user.get("gemini_api_key") or user.get("api_key")
 
 
 @app.get("/api/templates")
@@ -457,7 +465,7 @@ def preview_latex_template(template_id: str):
 async def ai_enhance(data: ResumeData, current_user: dict | None = Depends(get_optional_user)):
     """
     Accept basic resume data, use AI to generate summaries and professional details.
-    Uses Gemini if user has an API key, otherwise falls back to Qwen.
+    Uses Groq Cloud (Qwen 27B: qwen/qwen3.8-27b by default) with user or server API key.
     """
     api_key = await _get_user_api_key(current_user)
     result = await enhance_resume(data, api_key=api_key)

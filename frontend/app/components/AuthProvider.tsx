@@ -15,7 +15,8 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName: string) => Promise<void>;
+  register: (email: string, password: string, fullName: string, groqApiKey?: string) => Promise<void>;
+  updateApiKey: (apiKey: string | null) => Promise<void>;
   logout: () => void;
   showAuthModal: boolean;
   setShowAuthModal: (show: boolean) => void;
@@ -27,8 +28,9 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
   loading: true,
-  login: async () => {},
+    login: async () => {},
   register: async () => {},
+  updateApiKey: async () => {},
   logout: () => {},
   showAuthModal: false,
   setShowAuthModal: () => {},
@@ -79,11 +81,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setShowAuthModal(false);
   }, []);
 
-  const register = useCallback(async (email: string, password: string, fullName: string) => {
+  const register = useCallback(async (email: string, password: string, fullName: string, groqApiKey?: string) => {
     const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, full_name: fullName }),
+      body: JSON.stringify({ email, password, full_name: fullName, groq_api_key: groqApiKey || null }),
     });
 
     if (!res.ok) {
@@ -98,6 +100,35 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     localStorage.setItem("artius_user", JSON.stringify(data.user));
     setShowAuthModal(false);
   }, []);
+
+  const updateApiKey = useCallback(async (apiKey: string | null) => {
+    const currentToken = token || localStorage.getItem("artius_token");
+    if (!currentToken) return;
+
+    const formData = new FormData();
+    if (apiKey && apiKey.trim()) {
+      formData.append("api_key", apiKey.trim());
+    }
+
+    const res = await fetch(`${API_BASE}/api/auth/api-key`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${currentToken}` },
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: "Failed to update API key" }));
+      throw new Error(err.detail || "Failed to update API key");
+    }
+
+    const data = await res.json();
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, has_api_key: Boolean(data.has_api_key) };
+      localStorage.setItem("artius_user", JSON.stringify(updated));
+      return updated;
+    });
+  }, [token]);
 
   const logout = useCallback(() => {
     setToken(null);
@@ -120,6 +151,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         loading,
         login,
         register,
+        updateApiKey,
         logout,
         showAuthModal,
         setShowAuthModal,

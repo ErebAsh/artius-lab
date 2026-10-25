@@ -10,7 +10,7 @@ dependencies = [
     "pydantic",
     "jinja2",
     "weasyprint",
-    "google-generativeai",
+    "groq",
     "openai",
     "python-multipart",
     "python-dotenv",

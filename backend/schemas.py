@@ -98,7 +98,8 @@ class UserRegister(BaseModel):
     email: str
     password: str
     full_name: str | None = ""
-    gemini_api_key: str | None = None
+    groq_api_key: str | None = None
+    gemini_api_key: str | None = None  # Retained for backward compatibility
 
 
 class UserLogin(BaseModel):

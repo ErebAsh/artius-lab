@@ -1,10 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTheme } from "../components/ThemeProvider";
+import { useAuth } from "../components/AuthProvider";
 
 export default function SettingsPage() {
   const { settings: globalSettings, updateSettings, resetToDefaults } = useTheme();
+  const { user, updateApiKey } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [personalApiKey, setPersonalApiKey] = useState("");
+  const [apiKeyMessage, setApiKeyMessage] = useState("");
   const [settings, setSettings] = useState({
     ...globalSettings,
     userName: "John Doe",
@@ -483,6 +487,57 @@ export default function SettingsPage() {
                   boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
                 }} />
               </div>
+            </div>
+
+            <div style={{ padding: "16px 0", borderTop: "1px solid var(--border)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div>
+                  <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>AI Engine</h3>
+                  <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Groq Cloud LPU • Qwen 27B (Default)</p>
+                </div>
+                <span style={{
+                  fontSize: 12,
+                  padding: "4px 10px",
+                  borderRadius: 12,
+                  background: "rgba(16, 185, 129, 0.15)",
+                  color: "#10b981",
+                  fontWeight: 600
+                }}>
+                  {user?.has_api_key ? "Custom Key Active" : "Server Free Tier"}
+                </span>
+              </div>
+              {user && (
+                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                  <input
+                    type="password"
+                    placeholder="Enter new Groq API key (optional)"
+                    className="input-field"
+                    value={personalApiKey}
+                    onChange={(e) => setPersonalApiKey(e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={async () => {
+                      try {
+                        await updateApiKey(personalApiKey);
+                        setApiKeyMessage("Groq API key updated!");
+                        setPersonalApiKey("");
+                        setTimeout(() => setApiKeyMessage(""), 3000);
+                      } catch (err: unknown) {
+                        setApiKeyMessage(err instanceof Error ? err.message : "Update failed");
+                      }
+                    }}
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Save Key
+                  </button>
+                </div>
+              )}
+              {apiKeyMessage && (
+                <p style={{ fontSize: 12, color: "var(--accent)", marginTop: 6 }}>{apiKeyMessage}</p>
+              )}
             </div>
           </div>
         </section>

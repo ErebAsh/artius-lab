@@ -11,9 +11,10 @@ except ImportError:
 
 load_dotenv()
 
-# ── Ollama (Qwen) client ─────────────────────────────────────────
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
-QWEN_MODEL = os.getenv("QWEN_MODEL", "qwen2.5:7b")
+# ── Groq API Client ───────────────────────────────────────────────
+GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
 
 
 async def _call_ai(
@@ -23,26 +24,42 @@ async def _call_ai(
     temperature: float = 0.7,
 ) -> dict:
     """
-    Unified AI caller using Qwen via Ollama exclusively.
+    Unified AI caller using Groq Cloud API exclusively with Qwen 27B (qwen/qwen3.8-27b).
     """
-    try:
-        ollama_client = AsyncOpenAI(
-            base_url=OLLAMA_BASE_URL,
-            api_key="ollama",
+    effective_key = (api_key and api_key.strip()) or GROQ_API_KEY
+    if not effective_key:
+        raise ValueError(
+            "Groq API key is missing. Please set GROQ_API_KEY in your .env file or add your API key in user settings. "
+            "Get a free API key at https://console.groq.com/keys"
         )
-        response = await ollama_client.chat.completions.create(
-            model=QWEN_MODEL,
+
+    client = AsyncOpenAI(
+        base_url=GROQ_BASE_URL,
+        api_key=effective_key,
+    )
+
+    try:
+        response = await client.chat.completions.create(
+            model=GROQ_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
             response_format={"type": "json_object"},
+            extra_body={"reasoning_format": "hidden"},
             temperature=temperature,
         )
-        result_text = response.choices[0].message.content
-        return json.loads(result_text)
+        result_text = response.choices[0].message.content or "{}"
+        cleaned = result_text.strip()
+        if cleaned.startswith("```json"):
+            cleaned = cleaned[7:]
+        if cleaned.startswith("```"):
+            cleaned = cleaned[3:]
+        if cleaned.endswith("```"):
+            cleaned = cleaned[:-3]
+        return json.loads(cleaned.strip())
     except Exception as e:
-        print(f"❌ Qwen/Ollama failed: {e}")
+        print(f"❌ Groq AI ({GROQ_MODEL}) failed: {e}")
         raise
 
 
@@ -117,7 +134,7 @@ Rules:
 
 
 async def enhance_resume(data: ResumeData, api_key: str | None = None) -> dict:
-    """Use AI to enhance resume content. Gemini if key provided, else Qwen."""
+    """Use AI to enhance resume content with Groq (Qwen 27B: qwen/qwen3.8-27b)."""
 
     resume_dict = data.model_dump()
     del resume_dict["template_id"]
