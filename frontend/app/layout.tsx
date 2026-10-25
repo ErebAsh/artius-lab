@@ -11,9 +11,6 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ThemeProvider from "./components/ThemeProvider";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -41,25 +38,15 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable} antialiased`} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <ThemeProvider>
           <AuthProvider>
-          {/* Service Worker Cache Purge Script */}
-          <Script id="cache-buster" strategy="afterInteractive">
+          {/* Service Worker Cleanup Script */}
+          <Script id="cache-cleanup" strategy="afterInteractive">
             {`
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(registrations => {
                   for (let registration of registrations) {
-                    console.log('Unregistering stale service worker:', registration);
                     registration.unregister();
                   }
                 });
-              }
-              // Force clear storage if a version mismatch occurs
-              const VERSION = "1.0.1"; 
-              const savedVersion = localStorage.getItem("artius_app_version");
-              if (savedVersion !== VERSION) {
-                console.log("App version mismatch, clearing cache...");
-                // localStorage.clear(); // Only if really necessary
-                localStorage.setItem("artius_app_version", VERSION);
-                window.location.reload();
               }
             `}
           </Script>
