@@ -68,8 +68,18 @@ export default function Navbar() {
               className="nav-user-avatar"
               onClick={() => setDropdownOpen(!dropdownOpen)}
               title={user.full_name || user.email}
+              style={{ overflow: "hidden" }}
             >
-              {getInitials(user.full_name, user.email)}
+              {user.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={user.avatar_url}
+                  alt={user.full_name || "User"}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                getInitials(user.full_name, user.email)
+              )}
             </div>
 
             {dropdownOpen && (

@@ -6,14 +6,25 @@ and FastAPI dependency for protecting routes.
 
 import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import bcrypt
 import jwt
+from dotenv import find_dotenv, load_dotenv
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+# Load from unified root .env or local .env
+_env_path = find_dotenv(usecwd=True) or str(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(_env_path)
+
 # ── Configuration ──────────────────────────────────────────────────
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "artius-lab-secret-key-change-in-production")
+SECRET_KEY = (
+    os.getenv("JWT_SECRET")
+    or os.getenv("JWT_SECRET_KEY")
+    or "artius-lab-secret-key-change-in-production"
+)
+SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 72  # 3 days
 
@@ -39,7 +50,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # ── JWT Token Utilities ───────────────────────────────────────────
 
 
-def create_access_token(user_id: int, email: str) -> str:
+def create_access_token(user_id: int | str, email: str) -> str:
     """Create a JWT access token."""
     payload = {
         "sub": str(user_id),
@@ -51,13 +62,30 @@ def create_access_token(user_id: int, email: str) -> str:
 
 
 def decode_access_token(token: str) -> dict:
-    """Decode and validate a JWT token. Raises HTTPException on failure."""
+    """Decode and validate a JWT token. Supports both local and Supabase JWT secrets."""
+    # 1. Try local secret
     try:
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        pass
+
+    # 2. Try Supabase JWT secret if configured
+    if SUPABASE_JWT_SECRET:
+        try:
+            return jwt.decode(
+                token,
+                SUPABASE_JWT_SECRET,
+                algorithms=["HS256"],
+                audience="authenticated",
+            )
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            pass
+
+    raise HTTPException(status_code=401, detail="Invalid token")
 
 
 # ── FastAPI Dependencies ──────────────────────────────────────────

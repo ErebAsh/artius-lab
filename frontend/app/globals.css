@@ -647,57 +647,59 @@ select.input-field {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   animation: authOverlayIn 0.3s ease-out;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .auth-modal-card {
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
   background: var(--surface-glass);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 40px 32px 32px;
-  animation: authModalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 22px;
+  padding: 26px 26px 20px;
+  animation: authModalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    0 24px 80px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
   overflow: hidden;
+  max-height: 92vh;
+  overflow-y: auto;
+  transition: max-width 0.25s ease-out;
 }
 
-.auth-modal-gradient-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-light), #a78bfa, var(--accent));
-  background-size: 200% 100%;
-  animation: authShimmer 3s linear infinite;
+.auth-modal-card.auth-card-login {
+  max-width: 380px;
+}
+
+.auth-modal-card.auth-card-register {
+  max-width: 470px;
 }
 
 .auth-modal-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  z-index: 10;
 }
 
 .auth-modal-close:hover {
@@ -708,35 +710,48 @@ select.input-field {
 
 .auth-modal-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .auth-modal-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px;
+  margin: 0 auto 8px;
   color: white;
-  box-shadow: 0 8px 24px var(--glow);
+  box-shadow: 0 4px 16px var(--glow);
 }
 
 .auth-modal-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--foreground);
-  margin: 0 0 6px;
-  letter-spacing: -0.5px;
+  margin: 0 0 3px;
+  letter-spacing: -0.4px;
 }
 
 .auth-modal-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
+}
+
+.auth-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+}
+
+@media (max-width: 540px) {
+  .auth-modal-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 .auth-modal-error {
@@ -755,21 +770,21 @@ select.input-field {
 .auth-modal-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 
 .auth-input-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .auth-input-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
 }
 
 .auth-input-wrapper {
@@ -780,7 +795,7 @@ select.input-field {
 
 .auth-input-icon {
   position: absolute;
-  left: 14px;
+  left: 12px;
   color: var(--text-muted);
   opacity: 0.6;
   pointer-events: none;
@@ -794,12 +809,12 @@ select.input-field {
 
 .auth-input {
   width: 100%;
-  padding: 13px 16px 13px 44px;
+  padding: 10px 14px 10px 38px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   color: var(--foreground);
-  font-size: 14px;
+  font-size: 13.5px;
   font-family: inherit;
   transition: all 0.3s ease;
   outline: none;
@@ -817,14 +832,14 @@ select.input-field {
 
 .auth-submit-btn {
   width: 100%;
-  padding: 14px;
+  padding: 11px;
   margin-top: 4px;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: white;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -832,12 +847,12 @@ select.input-field {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
+  min-height: 42px;
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px var(--glow);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--glow);
 }
 
 .auth-submit-btn:disabled {
@@ -859,8 +874,8 @@ select.input-field {
 }
 
 .auth-spinner {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -870,8 +885,8 @@ select.input-field {
 .auth-divider {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin: 24px 0 20px;
+  gap: 12px;
+  margin: 12px 0 10px;
 }
 
 .auth-divider::before,

@@ -98,6 +98,7 @@ class UserRegister(BaseModel):
     email: str
     password: str
     full_name: str | None = ""
+    contact_no: str | None = None
     groq_api_key: str | None = None
     gemini_api_key: str | None = None  # Retained for backward compatibility
 
@@ -105,3 +106,11 @@ class UserRegister(BaseModel):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+
+class GoogleAuthRequest(BaseModel):
+    email: str
+    full_name: str | None = ""
+    avatar_url: str | None = None
+    contact_no: str | None = None
+    sub: str | None = None

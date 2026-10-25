@@ -1,7 +1,8 @@
 import json
 import os
+from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from openai import AsyncOpenAI
 
 try:
@@ -9,7 +10,9 @@ try:
 except ImportError:
     from schemas import ResumeData
 
-load_dotenv()
+# Load from unified root .env or local .env
+_env_path = find_dotenv(usecwd=True) or str(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(_env_path)
 
 # ── Groq API Client ───────────────────────────────────────────────
 GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")

@@ -15,7 +15,8 @@ interface Template {
   has_latex?: boolean;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Relative path /api/... routed securely via server proxy (no NEXT_PUBLIC_ exposure)
+const API_BASE = "";
 
 export default function TemplatesPage() {
   const { settings, updateSettings } = useTheme();

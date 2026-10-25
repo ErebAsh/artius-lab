@@ -7,13 +7,16 @@ import contextlib
 import json
 import os
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import aiosqlite  # type: ignore[import-untyped]
 from cryptography.fernet import Fernet
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
-load_dotenv()
+# Load from unified root .env or local .env
+_env_path = find_dotenv(usecwd=True) or str(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(_env_path)
 
 # ── Encryption Configuration ──────────────────────────────────────
 # You must set ENCRYPTION_MASTER_KEY in your .env
@@ -97,6 +100,12 @@ async def init_db() -> None:
             await db.execute("ALTER TABLE users ADD COLUMN groq_api_key TEXT DEFAULT NULL")
         with contextlib.suppress(Exception):
             await db.execute("ALTER TABLE users ADD COLUMN gemini_api_key TEXT DEFAULT NULL")
+        with contextlib.suppress(Exception):
+            await db.execute("ALTER TABLE users ADD COLUMN contact_no TEXT DEFAULT NULL")
+        with contextlib.suppress(Exception):
+            await db.execute("ALTER TABLE users ADD COLUMN avatar_url TEXT DEFAULT NULL")
+        with contextlib.suppress(Exception):
+            await db.execute("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'local'")
 
         # ── ATS Checks history ─────────────────────────────────────
         await db.execute("""
@@ -133,7 +142,7 @@ async def init_db() -> None:
         """)
 
         await db.commit()
-        print(f"✅ Database initialized at: {DB_PATH}")
+        print(f"[DB] Database initialized at: {DB_PATH}")
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -369,6 +378,9 @@ async def create_user(
     email: str,
     password_hash: str,
     full_name: str = "",
+    contact_no: str | None = None,
+    avatar_url: str | None = None,
+    auth_provider: str = "local",
     groq_api_key: str | None = None,
     gemini_api_key: str | None = None,
 ) -> int:
@@ -384,13 +396,16 @@ async def create_user(
         now = datetime.now(timezone.utc).isoformat()
         cursor = await db.execute(
             """
-            INSERT INTO users (email, password_hash, full_name, gemini_api_key, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO users (email, password_hash, full_name, contact_no, avatar_url, auth_provider, gemini_api_key, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 email.lower().strip(),
                 password_hash,
                 full_name.strip(),
+                contact_no.strip() if contact_no else None,
+                avatar_url,
+                auth_provider,
                 encrypted_key,
                 now,
                 now,
@@ -403,6 +418,55 @@ async def create_user(
         await db.close()
 
 
+async def get_or_create_oauth_user(
+    email: str,
+    full_name: str = "",
+    avatar_url: str | None = None,
+    contact_no: str | None = None,
+    auth_provider: str = "google",
+) -> dict[str, Any]:
+    """Find existing user by email or create a new user from OAuth provider."""
+    user = await get_user_by_email(email)
+    if user:
+        # Update details if new ones provided
+        db = await aiosqlite.connect(DB_PATH)
+        try:
+            updates = []
+            params = []
+            if full_name and not user.get("full_name"):
+                updates.append("full_name = ?")
+                params.append(full_name.strip())
+            if avatar_url and not user.get("avatar_url"):
+                updates.append("avatar_url = ?")
+                params.append(avatar_url)
+            if contact_no and not user.get("contact_no"):
+                updates.append("contact_no = ?")
+                params.append(contact_no.strip())
+            if updates:
+                updates.append("updated_at = ?")
+                params.append(datetime.now(timezone.utc).isoformat())
+                params.append(user["id"])
+                await db.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = ?", params)
+                await db.commit()
+        finally:
+            await db.close()
+        return await get_user_by_email(email) or user
+
+    # Create new OAuth user
+    user_id = await create_user(
+        email=email,
+        password_hash="",  # No password for OAuth users
+        full_name=full_name,
+        contact_no=contact_no,
+        avatar_url=avatar_url,
+        auth_provider=auth_provider,
+    )
+    created_user = await get_user_by_id(user_id)
+    if not created_user:
+        raise RuntimeError("Failed to create OAuth user")
+    return created_user
+
+
 async def get_user_by_email(email: str) -> dict[str, Any] | None:
     """Find a user by email address."""
     db = await aiosqlite.connect(DB_PATH)
@@ -412,17 +476,21 @@ async def get_user_by_email(email: str) -> dict[str, Any] | None:
         row = await cursor.fetchone()
         if row is None:
             return None
-        decrypted_key = decrypt_data(row["gemini_api_key"])
+        row_dict = dict(row)
+        decrypted_key = decrypt_data(row_dict.get("gemini_api_key"))
         return {
-            "id": row["id"],
-            "email": row["email"],
-            "password_hash": row["password_hash"],
-            "full_name": row["full_name"],
+            "id": row_dict["id"],
+            "email": row_dict["email"],
+            "password_hash": row_dict.get("password_hash", ""),
+            "full_name": row_dict.get("full_name", ""),
+            "contact_no": row_dict.get("contact_no"),
+            "avatar_url": row_dict.get("avatar_url"),
+            "auth_provider": row_dict.get("auth_provider", "local"),
             "groq_api_key": decrypted_key,
             "gemini_api_key": decrypted_key,
             "api_key": decrypted_key,
-            "created_at": row["created_at"],
-            "updated_at": row["updated_at"],
+            "created_at": row_dict.get("created_at"),
+            "updated_at": row_dict.get("updated_at"),
         }
     finally:
         await db.close()
@@ -433,23 +501,24 @@ async def get_user_by_id(user_id: int) -> dict[str, Any] | None:
     db = await aiosqlite.connect(DB_PATH)
     db.row_factory = aiosqlite.Row
     try:
-        cursor = await db.execute(
-            "SELECT id, email, full_name, gemini_api_key, created_at, updated_at FROM users WHERE id = ?",
-            (user_id,),
-        )
+        cursor = await db.execute("SELECT * FROM users WHERE id = ?", (user_id,))
         row = await cursor.fetchone()
         if row is None:
             return None
-        decrypted_key = decrypt_data(row["gemini_api_key"])
+        row_dict = dict(row)
+        decrypted_key = decrypt_data(row_dict.get("gemini_api_key"))
         return {
-            "id": row["id"],
-            "email": row["email"],
-            "full_name": row["full_name"],
+            "id": row_dict["id"],
+            "email": row_dict["email"],
+            "full_name": row_dict.get("full_name", ""),
+            "contact_no": row_dict.get("contact_no"),
+            "avatar_url": row_dict.get("avatar_url"),
+            "auth_provider": row_dict.get("auth_provider", "local"),
             "groq_api_key": decrypted_key,
             "gemini_api_key": decrypted_key,
             "api_key": decrypted_key,
-            "created_at": row["created_at"],
-            "updated_at": row["updated_at"],
+            "created_at": row_dict.get("created_at"),
+            "updated_at": row_dict.get("updated_at"),
         }
     finally:
         await db.close()

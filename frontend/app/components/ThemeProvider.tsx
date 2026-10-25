@@ -2,7 +2,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useAuth } from "./AuthProvider";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Relative path /api/... routed securely via server proxy (no NEXT_PUBLIC_ exposure)
+const API_BASE = "";
 
 
 const defaultSettings = {

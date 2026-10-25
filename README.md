@@ -89,28 +89,30 @@ git clone https://github.com/ErebAsh/artius-lab.git
 cd artius-lab
 ```
 
-### 2. Backend Setup
+### 2. Configure Environment
+
+Create a single `.env` file in the project root (or copy from `.env.example`):
 
 ```bash
-cd backend
-pip install -r requirements.txt
+cp .env.example .env
 ```
 
-Create a `.env` file in the `backend/` directory:
-
+Fill in your configuration:
 ```env
 GROQ_API_KEY=your_groq_api_key_here
 GROQ_MODEL=qwen/qwen3.8-27b
 JWT_SECRET=your_secret_key_here
 ```
 
-Start the server:
+### 3. Backend Setup
 
 ```bash
+cd backend
+pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
-### 3. Frontend Setup
+### 4. Frontend Setup
 
 ```bash
 cd frontend
@@ -118,7 +120,7 @@ npm install
 npm run dev
 ```
 
-### 4. Open
+### 5. Open
 
 Navigate to **[http://localhost:3000](http://localhost:3000)** and start building your resume! 🎉
 

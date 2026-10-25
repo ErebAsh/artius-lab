@@ -1,12 +1,13 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-interface User {
-  id: number;
+export interface User {
+  id: number | string;
   email: string;
   full_name: string;
+  contact_no?: string | null;
+  avatar_url?: string | null;
+  auth_provider?: string;
   has_api_key?: boolean;
 }
 
@@ -15,7 +16,14 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName: string, groqApiKey?: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    fullName: string,
+    contactNo?: string,
+    groqApiKey?: string
+  ) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   updateApiKey: (apiKey: string | null) => Promise<void>;
   logout: () => void;
   showAuthModal: boolean;
@@ -28,8 +36,9 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
   loading: true,
-    login: async () => {},
+  login: async () => {},
   register: async () => {},
+  loginWithGoogle: async () => {},
   updateApiKey: async () => {},
   logout: () => {},
   showAuthModal: false,
@@ -45,27 +54,67 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Restore session from localStorage on mount
+  // Restore session from localStorage on mount & verify
   useEffect(() => {
-    const savedToken = localStorage.getItem("artius_token");
-    const savedUser = localStorage.getItem("artius_user");
-    if (savedToken && savedUser) {
-      try {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
-      } catch {
-        localStorage.removeItem("artius_token");
-        localStorage.removeItem("artius_user");
+    let isMounted = true;
+
+    async function initSession() {
+      const savedToken = localStorage.getItem("artius_token");
+      const savedUser = localStorage.getItem("artius_user");
+
+      if (savedToken && savedUser && isMounted) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          setUser(parsedUser);
+          setToken(savedToken);
+
+          // Verify token validity with backend asynchronously via server proxy
+          fetch("/api/auth/me", {
+            headers: { Authorization: `Bearer ${savedToken}` },
+          })
+            .then((res) => {
+              if (!res.ok) {
+                // Token invalid or expired
+                localStorage.removeItem("artius_token");
+                localStorage.removeItem("artius_user");
+                if (isMounted) {
+                  setUser(null);
+                  setToken(null);
+                }
+              } else {
+                return res.json().then((freshUser) => {
+                  if (isMounted && freshUser) {
+                    setUser((prev) => ({ ...prev, ...freshUser }));
+                    localStorage.setItem("artius_user", JSON.stringify(freshUser));
+                  }
+                });
+              }
+            })
+            .catch(() => {
+              // Network error or backend offline, keep cached session for offline capability
+            });
+        } catch {
+          localStorage.removeItem("artius_token");
+          localStorage.removeItem("artius_user");
+        }
       }
+
+      if (isMounted) setLoading(false);
     }
-    setLoading(false);
+
+    initSession();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
+    // Relative URL /api/... routed securely through server-side proxy
+    const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
     });
 
     if (!res.ok) {
@@ -81,24 +130,45 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setShowAuthModal(false);
   }, []);
 
-  const register = useCallback(async (email: string, password: string, fullName: string, groqApiKey?: string) => {
-    const res = await fetch(`${API_BASE}/api/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, full_name: fullName, groq_api_key: groqApiKey || null }),
-    });
+  const register = useCallback(
+    async (
+      email: string,
+      password: string,
+      fullName: string,
+      contactNo?: string,
+      groqApiKey?: string
+    ) => {
+      // Relative URL /api/... routed securely through server-side proxy
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+          full_name: fullName.trim(),
+          contact_no: contactNo?.trim() || null,
+          groq_api_key: groqApiKey || null,
+        }),
+      });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: "Registration failed" }));
-      throw new Error(err.detail || "Registration failed");
-    }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Registration failed" }));
+        throw new Error(err.detail || "Registration failed");
+      }
 
-    const data = await res.json();
-    setToken(data.token);
-    setUser(data.user);
-    localStorage.setItem("artius_token", data.token);
-    localStorage.setItem("artius_user", JSON.stringify(data.user));
-    setShowAuthModal(false);
+      const data = await res.json();
+      setToken(data.token);
+      setUser(data.user);
+      localStorage.setItem("artius_token", data.token);
+      localStorage.setItem("artius_user", JSON.stringify(data.user));
+      setShowAuthModal(false);
+    },
+    []
+  );
+
+  const loginWithGoogle = useCallback(async () => {
+    // Server-side OAuth redirect: No public keys or URLs exposed to the browser
+    window.location.href = "/api/auth/google/login";
   }, []);
 
   const updateApiKey = useCallback(async (apiKey: string | null) => {
@@ -110,7 +180,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       formData.append("api_key", apiKey.trim());
     }
 
-    const res = await fetch(`${API_BASE}/api/auth/api-key`, {
+    const res = await fetch("/api/auth/api-key", {
       method: "PUT",
       headers: { Authorization: `Bearer ${currentToken}` },
       body: formData,
@@ -151,6 +221,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         loading,
         login,
         register,
+        loginWithGoogle,
         updateApiKey,
         logout,
         showAuthModal,

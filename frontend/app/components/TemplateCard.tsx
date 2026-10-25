@@ -2,7 +2,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Relative path /api/... routed securely via server proxy (no NEXT_PUBLIC_ exposure)
+const API_BASE = "";
 
 interface TemplateCardProps {
   template: {

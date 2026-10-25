@@ -40,6 +40,7 @@ try:
     from backend.database import (
         create_user,
         delete_resume,
+        get_or_create_oauth_user,
         get_resume,
         get_user_by_email,
         get_user_by_id,
@@ -61,7 +62,7 @@ try:
         generate_pdf_from_html,
         has_latex_template,
     )
-    from backend.schemas import HTMLData, ResumeData, UserLogin, UserRegister
+    from backend.schemas import GoogleAuthRequest, HTMLData, ResumeData, UserLogin, UserRegister
     from backend.templates import get_all_templates, get_template_by_id
 except ImportError:
     from ai_service import (
@@ -80,6 +81,7 @@ except ImportError:
     from database import (
         create_user,
         delete_resume,
+        get_or_create_oauth_user,
         get_resume,
         get_user_by_email,
         get_user_by_id,
@@ -101,7 +103,7 @@ except ImportError:
         generate_pdf_from_html,
         has_latex_template,
     )
-    from schemas import HTMLData, ResumeData, UserLogin, UserRegister
+    from schemas import GoogleAuthRequest, HTMLData, ResumeData, UserLogin, UserRegister
     from templates import get_all_templates, get_template_by_id
 
 
@@ -156,6 +158,8 @@ async def register(data: UserRegister):
         email=data.email,
         password_hash=hashed,
         full_name=data.full_name or "",
+        contact_no=data.contact_no,
+        auth_provider="local",
         groq_api_key=user_api_key,
     )
 
@@ -167,6 +171,9 @@ async def register(data: UserRegister):
             "id": user_id,
             "email": data.email.lower().strip(),
             "full_name": (data.full_name or "").strip(),
+            "contact_no": (data.contact_no or "").strip() or None,
+            "avatar_url": None,
+            "auth_provider": "local",
             "has_api_key": bool(user_api_key and user_api_key.strip()),
         },
     }
@@ -179,7 +186,7 @@ async def login(data: UserLogin):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
-    if not verify_password(data.password, user["password_hash"]):
+    if not user.get("password_hash") or not verify_password(data.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
     token = create_access_token(user["id"], user["email"])
@@ -190,6 +197,38 @@ async def login(data: UserLogin):
             "id": user["id"],
             "email": user["email"],
             "full_name": user["full_name"],
+            "contact_no": user.get("contact_no"),
+            "avatar_url": user.get("avatar_url"),
+            "auth_provider": user.get("auth_provider", "local"),
+            "has_api_key": has_key,
+        },
+    }
+
+
+@app.post("/api/auth/google")
+async def google_auth(data: GoogleAuthRequest):
+    """Authenticate or register user via Google OAuth."""
+    if not data.email or not data.email.strip():
+        raise HTTPException(status_code=400, detail="Email is required from Google account.")
+
+    user = await get_or_create_oauth_user(
+        email=data.email.lower().strip(),
+        full_name=(data.full_name or "").strip(),
+        avatar_url=data.avatar_url,
+        contact_no=data.contact_no,
+        auth_provider="google",
+    )
+    token = create_access_token(user["id"], user["email"])
+    has_key = bool(user.get("groq_api_key") or user.get("gemini_api_key") or user.get("api_key"))
+    return {
+        "token": token,
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "full_name": user["full_name"],
+            "contact_no": user.get("contact_no"),
+            "avatar_url": user.get("avatar_url"),
+            "auth_provider": user.get("auth_provider", "google"),
             "has_api_key": has_key,
         },
     }
@@ -206,6 +245,9 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "id": user["id"],
         "email": user["email"],
         "full_name": user["full_name"],
+        "contact_no": user.get("contact_no"),
+        "avatar_url": user.get("avatar_url"),
+        "auth_provider": user.get("auth_provider", "local"),
         "has_api_key": has_key,
         "created_at": user["created_at"],
     }

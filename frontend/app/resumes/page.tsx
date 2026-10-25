@@ -3,7 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "../components/AuthProvider";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Relative path /api/... routed securely via server proxy (no NEXT_PUBLIC_ exposure)
+const API_BASE = "";
 
 interface SavedResume {
   id: number;
