@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -282,9 +283,13 @@ export default function Hero() {
                     </div>
 
                     <div className="hero-visual animate-fade-in" style={{ animationDelay: "1s" }}>
-                        <img
+                        <Image
                             src="/images/home_icon.png"
                             alt="AI Resume Assistant"
+                            width={480}
+                            height={480}
+                            priority
+                            sizes="(max-width: 768px) 100vw, 480px"
                             style={{
                                 width: "100%",
                                 maxWidth: 480,
