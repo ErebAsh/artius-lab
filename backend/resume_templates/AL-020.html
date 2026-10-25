@@ -384,9 +384,10 @@
                         <div class="skill-list">
                             {% for skill in skills %}
                             <div class="skill-item">
-                                <span>{{ skill.name }}</span>
+                                <span>{{ skill.name if skill is mapping else skill }}</span>
                                 <div class="skill-stars">
-                                    {% set num_level = skill.level | int if (skill.level | int > 0) else (100 if skill.level == 'Expert' else (80 if skill.level == 'Advanced' else (60 if skill.level == 'Intermediate' else 40))) %}
+                                    {% set s_lvl = (skill.get('level', 80) if skill is mapping else 80) %}
+                                    {% set num_level = s_lvl | int if (s_lvl | int > 0) else (100 if s_lvl == 'Expert' else (80 if s_lvl == 'Advanced' else (60 if s_lvl == 'Intermediate' else 40))) %}
                                     {% set rating = (num_level / 20) | round | int %}
                                     {% for i in range(5) %}
                                     <span class="star {{ 'empty' if i >= rating else '' }}">★</span>
