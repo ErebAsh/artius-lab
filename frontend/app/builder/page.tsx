@@ -169,6 +169,7 @@ function BuilderContent() {
   const [saveMessage, setSaveMessage] = useState("");
   const [resumeId, setResumeId] = useState<number | null>(resumeIdParam ? parseInt(resumeIdParam) : null);
   const [templateHasPhoto, setTemplateHasPhoto] = useState(false);
+  const [templateHasLatex, setTemplateHasLatex] = useState(false);
   const [templateHasSkillLevels, setTemplateHasSkillLevels] = useState(false);
   const [templateHasLanguages, setTemplateHasLanguages] = useState(false);
   const [templateHasLanguageProficiency, setTemplateHasLanguageProficiency] = useState(false);
@@ -204,6 +205,7 @@ function BuilderContent() {
         if (res.ok) {
           const data = await res.json();
           setTemplateHasPhoto(data.has_photo === true);
+          setTemplateHasLatex(data.has_latex === true);
           
           // Detect skill levels support from properties or features
           const hasSkillFeatures = data.features?.some((f: string) => 
@@ -685,6 +687,8 @@ function BuilderContent() {
         API_BASE={API_BASE}
         layout={layout}
         setLayout={setLayout}
+        hasLatex={templateHasLatex}
+        resumeData={buildCleanResumeData()}
       />
     );
   }

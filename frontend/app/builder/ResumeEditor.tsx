@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import LatexModal from "../components/LatexModal";
+import { Code } from "lucide-react";
 
 interface ResumeColors {
   accent: string;
@@ -37,6 +39,8 @@ interface ResumeEditorProps {
   API_BASE: string;
   layout: LayoutSettings;
   setLayout: React.Dispatch<React.SetStateAction<LayoutSettings>>;
+  hasLatex?: boolean;
+  resumeData?: Record<string, unknown>;
 }
 
 const toolbarButtonStyle: React.CSSProperties = {
@@ -62,7 +66,9 @@ export default function ResumeEditor({
   personal,
   API_BASE,
   layout,
-  setLayout
+  setLayout,
+  hasLatex,
+  resumeData
 }: ResumeEditorProps) {
   const [zoom, setZoom] = useState(0.85);
   const [showLayoutPanel, setShowLayoutPanel] = useState(false);
@@ -79,6 +85,41 @@ export default function ResumeEditor({
   });
   const [activePreset, setActivePreset] = useState("Default");
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const [showLatexModal, setShowLatexModal] = useState(false);
+  const [latexCode, setLatexCode] = useState("");
+  const [latexLoading, setLatexLoading] = useState(false);
+  const [latexError, setLatexError] = useState("");
+
+  const handleOpenLatexModal = async () => {
+    setShowLatexModal(true);
+    if (!latexCode) {
+      setLatexLoading(true);
+      setLatexError("");
+      try {
+        const payload = {
+          ...(resumeData || {}),
+          template_id: templateId,
+          skip_ai: true,
+        };
+        const res = await fetch(`${API_BASE}/api/generate/latex`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || "Failed to generate LaTeX source");
+        }
+        const data = await res.json();
+        setLatexCode(data.latex || "");
+      } catch (err: unknown) {
+        setLatexError(err instanceof Error ? err.message : "Failed to load LaTeX source.");
+      } finally {
+        setLatexLoading(false);
+      }
+    }
+  };
 
   const execFormat = (command: string, value?: string) => {
     if (!iframeRef.current || !iframeRef.current.contentDocument) return;
@@ -294,14 +335,41 @@ export default function ResumeEditor({
           <p style={{ fontSize: 11, color: "var(--accent-light)", margin: 0, fontWeight: 700, letterSpacing: 1 }}>{templateId.toUpperCase()} TEMPLATE • LIVE PREVIEW</p>
         </div>
 
-        <button 
-          className="btn-primary" 
-          onClick={handleDownloadPdf} 
-          disabled={generating}
-          style={{ padding: "12px 28px", fontSize: 15, fontWeight: 700, boxShadow: "0 10px 20px -3px rgba(99,102,241,0.4)" }}
-        >
-          {generating ? "Saving..." : "↓ Download PDF"}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {hasLatex && (
+            <button
+              onClick={handleOpenLatexModal}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 18px",
+                borderRadius: 10,
+                background: "rgba(56, 189, 248, 0.15)",
+                border: "1px solid rgba(56, 189, 248, 0.35)",
+                color: "#38bdf8",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              className="hover:bg-sky-500/20"
+              title="Open LaTeX Studio & Overleaf"
+            >
+              <Code size={16} />
+              LaTeX Studio
+            </button>
+          )}
+
+          <button 
+            className="btn-primary" 
+            onClick={handleDownloadPdf} 
+            disabled={generating}
+            style={{ padding: "12px 28px", fontSize: 15, fontWeight: 700, boxShadow: "0 10px 20px -3px rgba(99,102,241,0.4)" }}
+          >
+            {generating ? "Saving..." : "↓ Download PDF"}
+          </button>
+        </div>
       </div>
 
       {/* Workspace Container */}
@@ -727,6 +795,15 @@ export default function ResumeEditor({
           <button onClick={() => setError("")} style={{ marginLeft: 10, background: "none", border: "none", color: "#fff", cursor: "pointer" }}>✕</button>
         </div>
       )}
+
+      <LatexModal
+        isOpen={showLatexModal}
+        onClose={() => setShowLatexModal(false)}
+        latexCode={latexCode}
+        loading={latexLoading}
+        error={latexError}
+        filename={`${(personal?.full_name || "Resume").replace(/\s+/g, "_")}_Resume.tex`}
+      />
     </div>
   );
 }

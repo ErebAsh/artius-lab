@@ -72,6 +72,7 @@ class ResumeData(BaseModel):
     languages: list[Language] = []
     expertise: Expertise | None = None
     hobbies: list[str] = []
+    skip_ai: bool = False
 
 
 class EnhancedResumeData(BaseModel):
@@ -84,6 +85,7 @@ class EnhancedResumeData(BaseModel):
     languages: list[Language] = []
     expertise: Expertise | None = None
     hobbies: list[str] = []
+    skip_ai: bool = False
 
 
 class HTMLData(BaseModel):

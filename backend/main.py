@@ -733,10 +733,13 @@ async def generate_resume_latex(
             status_code=404, detail="No LaTeX template available for this template."
         )
 
-    # AI-powered resume building/completion
-    api_key = await _get_user_api_key(current_user)
-    ai_result = await enhance_resume(data, api_key=api_key)
-    enhanced_data = ai_result.get("enhanced_data", ai_result)
+    if getattr(data, "skip_ai", False):
+        enhanced_data = data.model_dump()
+    else:
+        # AI-powered resume building/completion
+        api_key = await _get_user_api_key(current_user)
+        ai_result = await enhance_resume(data, api_key=api_key)
+        enhanced_data = ai_result.get("enhanced_data", ai_result)
 
     try:
         latex_source = generate_latex(enhanced_data, data.template_id)

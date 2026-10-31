@@ -258,6 +258,30 @@ class TestLaTeXTemplates(unittest.TestCase):
                     res["render_special_chars_ok"], f"{t_file} failed on special character escaping"
                 )
 
+    def test_generate_resume_latex_endpoint_skip_ai(self):
+        """Verify generate_resume_latex API endpoint generates valid LaTeX with skip_ai=True."""
+        import asyncio
+
+        from backend.main import generate_resume_latex
+        from backend.schemas import PersonalInfo, ResumeData
+
+        data = ResumeData(
+            template_id="AL-001",
+            personal_info=PersonalInfo(
+                full_name="Alex Mercer",
+                email="alex@example.com",
+                phone="+1 555-0199",
+                location="San Francisco, CA",
+            ),
+            skip_ai=True,
+        )
+
+        res = asyncio.run(generate_resume_latex(data))
+        self.assertEqual(res["template_id"], "AL-001")
+        self.assertIn(r"\documentclass", res["latex"])
+        self.assertIn("ALEX MERCER", res["latex"])
+        self.assertIn("alex@example.com", res["latex"])
+
 
 # ── CLI Runner ───────────────────────────────────────────────────────
 def main():
